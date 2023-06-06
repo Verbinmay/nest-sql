@@ -17,6 +17,7 @@ export class SA_CreateUserCase
   constructor(private readonly userRepository: UserRepository) {}
 
   async execute(command: SA_CreateUserCommand) {
+    /**Функция для проверки типа переданных данных, но по мне она бесполезна */
     // await validateOrRejectModel(inputModel, CreateUserDto);
 
     const hashBcrypt = await bcrypt.hash(command.inputModel.password, 10);

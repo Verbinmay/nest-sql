@@ -15,6 +15,8 @@ import { ValidationLoginEmail } from './validation/validationLoginEmail';
 import { SA_CreateUserCase } from './sa/use-cases/users/sa-create-user-case';
 import { UserSAController } from './sa/controllers/user.sa.controller';
 import { UserRepository } from './sql/user.repository';
+import { UserQueryRepository } from './sql/user.query.repository';
+import { SA_GetAllUsersCase } from './sa/use-cases/users/sa-get-all-users-case';
 
 const validations = [
   // ValidationBlogId
@@ -29,10 +31,7 @@ const validations = [
 //   GetCurrentUserBlogsCase,
 //   SA_BindBlogWithUserCase,
 //   SA_BanUserCase,
-//   SA_CreateUserCase,
-//   SA_DeleteUserCase,
 //   SA_GetAllBlogsCase,
-//   SA_GetAllUsersCase,
 //   UpdateBlogCase,
 //   SA_BanBlogCase,
 // ];
@@ -78,6 +77,7 @@ const validations = [
 const useCasesUser = [
   // BanUserForBlogByUserIdCase,
   SA_CreateUserCase,
+  SA_GetAllUsersCase,
   // GetBannedUsersByBlogIdCase,
 ];
 
@@ -158,6 +158,7 @@ const useCasesUser = [
     // SessionRepository,
     // SessionService,
     UserRepository,
+    UserQueryRepository,
   ],
 })
 export class AppModule {}

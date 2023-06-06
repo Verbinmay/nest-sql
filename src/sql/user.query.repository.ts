@@ -1,20 +1,18 @@
-import { Repository } from 'typeorm';
+import { Brackets, In, Like, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { User } from '../entities/sql/user.entity';
+import { SAViewUserDto } from '../sa/dto/user/sa-view-user.dto';
+import { SAGetViewModel, User } from '../entities/sql/user.entity';
+import { PaginationQuery } from '../pagination/base-pagination';
+import { PaginatorUser } from '../pagination/paginatorType';
 
 @Injectable()
-export class UserRepository {
+export class UserQueryRepository {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
-
-  async save(user: User) {
-    await this.usersRepository.create(user);
-    return await this.usersRepository.save(user);
-  }
 
   // async findCountUsers(filter: object) {
   //   return await this.UserModel.countDocuments(filter);
@@ -28,6 +26,51 @@ export class UserRepository {
 
   //   return result;
   // }
+  async SA_findUsers(query: PaginationQuery) {
+    const totalCount: number = await this.usersRepository.count({
+      where: [
+        {
+          isBanned: In(query.createBanStatus()),
+          login: Like('%' + query.searchLoginTerm + '%'),
+        },
+        {
+          isBanned: In(query.createBanStatus()),
+          email: Like('%' + query.searchEmailTerm + '%'),
+        },
+      ],
+    });
+
+    const pagesCount = query.countPages(totalCount);
+
+    const usersFromDB: Array<User> = await this.usersRepository.find({
+      where: [
+        {
+          isBanned: In(query.createBanStatus()),
+          login: Like('%' + query.searchLoginTerm + '%'),
+        },
+        {
+          isBanned: In(query.createBanStatus()),
+          email: Like('%' + query.searchEmailTerm + '%'),
+        },
+      ],
+      order: {
+        [query.sortBy]: query.sortDirection,
+      },
+      skip: query.skip(),
+      take: query.pageSize,
+    });
+
+    const users: SAViewUserDto[] = usersFromDB.map((m) => SAGetViewModel(m));
+
+    const result: PaginatorUser = {
+      pagesCount: pagesCount,
+      page: query.pageNumber,
+      pageSize: query.pageSize,
+      totalCount: totalCount,
+      items: users,
+    };
+    return result;
+  }
 
   // async findUserById(id: string): Promise<User> {
   //   try {
@@ -45,18 +88,6 @@ export class UserRepository {
   //     return false;
   //   }
   // }
-
-  async findUserByLoginOrEmail(loginOrEmail: string) {
-    const result = await this.usersRepository
-      .createQueryBuilder()
-      .select('user')
-      .from(User, 'user')
-      .where('user.login = :loginOrEmail', { loginOrEmail })
-      .orWhere('user.email = :loginOrEmail', { loginOrEmail })
-      .getOne();
-
-    return result;
-  }
 
   // async findUserByConfirmationCode(code: string) {
   //   const result: User | null = await this.UserModel.findOne({

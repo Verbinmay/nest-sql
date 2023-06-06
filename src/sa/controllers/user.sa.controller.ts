@@ -13,8 +13,10 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 
 import { makeAnswerInController } from '../../helpers/errors';
+import { PaginationQuery } from '../../pagination/base-pagination';
 import { CreateUserDto } from '../dto/user/create-user.dto';
 import { SA_CreateUserCommand } from '../use-cases/users/sa-create-user-case';
+import { SA_GetAllUsersCommand } from '../use-cases/users/sa-get-all-users-case';
 
 @Controller('sa/users')
 export class UserSAController {
@@ -29,14 +31,14 @@ export class UserSAController {
   }
 
   // @UseGuards(BasicAuthGuard)
-  // @Get()
-  // async findUsers(@Query() query: PaginationQuery) {
-  //   const result = await this.commandBus.execute(
-  //     new SA_GetAllUsersCommand(query),
-  //   );
+  @Get()
+  async findUsers(@Query() query: PaginationQuery) {
+    const result = await this.commandBus.execute(
+      new SA_GetAllUsersCommand(query),
+    );
 
-  //   return makeAnswerInController(result);
-  // }
+    return makeAnswerInController(result);
+  }
 
   // @UseGuards(BasicAuthGuard)
   // @Delete(':id')
