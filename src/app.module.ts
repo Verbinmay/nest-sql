@@ -17,6 +17,7 @@ import { UserSAController } from './sa/controllers/user.sa.controller';
 import { UserRepository } from './sql/user.repository';
 import { UserQueryRepository } from './sql/user.query.repository';
 import { SA_GetAllUsersCase } from './sa/use-cases/users/sa-get-all-users-case';
+import { SA_DeleteUserCase } from './sa/use-cases/users/sa-delete-user-case';
 
 const validations = [
   // ValidationBlogId
@@ -30,7 +31,7 @@ const validations = [
 //   GetBlogByBlogIdCase,
 //   GetCurrentUserBlogsCase,
 //   SA_BindBlogWithUserCase,
-//   SA_BanUserCase,
+//
 //   SA_GetAllBlogsCase,
 //   UpdateBlogCase,
 //   SA_BanBlogCase,
@@ -78,6 +79,8 @@ const useCasesUser = [
   // BanUserForBlogByUserIdCase,
   SA_CreateUserCase,
   SA_GetAllUsersCase,
+  SA_DeleteUserCase,
+  // SA_BanUserCase,
   // GetBannedUsersByBlogIdCase,
 ];
 

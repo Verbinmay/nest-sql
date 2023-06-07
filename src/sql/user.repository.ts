@@ -29,22 +29,17 @@ export class UserRepository {
   //   return result;
   // }
 
-  // async findUserById(id: string): Promise<User> {
-  //   try {
-  //     return await this.UserModel.findById(id);
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // }
+  async findUserById(id: string): Promise<User> {
+    const result: User | null = await this.usersRepository.findOne({
+      where: { id: id },
+    });
+    return result;
+  }
 
-  // async delete(id: string) {
-  //   try {
-  //     await this.UserModel.findByIdAndDelete(id);
-  //     return true;
-  //   } catch (error) {
-  //     return false;
-  //   }
-  // }
+  async delete(id: string) {
+    const result = await this.usersRepository.delete({ id: id });
+    return result;
+  }
 
   async findUserByLoginOrEmail(loginOrEmail: string) {
     const result = await this.usersRepository
