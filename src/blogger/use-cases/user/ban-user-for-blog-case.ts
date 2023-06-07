@@ -1,60 +1,61 @@
-// import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-// import { BanedUsers } from '../../../entities/mongoose/blog.entity';
-// import { BlogRepository } from '../../../db/blog.repository';
-// import { UserRepository } from '../../../db/user.repository';
-// import { BanUserForBlogDto } from '../../dto/blog/ban-user-for-blog.dto';
+import { BanedUser } from '../../../entities/sql/blogsBannedUsers.entity';
+import { BanedUsersBlogsRepository } from '../../../sql/blog.banUsers.repository';
+import { BlogRepository } from '../../../sql/blog.repository';
+import { UserRepository } from '../../../sql/user.repository';
+import { BanUserForBlogDto } from '../../dto/blog/ban-user-for-blog.dto';
 
-// /**Блоггер может банить пользователя для конкретного (своего) блога. Забаненный пользователь не может оставлять комментарии к постам блога, для которого он забанен */
+/**Блоггер может банить пользователя для конкретного (своего) блога. Забаненный пользователь не может оставлять комментарии к постам блога, для которого он забанен */
 
-// export class BanUserForBlogByUserIdCommand {
-//   constructor(
-//     public userId: string,
-//     public userIdBlock: string,
-//     public inputModel: BanUserForBlogDto,
-//   ) {}
-// }
+export class BanUserForBlogByUserIdCommand {
+  constructor(
+    public userId: string,
+    public userIdBlock: string,
+    public inputModel: BanUserForBlogDto,
+  ) {}
+}
 
-// @CommandHandler(BanUserForBlogByUserIdCommand)
-// export class BanUserForBlogByUserIdCase
-//   implements ICommandHandler<BanUserForBlogByUserIdCommand>
-// {
-//   constructor(
-//     private readonly blogRepository: BlogRepository,
-//     private readonly userRepository: UserRepository,
-//   ) {}
+@CommandHandler(BanUserForBlogByUserIdCommand)
+export class BanUserForBlogByUserIdCase
+  implements ICommandHandler<BanUserForBlogByUserIdCommand>
+{
+  constructor(
+    private readonly blogRepository: BlogRepository,
+    private readonly userRepository: UserRepository,
+    private readonly banedUsersBlogsRepository: BanedUsersBlogsRepository,
+  ) {}
 
-//   async execute(command: BanUserForBlogByUserIdCommand) {
-//     const blog = await this.blogRepository.findBlogById(
-//       command.inputModel.blogId,
-//     );
-//     if (!blog) return { s: 404 };
-//     if (blog.userId !== command.userId) return { s: 403 };
+  async execute(command: BanUserForBlogByUserIdCommand) {
+    const blog = await this.blogRepository.findBlogById(
+      command.inputModel.blogId,
+    );
+    if (!blog) return { s: 404 };
+    if (blog.userId !== command.userId) return { s: 403 };
 
-//     const userBan = await this.userRepository.findUserById(command.userIdBlock);
-//     if (!userBan) return { s: 404 };
-//     if (command.inputModel.isBanned === true) {
-//       const userBanInfo: BanedUsers = {
-//         userId: userBan._id.toString(),
-//         userLogin: userBan.login,
-//         banReason: command.inputModel.banReason,
-//         banDate: new Date().toISOString(),
-//       };
-//       blog.banedUsers.push(userBanInfo);
-//     } else {
-//       const index = blog.banedUsers.findIndex(
-//         (a) => a.userId === command.userIdBlock,
-//       );
-//       if (index < 0) return true;
+    const userBan = await this.userRepository.findUserById(command.userIdBlock);
+    if (!userBan) return { s: 404 };
+    if (command.inputModel.isBanned === true) {
+      const userBanInfo = new BanedUser();
 
-//       blog.banedUsers.splice(index, 1);
-//     }
+      userBanInfo.userId = userBan.id;
+      userBanInfo.userLogin = userBan.login;
+      userBanInfo.banReason = command.inputModel.banReason;
+      userBanInfo.blogId = blog.id;
 
-//     try {
-//       this.blogRepository.save(blog);
-//       return true;
-//     } catch (error) {
-//       return { s: 500 };
-//     }
-//   }
-// }
+      return await this.banedUsersBlogsRepository.create(userBanInfo);
+    } else {
+      const userIsBaned =
+        await this.banedUsersBlogsRepository.findBanedUserByBlogId(blog.id);
+      if (userIsBaned != null) {
+        const userDeleted =
+          await this.banedUsersBlogsRepository.deleteBanedUserByBlogId(blog.id);
+        if (!(userDeleted.affected > 0)) {
+          return { s: 500 };
+        }
+        return true;
+      }
+      return true;
+    }
+  }
+}

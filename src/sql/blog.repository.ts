@@ -11,7 +11,7 @@ export class BlogRepository {
     @InjectRepository(Blog) private readonly blogsRepository: Repository<Blog>,
   ) {}
 
-  async findBlogById(id: string): Promise<Blog> {
+  async findBlogById(id: string) {
     return await this.blogsRepository.findOneBy({ id: id });
   }
 

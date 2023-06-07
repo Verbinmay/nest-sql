@@ -1,4 +1,5 @@
 import { ViewBlogDto } from '../blogger/dto/blog/view-blog.dto';
+import { ViewBannedUserDto } from '../blogger/dto/user/view-banned-user';
 import { SAViewBlogDto } from '../sa/dto/blog/sa-view-blog.dto';
 import { SAViewUserDto } from '../sa/dto/user/sa-view-user.dto';
 
@@ -27,6 +28,6 @@ export type PaginatorUser = PaginatorEnd & {
 // export type PaginatorCommentWithWithPostInfoViewModel = PaginatorEnd & {
 //   items: Array<ViewCommentWithPostInfoDto>;
 // };
-// export type PaginatorBannedUsersViewModel = PaginatorEnd & {
-//   items: Array<ViewBannedUserDto>;
-// };
+export type PaginatorBannedUsersViewModel = PaginatorEnd & {
+  items: Array<ViewBannedUserDto>;
+};

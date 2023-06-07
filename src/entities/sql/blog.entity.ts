@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { CreateBlogDto } from '../../blogger/dto/blog/create-blog.dto';
 import { ViewBlogDto } from '../../blogger/dto/blog/view-blog.dto';
-import { BanedUsers } from './blogsBannedUsers.entity';
+import { BanedUser } from './blogsBannedUsers.entity';
 
 @Entity()
 export class Blog {

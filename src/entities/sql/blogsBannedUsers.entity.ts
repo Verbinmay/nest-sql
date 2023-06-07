@@ -1,19 +1,14 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
-  ManyToOne,
-  OneToOne,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ForeignKeyMetadata } from 'typeorm/metadata/ForeignKeyMetadata';
-
-import { Blog } from './blog.entity';
 
 @Entity()
 @Index(['userId', 'blogId'], { unique: true })
-export class BanedUsers {
+export class BanedUser {
   @PrimaryGeneratedColumn('uuid')
   public id!: string;
   @Column('uuid')
@@ -22,8 +17,19 @@ export class BanedUsers {
   public userLogin: string;
   @Column()
   public banReason: string;
-  @Column()
-  public banDate: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  public banDate!: Date;
   @Column('uuid')
-  public blogId: Blog;
+  public blogId: string;
+}
+export function getBannedUserViewModel(bannedUser: BanedUser) {
+  return {
+    id: bannedUser.userId,
+    login: bannedUser.userLogin,
+    banInfo: {
+      isBanned: true,
+      banDate: bannedUser.banDate.toISOString(),
+      banReason: bannedUser.banReason,
+    },
+  };
 }

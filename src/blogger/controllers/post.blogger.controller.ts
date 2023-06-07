@@ -16,6 +16,7 @@ import { makeAnswerInController } from '../../helpers/errors';
 import { CreatePostBlogDto } from '../dto/post/create-post-in-blog.dto';
 import { UpdatePostByBlogDto } from '../dto/post/update-post-by-blog.dto';
 import { CreatePostByBlogIdCommand } from '../use-cases/post/create-post-by-blog-id-case';
+import { DeletePostCommand } from '../use-cases/post/delete-post-case';
 import { UpdatePostCommand } from '../use-cases/post/update-post-case';
 
 @Controller('blogger/blogs')
@@ -54,19 +55,19 @@ export class PostBloggersController {
     return makeAnswerInController(result);
   }
 
-  //   @UseGuards(JwtAuthGuard)
-  //   @HttpCode(204)
-  //   @Delete(':blogId/posts/:postId')
-  //   async deletePostByBlogId(
-  //     @Param('blogId') blogId: string,
-  //     @Param('postId') postId: string,
-  //     @CurrentPayload() user,
-  //   ) {
-  //     const userId: string = user ? user.sub : '';
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
+  @Delete(':blogId/posts/:postId')
+  async deletePostByBlogId(
+    @Param('blogId') blogId: string,
+    @Param('postId') postId: string,
+    @CurrentPayload() user,
+  ) {
+    const userId: string = user ? user.sub : '';
 
-  //     const result: boolean | string = await this.commandBus.execute(
-  //       new DeletePostCommand(blogId, postId, userId),
-  //     );
-  //     return makeAnswerInController(result);
-  //   }
+    const result: boolean | string = await this.commandBus.execute(
+      new DeletePostCommand(blogId, postId, userId),
+    );
+    return makeAnswerInController(result);
+  }
 }

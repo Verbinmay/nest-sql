@@ -46,13 +46,9 @@ export class PostRepository {
     return await this.postsRepository.findOneBy({ id: id });
   }
 
-  // async delete(id: string) {
-  //   try {
-  //     return await this.PostModel.findByIdAndDelete(id);
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // }
+  async delete(id: string) {
+    return await this.postsRepository.delete({ id: id });
+  }
 
   // async banPostByUserId(userId: string, isBanned: boolean) {
   //   try {

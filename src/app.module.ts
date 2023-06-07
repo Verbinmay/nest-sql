@@ -44,6 +44,13 @@ import { PostBloggersController } from './blogger/controllers/post.blogger.contr
 import { LikePostRepository } from './sql/post.like.repository';
 import { PostRepository } from './sql/post.repository';
 import { UpdatePostCase } from './blogger/use-cases/post/update-post-case';
+import { DeletePostCase } from './blogger/use-cases/post/delete-post-case';
+import { UserBloggersController } from './blogger/controllers/user.blogger.controller';
+import { BanUserForBlogByUserIdCase } from './blogger/use-cases/user/ban-user-for-blog-case';
+import { BanedUser } from './entities/sql/blogsBannedUsers.entity';
+import { BanedUsersBlogsRepository } from './sql/blog.banUsers.repository';
+import { BanedUsersBlogsQueryRepository } from './sql/blog.banUsers.query.repository';
+import { GetBannedUsersByBlogIdCase } from './blogger/use-cases/user/get-banned-users-by-blog-id-case';
 
 const validations = [
   // ValidationBlogId
@@ -65,7 +72,7 @@ const useCasesBlog = [
 
 const useCasesPost = [
   CreatePostByBlogIdCase,
-  //   DeletePostCase,
+  DeletePostCase,
   //   GetAllPostsByBlogIdCase,
   //   GetAllPostsCase,
   //   GetPostByIdCase,
@@ -102,12 +109,12 @@ const useCasesAuth = [
 ];
 
 const useCasesUser = [
-  // BanUserForBlogByUserIdCase,
+  BanUserForBlogByUserIdCase,
   SA_CreateUserCase,
   SA_GetAllUsersCase,
   SA_DeleteUserCase,
   // SA_BanUserCase,
-  // GetBannedUsersByBlogIdCase,
+  GetBannedUsersByBlogIdCase,
 ];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
@@ -138,12 +145,12 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Session, Blog, PostLikes, Post],
+        entities: [User, Session, Blog, PostLikes, Post, BanedUser],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Session, Blog, PostLikes, Post]),
+    TypeOrmModule.forFeature([User, BanedUser, Session, Blog, PostLikes, Post]),
 
     // ThrottlerModule.forRoot({
     //   ttl: 60,
@@ -162,7 +169,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     // PostController,
     // SessionsController,
     // TestController,
-    // UserBloggersController,
+    UserBloggersController,
     UserSAController,
   ],
   providers: [
@@ -182,6 +189,8 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     // AuthRepository,
     BlogRepository,
     BlogQueryRepository,
+    BanedUsersBlogsRepository,
+    BanedUsersBlogsQueryRepository,
     // CommentRepository,
     JWTService,
     JwtService,
