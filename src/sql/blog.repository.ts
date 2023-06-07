@@ -24,13 +24,10 @@ export class BlogRepository {
     return await this.usersRepository.save(blog);
   }
 
-  //   async delete(id: string) {
-  //     try {
-  //       return await this.BlogModel.findByIdAndDelete(id);
-  //     } catch (error) {
-  //       return null;
-  //     }
-  //   }
+  async delete(id: string) {
+    return await this.usersRepository.delete({ id: id });
+  }
+
   //   async findCountBlogs(filter: any) {
   //     return await this.BlogModel.countDocuments(filter);
   //   }

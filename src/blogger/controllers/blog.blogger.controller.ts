@@ -18,6 +18,7 @@ import { makeAnswerInController } from '../../helpers/errors';
 import { CreateBlogDto } from '../dto/blog/create-blog.dto';
 import { UpdateBlogDto } from '../dto/blog/update-blog.dto';
 import { CreateBlogCommand } from '../use-cases/blog/create-blog-case';
+import { DeleteBlogCommand } from '../use-cases/blog/delete-blog-case';
 import { UpdateBlogCommand } from '../use-cases/blog/update-blog-case';
 
 @Controller('blogger/blogs')
@@ -65,14 +66,14 @@ export class BlogBloggersController {
     return makeAnswerInController(result);
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Delete(':id')
-  // @HttpCode(204)
-  // async deleteBlog(@Param('id') blogId: string, @CurrentPayload() payload) {
-  //   const userId = payload ? payload.sub : '';
-  //   const result = await this.commandBus.execute(
-  //     new DeleteBlogCommand(blogId, userId),
-  //   );
-  //   return makeAnswerInController(result);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  @HttpCode(204)
+  async deleteBlog(@Param('id') blogId: string, @CurrentPayload() payload) {
+    const userId = payload ? payload.sub : '';
+    const result = await this.commandBus.execute(
+      new DeleteBlogCommand(blogId, userId),
+    );
+    return makeAnswerInController(result);
+  }
 }

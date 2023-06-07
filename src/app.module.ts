@@ -34,6 +34,7 @@ import { BlogBloggersController } from './blogger/controllers/blog.blogger.contr
 import { CreateBlogCase } from './blogger/use-cases/blog/create-blog-case';
 import { BlogRepository } from './sql/blog.repository';
 import { UpdateBlogCase } from './blogger/use-cases/blog/update-blog-case';
+import { DeleteBlogCase } from './blogger/use-cases/blog/delete-blog-case';
 
 const validations = [
   // ValidationBlogId
@@ -42,7 +43,7 @@ const validations = [
 
 const useCasesBlog = [
   CreateBlogCase,
-  //   DeleteBlogCase,
+  DeleteBlogCase,
   //   GetAllBlogsCase,
   //   GetBlogByBlogIdCase,
   //   GetCurrentUserBlogsCase,
