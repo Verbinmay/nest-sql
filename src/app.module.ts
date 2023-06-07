@@ -29,24 +29,29 @@ import { AppService } from './app.service';
 import { BasicStrategy } from './guard/auth-passport/strategy-passport/basic.strategy';
 import { JwtStrategy } from './guard/auth-passport/strategy-passport/jwt.strategy';
 import { LocalStrategy } from './guard/auth-passport/strategy-passport/local.strategy';
+import { Blog } from './entities/sql/blog.entity';
+import { BlogBloggersController } from './blogger/controllers/blog.blogger.controller';
+import { CreateBlogCase } from './blogger/use-cases/blog/create-blog-case';
+import { BlogRepository } from './sql/blog.repository';
+import { UpdateBlogCase } from './blogger/use-cases/blog/update-blog-case';
 
 const validations = [
   // ValidationBlogId
   ValidationLoginEmail,
 ];
 
-// const useCasesBlog = [
-//   CreateBlogCase,
-//   DeleteBlogCase,
-//   GetAllBlogsCase,
-//   GetBlogByBlogIdCase,
-//   GetCurrentUserBlogsCase,
-//   SA_BindBlogWithUserCase,
-//
-//   SA_GetAllBlogsCase,
-//   UpdateBlogCase,
-//   SA_BanBlogCase,
-// ];
+const useCasesBlog = [
+  CreateBlogCase,
+  //   DeleteBlogCase,
+  //   GetAllBlogsCase,
+  //   GetBlogByBlogIdCase,
+  //   GetCurrentUserBlogsCase,
+  //   SA_BindBlogWithUserCase,
+  //
+  //   SA_GetAllBlogsCase,
+  UpdateBlogCase,
+  //   SA_BanBlogCase,
+];
 
 // const useCasesPost = [
 //   CreatePostByBlogIdCase,
@@ -123,12 +128,12 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Session],
+        entities: [User, Session, Blog],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Session]),
+    TypeOrmModule.forFeature([User, Session, Blog]),
 
     // ThrottlerModule.forRoot({
     //   ttl: 60,
@@ -138,7 +143,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
   controllers: [
     AppController,
     AuthController,
-    // BlogBloggersController,
+    BlogBloggersController,
     // BlogController,
     // BlogSAController,
     // CommentBloggersController,
@@ -156,7 +161,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     //   useClass: ThrottlerGuard,
     // },
     ...strategies /* стратегия */,
-    // ...useCasesBlog /* кейсы */,
+    ...useCasesBlog /* кейсы */,
     // ...useCasesComment /* кейсы */,
     // ...useCasesPost /* кейсы */,
     ...useCasesSession /* кейсы */,
@@ -165,7 +170,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     ...validations /*валидаторы */,
     AppService,
     // AuthRepository,
-    // BlogRepository,
+    BlogRepository,
     // CommentRepository,
     JWTService,
     JwtService,

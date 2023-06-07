@@ -1,25 +1,32 @@
-// import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-// import { BlogRepository } from '../../../sql/blog.repository';
-// import { UserRepository } from '../../../sql/user.repository';
-// import { CreateBlogDto } from '../../dto/blog/create-blog.dto';
+import { Blog, getBlogViewModel } from '../../../entities/sql/blog.entity';
+import { BlogRepository } from '../../../sql/blog.repository';
+import { UserRepository } from '../../../sql/user.repository';
+import { CreateBlogDto } from '../../dto/blog/create-blog.dto';
 
-// export class CreateBlogCommand {
-//   constructor(public userId: string, public inputModel: CreateBlogDto) {}
-// }
+export class CreateBlogCommand {
+  constructor(public userId: string, public inputModel: CreateBlogDto) {}
+}
 
-// @CommandHandler(CreateBlogCommand)
-// export class CreateBlogCase implements ICommandHandler<CreateBlogCommand> {
-//   constructor(
-//     private readonly blogRepository: BlogRepository,
-//     private readonly userRepository: UserRepository,
-//   ) {}
+@CommandHandler(CreateBlogCommand)
+export class CreateBlogCase implements ICommandHandler<CreateBlogCommand> {
+  constructor(
+    private readonly blogRepository: BlogRepository,
+    private readonly userRepository: UserRepository,
+  ) {}
 
-//   async execute(command: CreateBlogCommand) {
-//     const user = await this.userRepository.findUserById(command.userId);
-//     if (!user) return { s: 404 };
-//     const blog: Blog = new Blog(command.userId, user.login, command.inputModel);
-//     const result = await this.blogRepository.save(blog);
-//     return result.getViewModel();
-//   }
-// }
+  async execute(command: CreateBlogCommand) {
+    const user = await this.userRepository.findUserById(command.userId);
+    if (!user) return { s: 404 };
+    const blog: Blog = new Blog();
+    blog.name = command.inputModel.name;
+    blog.description = command.inputModel.description;
+    blog.websiteUrl = command.inputModel.websiteUrl;
+    blog.userId = command.userId;
+    blog.userLogin = user.login;
+
+    const result = await this.blogRepository.createBlog(blog);
+    return getBlogViewModel(result);
+  }
+}

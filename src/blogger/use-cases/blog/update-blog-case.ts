@@ -1,34 +1,32 @@
-// import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-// import { Blog } from '../../../entities/mongoose/blog.entity';
-// import { BlogRepository } from '../../../db/blog.repository';
-// import { UpdateBlogDto } from '../../dto/blog/update-blog.dto';
+import { Blog } from '../../../entities/sql/blog.entity';
+import { BlogRepository } from '../../../sql/blog.repository';
+import { UpdateBlogDto } from '../../dto/blog/update-blog.dto';
 
-// export class UpdateBlogCommand {
-//   constructor(
-//     public blogId: string,
-//     public userId: string,
-//     public inputModel: UpdateBlogDto,
-//   ) {}
-// }
+export class UpdateBlogCommand {
+  constructor(
+    public blogId: string,
+    public userId: string,
+    public inputModel: UpdateBlogDto,
+  ) {}
+}
 
-// @CommandHandler(UpdateBlogCommand)
-// export class UpdateBlogCase implements ICommandHandler<UpdateBlogCommand> {
-//   constructor(private readonly blogRepository: BlogRepository) {}
+@CommandHandler(UpdateBlogCommand)
+export class UpdateBlogCase implements ICommandHandler<UpdateBlogCommand> {
+  constructor(private readonly blogRepository: BlogRepository) {}
 
-//   async execute(command: UpdateBlogCommand) {
-//     const blog: Blog | null = await this.blogRepository.findBlogById(
-//       command.blogId,
-//     );
-//     if (!blog) return { s: 404 };
-//     if (blog.userId !== command.userId) return { s: 403 };
+  async execute(command: UpdateBlogCommand) {
+    const blog: Blog | null = await this.blogRepository.findBlogById(
+      command.blogId,
+    );
+    if (!blog) return { s: 404 };
+    if (blog.userId !== command.userId) return { s: 403 };
 
-//     const blogUpdated = blog.updateInfo(command.inputModel);
-//     try {
-//       this.blogRepository.save(blogUpdated);
-//       return true;
-//     } catch (error) {
-//       return { s: 500 };
-//     }
-//   }
-// }
+    blog.name = command.inputModel.name;
+    blog.description = command.inputModel.description;
+    blog.websiteUrl = command.inputModel.websiteUrl;
+    this.blogRepository.updateBlog(blog);
+    return this.blogRepository.updateBlog(blog);
+  }
+}

@@ -1,50 +1,51 @@
-// import { Injectable } from '@nestjs/common';
-// import { InjectModel } from '@nestjs/mongoose';
+import { Repository } from 'typeorm';
 
-// import { Blog, BlogsModelType } from '../entities/mongoose/blog.entity';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
-// @Injectable()
-// export class BlogRepository {
-//   constructor(
-//     @InjectModel(Blog.name)
-//     private BlogModel: BlogsModelType,
-//   ) {}
+import { Blog } from '../entities/sql/blog.entity';
 
-//   async findBlogById(id: string): Promise<Blog> {
-//     try {
-//       return await this.BlogModel.findById(id);
-//     } catch (error) {
-//       return null;
-//     }
-//   }
+@Injectable()
+export class BlogRepository {
+  constructor(
+    @InjectRepository(Blog) private readonly usersRepository: Repository<Blog>,
+  ) {}
 
-//   async save(blog: Blog) {
-//     const blogModel = new this.BlogModel(blog);
-//     return await blogModel.save();
-//   }
+  async findBlogById(id: string): Promise<Blog> {
+    return await this.usersRepository.findOneBy({ id: id });
+  }
 
-//   async delete(id: string) {
-//     try {
-//       return await this.BlogModel.findByIdAndDelete(id);
-//     } catch (error) {
-//       return null;
-//     }
-//   }
-//   async findCountBlogs(filter: any) {
-//     return await this.BlogModel.countDocuments(filter);
-//   }
+  async createBlog(blog: Blog) {
+    await this.usersRepository.create(blog);
+    return await this.usersRepository.save(blog);
+  }
 
-//   async findBlogs(a: {
-//     find: { name: { $regex: string } } | object;
-//     sort: any;
-//     skip: number;
-//     limit: number;
-//   }) {
-//     const result: Array<Blog> = await this.BlogModel.find(a.find)
-//       .sort(a.sort)
-//       .skip(a.skip)
-//       .limit(a.limit);
+  async updateBlog(blog: Blog) {
+    return await this.usersRepository.save(blog);
+  }
 
-//     return result;
-//   }
-// }
+  //   async delete(id: string) {
+  //     try {
+  //       return await this.BlogModel.findByIdAndDelete(id);
+  //     } catch (error) {
+  //       return null;
+  //     }
+  //   }
+  //   async findCountBlogs(filter: any) {
+  //     return await this.BlogModel.countDocuments(filter);
+  //   }
+
+  //   async findBlogs(a: {
+  //     find: { name: { $regex: string } } | object;
+  //     sort: any;
+  //     skip: number;
+  //     limit: number;
+  //   }) {
+  //     const result: Array<Blog> = await this.BlogModel.find(a.find)
+  //       .sort(a.sort)
+  //       .skip(a.skip)
+  //       .limit(a.limit);
+
+  //     return result;
+  //   }
+}
