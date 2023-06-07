@@ -1,7 +1,6 @@
 import { Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Post } from '../entities/sql/post.entity';
@@ -17,10 +16,9 @@ export class PostRepository {
     return await this.postsRepository.save(post);
   }
 
-  // async update(post: Post) {
-  //   const postModel = new this.PostModel(post);
-  //   return postModel.save();
-  // }
+  async update(post: Post) {
+    return await this.postsRepository.save(post);
+  }
 
   // async findCountPosts(filter: object) {
   //   return await this.PostModel.countDocuments(filter);
@@ -43,13 +41,10 @@ export class PostRepository {
   //   const result: Array<Post> = await this.PostModel.find(filter);
   //   return result;
   // }
-  // async findPostById(id: string): Promise<Post> {
-  //   try {
-  //     return await this.PostModel.findById(id);
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // }
+
+  async findPostById(id: string): Promise<Post> {
+    return await this.postsRepository.findOneBy({ id: id });
+  }
 
   // async delete(id: string) {
   //   try {

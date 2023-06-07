@@ -16,6 +16,7 @@ import { makeAnswerInController } from '../../helpers/errors';
 import { CreatePostBlogDto } from '../dto/post/create-post-in-blog.dto';
 import { UpdatePostByBlogDto } from '../dto/post/update-post-by-blog.dto';
 import { CreatePostByBlogIdCommand } from '../use-cases/post/create-post-by-blog-id-case';
+import { UpdatePostCommand } from '../use-cases/post/update-post-case';
 
 @Controller('blogger/blogs')
 export class PostBloggersController {
@@ -36,22 +37,22 @@ export class PostBloggersController {
     return makeAnswerInController(result);
   }
 
-  //   @UseGuards(JwtAuthGuard)
-  //   @HttpCode(204)
-  //   @Put(':blogId/posts/:postId')
-  //   async updatePostByBlogId(
-  //     @Param('blogId') blogId: string,
-  //     @Param('postId') postId: string,
-  //     @Body() inputModel: UpdatePostByBlogDto,
-  //     @CurrentPayload() user,
-  //   ) {
-  //     const userId: string = user ? user.sub : '';
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
+  @Put(':blogId/posts/:postId')
+  async updatePostByBlogId(
+    @Param('blogId') blogId: string,
+    @Param('postId') postId: string,
+    @Body() inputModel: UpdatePostByBlogDto,
+    @CurrentPayload() user,
+  ) {
+    const userId: string = user ? user.sub : '';
 
-  //     const result: boolean | string = await this.commandBus.execute(
-  //       new UpdatePostCommand(blogId, postId, userId, inputModel),
-  //     );
-  //     return makeAnswerInController(result);
-  //   }
+    const result: boolean | string = await this.commandBus.execute(
+      new UpdatePostCommand(blogId, postId, userId, inputModel),
+    );
+    return makeAnswerInController(result);
+  }
 
   //   @UseGuards(JwtAuthGuard)
   //   @HttpCode(204)

@@ -43,6 +43,7 @@ import { CreatePostByBlogIdCase } from './blogger/use-cases/post/create-post-by-
 import { PostBloggersController } from './blogger/controllers/post.blogger.controller';
 import { LikePostRepository } from './sql/post.like.repository';
 import { PostRepository } from './sql/post.repository';
+import { UpdatePostCase } from './blogger/use-cases/post/update-post-case';
 
 const validations = [
   // ValidationBlogId
@@ -69,7 +70,7 @@ const useCasesPost = [
   //   GetAllPostsCase,
   //   GetPostByIdCase,
   //   LikePostCase,
-  //   UpdatePostCase,
+  UpdatePostCase,
 ];
 
 // const useCasesComment = [
