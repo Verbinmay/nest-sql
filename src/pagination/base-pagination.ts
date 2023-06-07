@@ -38,15 +38,15 @@ export class PaginationQuery extends BasicPagination {
   @IsOptional()
   banStatus: 'all' | 'banned' | 'notBanned' = 'all';
 
-  public createFilterName() {
-    return {
-      name: { $regex: this.searchNameTerm, $options: 'i' },
-      isBanned: false,
-    };
-  }
-  public SAcreateFilterName() {
-    return { name: { $regex: this.searchNameTerm, $options: 'i' } };
-  }
+  // public createFilterName() {
+  //   return {
+  //     name: { $regex: this.searchNameTerm, $options: 'i' },
+  //     isBanned: false,
+  //   };
+  // }
+  // public SAcreateFilterName() {
+  //   return { name: { $regex: this.searchNameTerm, $options: 'i' } };
+  // }
 
   public createBanStatus() {
     switch (this.banStatus) {
@@ -58,12 +58,12 @@ export class PaginationQuery extends BasicPagination {
         return [false];
     }
   }
-  public createFilterNameAndUserId(userId: string) {
-    return {
-      $and: [
-        { name: { $regex: '(?i)' + this.searchNameTerm + '(?-i)' } },
-        { userId: userId },
-      ],
-    };
-  }
+  // public createFilterNameAndUserId(userId: string) {
+  //   return {
+  //     $and: [
+  //       { name: { $regex: '(?i)' + this.searchNameTerm + '(?-i)' } },
+  //       { userId: userId },
+  //     ],
+  //   };
+  // }
 }

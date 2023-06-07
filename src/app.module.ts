@@ -35,6 +35,14 @@ import { CreateBlogCase } from './blogger/use-cases/blog/create-blog-case';
 import { BlogRepository } from './sql/blog.repository';
 import { UpdateBlogCase } from './blogger/use-cases/blog/update-blog-case';
 import { DeleteBlogCase } from './blogger/use-cases/blog/delete-blog-case';
+import { BlogQueryRepository } from './sql/blog.query.repository';
+import { GetCurrentUserBlogsCase } from './blogger/use-cases/blog/get-current-user-blogs-case';
+import { PostLikes } from './entities/sql/post.like.entity';
+import { Post } from './entities/sql/post.entity';
+import { CreatePostByBlogIdCase } from './blogger/use-cases/post/create-post-by-blog-id-case';
+import { PostBloggersController } from './blogger/controllers/post.blogger.controller';
+import { LikePostRepository } from './sql/post.like.repository';
+import { PostRepository } from './sql/post.repository';
 
 const validations = [
   // ValidationBlogId
@@ -46,7 +54,7 @@ const useCasesBlog = [
   DeleteBlogCase,
   //   GetAllBlogsCase,
   //   GetBlogByBlogIdCase,
-  //   GetCurrentUserBlogsCase,
+  GetCurrentUserBlogsCase,
   //   SA_BindBlogWithUserCase,
   //
   //   SA_GetAllBlogsCase,
@@ -54,15 +62,15 @@ const useCasesBlog = [
   //   SA_BanBlogCase,
 ];
 
-// const useCasesPost = [
-//   CreatePostByBlogIdCase,
-//   DeletePostCase,
-//   GetAllPostsByBlogIdCase,
-//   GetAllPostsCase,
-//   GetPostByIdCase,
-//   LikePostCase,
-//   UpdatePostCase,
-// ];
+const useCasesPost = [
+  CreatePostByBlogIdCase,
+  //   DeletePostCase,
+  //   GetAllPostsByBlogIdCase,
+  //   GetAllPostsCase,
+  //   GetPostByIdCase,
+  //   LikePostCase,
+  //   UpdatePostCase,
+];
 
 // const useCasesComment = [
 //   CreateCommentByBlogIdCase,
@@ -129,12 +137,12 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Session, Blog],
+        entities: [User, Session, Blog, PostLikes, Post],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Session, Blog]),
+    TypeOrmModule.forFeature([User, Session, Blog, PostLikes, Post]),
 
     // ThrottlerModule.forRoot({
     //   ttl: 60,
@@ -149,7 +157,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     // BlogSAController,
     // CommentBloggersController,
     // CommentController,
-    // PostBloggersController,
+    PostBloggersController,
     // PostController,
     // SessionsController,
     // TestController,
@@ -164,7 +172,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     ...strategies /* стратегия */,
     ...useCasesBlog /* кейсы */,
     // ...useCasesComment /* кейсы */,
-    // ...useCasesPost /* кейсы */,
+    ...useCasesPost /* кейсы */,
     ...useCasesSession /* кейсы */,
     ...useCasesUser /* кейсы */,
     ...useCasesAuth /* кейсы */,
@@ -172,10 +180,12 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     AppService,
     // AuthRepository,
     BlogRepository,
+    BlogQueryRepository,
     // CommentRepository,
     JWTService,
     JwtService,
-    // PostRepository,
+    PostRepository,
+    LikePostRepository,
     SessionRepository,
     SessionService,
     UserRepository,

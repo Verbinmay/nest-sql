@@ -8,24 +8,24 @@ import { Blog } from '../entities/sql/blog.entity';
 @Injectable()
 export class BlogRepository {
   constructor(
-    @InjectRepository(Blog) private readonly usersRepository: Repository<Blog>,
+    @InjectRepository(Blog) private readonly blogsRepository: Repository<Blog>,
   ) {}
 
   async findBlogById(id: string): Promise<Blog> {
-    return await this.usersRepository.findOneBy({ id: id });
+    return await this.blogsRepository.findOneBy({ id: id });
   }
 
   async createBlog(blog: Blog) {
-    await this.usersRepository.create(blog);
-    return await this.usersRepository.save(blog);
+    await this.blogsRepository.create(blog);
+    return await this.blogsRepository.save(blog);
   }
 
   async updateBlog(blog: Blog) {
-    return await this.usersRepository.save(blog);
+    return await this.blogsRepository.save(blog);
   }
 
   async delete(id: string) {
-    return await this.usersRepository.delete({ id: id });
+    return await this.blogsRepository.delete({ id: id });
   }
 
   //   async findCountBlogs(filter: any) {

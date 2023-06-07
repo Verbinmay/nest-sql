@@ -15,28 +15,30 @@ import { CommandBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../guard/auth-passport/guard-passport/jwt-auth.guard';
 import { CurrentPayload } from '../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../helpers/errors';
+import { PaginationQuery } from '../../pagination/base-pagination';
 import { CreateBlogDto } from '../dto/blog/create-blog.dto';
 import { UpdateBlogDto } from '../dto/blog/update-blog.dto';
 import { CreateBlogCommand } from '../use-cases/blog/create-blog-case';
 import { DeleteBlogCommand } from '../use-cases/blog/delete-blog-case';
+import { GetCurrentUserBlogsCommand } from '../use-cases/blog/get-current-user-blogs-case';
 import { UpdateBlogCommand } from '../use-cases/blog/update-blog-case';
 
 @Controller('blogger/blogs')
 export class BlogBloggersController {
   constructor(private commandBus: CommandBus) {}
 
-  // @UseGuards(JwtAuthGuard)
-  // @Get()
-  // async getCurrentUserBlogs(
-  //   @Query() query: PaginationQuery,
-  //   @CurrentPayload() payload,
-  // ) {
-  //   const userId = payload ? payload.sub : '';
-  //   const result = await this.commandBus.execute(
-  //     new GetCurrentUserBlogsCommand(userId, query),
-  //   );
-  //   return makeAnswerInController(result);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getCurrentUserBlogs(
+    @Query() query: PaginationQuery,
+    @CurrentPayload() payload,
+  ) {
+    const userId = payload ? payload.sub : '';
+    const result = await this.commandBus.execute(
+      new GetCurrentUserBlogsCommand(userId, query),
+    );
+    return makeAnswerInController(result);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post()

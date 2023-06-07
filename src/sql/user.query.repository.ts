@@ -1,4 +1,4 @@
-import { Brackets, In, Like, Repository } from 'typeorm';
+import { Brackets, ILike, In, Like, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,11 +19,11 @@ export class UserQueryRepository {
       where: [
         {
           isBanned: In(query.createBanStatus()),
-          login: Like('%' + query.searchLoginTerm + '%'),
+          login: ILike('%' + query.searchLoginTerm + '%'),
         },
         {
           isBanned: In(query.createBanStatus()),
-          email: Like('%' + query.searchEmailTerm + '%'),
+          email: ILike('%' + query.searchEmailTerm + '%'),
         },
       ],
     });
@@ -34,11 +34,11 @@ export class UserQueryRepository {
       where: [
         {
           isBanned: In(query.createBanStatus()),
-          login: Like('%' + query.searchLoginTerm + '%'),
+          login: ILike('%' + query.searchLoginTerm + '%'),
         },
         {
           isBanned: In(query.createBanStatus()),
-          email: Like('%' + query.searchEmailTerm + '%'),
+          email: ILike('%' + query.searchEmailTerm + '%'),
         },
       ],
       order: {
