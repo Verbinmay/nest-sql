@@ -14,6 +14,7 @@ import { CommandBus } from '@nestjs/cqrs';
 
 import { makeAnswerInController } from '../../helpers/errors';
 import { PaginationQuery } from '../../pagination/base-pagination';
+import { BanDto } from '../dto/user/ban-user.dto copy';
 import { CreateUserDto } from '../dto/user/create-user.dto';
 import { SA_CreateUserCommand } from '../use-cases/users/sa-create-user-case';
 import { SA_DeleteUserCommand } from '../use-cases/users/sa-delete-user-case';

@@ -18,6 +18,17 @@ import { UserRepository } from './sql/user.repository';
 import { UserQueryRepository } from './sql/user.query.repository';
 import { SA_GetAllUsersCase } from './sa/use-cases/users/sa-get-all-users-case';
 import { SA_DeleteUserCase } from './sa/use-cases/users/sa-delete-user-case';
+import { LoginCase } from './public/use-cases/login-case';
+import { AppController } from './app.controller';
+import { JWTService } from './jwt/jwt.service';
+import { AuthController } from './public/controllers/auth.controller';
+import { SessionService } from './public/services/session.service';
+import { SessionRepository } from './sql/sessions.repository';
+import { Session } from './entities/sql/session.entity';
+import { AppService } from './app.service';
+import { BasicStrategy } from './guard/auth-passport/strategy-passport/basic.strategy';
+import { JwtStrategy } from './guard/auth-passport/strategy-passport/jwt.strategy';
+import { LocalStrategy } from './guard/auth-passport/strategy-passport/local.strategy';
 
 const validations = [
   // ValidationBlogId
@@ -57,23 +68,23 @@ const validations = [
 //   UpdateCommentCase,
 // ];
 
-// const useCasesSession = [
-//   DeleteAllSessionsWithoutCurrentCase,
-//   DeleteSessionByDeviceIdCase,
-//   GetAllSessionsCase,
-// ];
+const useCasesSession = [
+  //   DeleteAllSessionsWithoutCurrentCase,
+  //   DeleteSessionByDeviceIdCase,
+  //   GetAllSessionsCase,
+];
 
-// const useCasesAuth = [
-//   ConfirmPasswordRecoveryCase,
-//   GetMeCase,
-//   GetNewTokensCase,
-//   LoginCase,
-//   LogoutCase,
-//   PasswordRecoveryCase,
-//   RegistrationCase,
-//   RegistrationConfirmationCase,
-//   ResendingEmailCase,
-// ];
+const useCasesAuth = [
+  //   ConfirmPasswordRecoveryCase,
+  //   GetMeCase,
+  //   GetNewTokensCase,
+  LoginCase,
+  //   LogoutCase,
+  //   PasswordRecoveryCase,
+  //   RegistrationCase,
+  //   RegistrationConfirmationCase,
+  //   ResendingEmailCase,
+];
 
 const useCasesUser = [
   // BanUserForBlogByUserIdCase,
@@ -84,7 +95,7 @@ const useCasesUser = [
   // GetBannedUsersByBlogIdCase,
 ];
 
-// const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
+const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
 
 @Module({
   imports: [
@@ -112,20 +123,21 @@ const useCasesUser = [
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User],
+        entities: [User, Session],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Session]),
+
     // ThrottlerModule.forRoot({
     //   ttl: 60,
     //   limit: 10,
     // }),
   ],
   controllers: [
-    // AppController,
-    // AuthController,
+    AppController,
+    AuthController,
     // BlogBloggersController,
     // BlogController,
     // BlogSAController,
@@ -143,23 +155,23 @@ const useCasesUser = [
     //   provide: APP_GUARD,
     //   useClass: ThrottlerGuard,
     // },
-    // ...strategies /* стратегия */,
+    ...strategies /* стратегия */,
     // ...useCasesBlog /* кейсы */,
     // ...useCasesComment /* кейсы */,
     // ...useCasesPost /* кейсы */,
-    // ...useCasesSession /* кейсы */,
+    ...useCasesSession /* кейсы */,
     ...useCasesUser /* кейсы */,
-    // ...useCasesAuth /* кейсы */,
+    ...useCasesAuth /* кейсы */,
     ...validations /*валидаторы */,
-    // AppService,
+    AppService,
     // AuthRepository,
     // BlogRepository,
     // CommentRepository,
-    // JWTService,
-    // JwtService,
+    JWTService,
+    JwtService,
     // PostRepository,
-    // SessionRepository,
-    // SessionService,
+    SessionRepository,
+    SessionService,
     UserRepository,
     UserQueryRepository,
   ],

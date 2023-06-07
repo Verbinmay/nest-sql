@@ -14,18 +14,6 @@ export class UserQueryRepository {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
 
-  // async findCountUsers(filter: object) {
-  //   return await this.UserModel.countDocuments(filter);
-  // }
-
-  // async findUsers(a: { find: object; sort: any; skip: number; limit: number }) {
-  //   const result: Array<User> = await this.UserModel.find(a.find)
-  //     .sort(a.sort)
-  //     .skip(a.skip)
-  //     .limit(a.limit);
-
-  //   return result;
-  // }
   async SA_findUsers(query: PaginationQuery) {
     const totalCount: number = await this.usersRepository.count({
       where: [

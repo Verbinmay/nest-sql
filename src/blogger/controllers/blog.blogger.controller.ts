@@ -1,0 +1,74 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  Query,
+  Put,
+  HttpCode,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
+
+import { CurrentPayload } from '../../decorator/currentUser.decorator';
+import { makeAnswerInController } from '../../helpers/errors';
+import { CreateBlogDto } from '../dto/blog/create-blog.dto';
+
+@Controller('blogger/blogs')
+export class BlogBloggersController {
+  constructor(private commandBus: CommandBus) {}
+
+  // @UseGuards(JwtAuthGuard)
+  // @Get()
+  // async getCurrentUserBlogs(
+  //   @Query() query: PaginationQuery,
+  //   @CurrentPayload() payload,
+  // ) {
+  //   const userId = payload ? payload.sub : '';
+  //   const result = await this.commandBus.execute(
+  //     new GetCurrentUserBlogsCommand(userId, query),
+  //   );
+  //   return makeAnswerInController(result);
+  // }
+
+  // @UseGuards(JwtAuthGuard)
+  // @Post()
+  // async createBlog(
+  //   @Body() inputModel: CreateBlogDto,
+  //   @CurrentPayload() payload,
+  // ) {
+  //   const userId = payload ? payload.sub : '';
+  //   const result = await this.commandBus.execute(
+  //     new CreateBlogCommand(userId, inputModel),
+  //   );
+  //   return makeAnswerInController(result);
+  // }
+
+  // @UseGuards(JwtAuthGuard)
+  // @Put(':id')
+  // @HttpCode(204)
+  // async updateBlog(
+  //   @Param('id') blogId: string,
+  //   @Body() inputModel: UpdateBlogDto,
+  //   @CurrentPayload() payload,
+  // ) {
+  //   const userId = payload ? payload.sub : '';
+  //   const result = await this.commandBus.execute(
+  //     new UpdateBlogCommand(blogId, userId, inputModel),
+  //   );
+  //   return makeAnswerInController(result);
+  // }
+
+  // @UseGuards(JwtAuthGuard)
+  // @Delete(':id')
+  // @HttpCode(204)
+  // async deleteBlog(@Param('id') blogId: string, @CurrentPayload() payload) {
+  //   const userId = payload ? payload.sub : '';
+  //   const result = await this.commandBus.execute(
+  //     new DeleteBlogCommand(blogId, userId),
+  //   );
+  //   return makeAnswerInController(result);
+  // }
+}
