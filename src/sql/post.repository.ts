@@ -37,10 +37,12 @@ export class PostRepository {
 
   //   return result;
   // }
-  // async findPostsByUserId(filter) {
-  //   const result: Array<Post> = await this.PostModel.find(filter);
-  //   return result;
-  // }
+  async findPostsByUserId(userId: string) {
+    const result: Array<Post> = await this.postsRepository.findBy({
+      userId: userId,
+    });
+    return result;
+  }
 
   async findPostById(id: string): Promise<Post> {
     return await this.postsRepository.findOneBy({ id: id });

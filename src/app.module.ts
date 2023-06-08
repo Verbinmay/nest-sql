@@ -51,6 +51,12 @@ import { BanedUser } from './entities/sql/blogsBannedUsers.entity';
 import { BanedUsersBlogsRepository } from './sql/blog.banUsers.repository';
 import { BanedUsersBlogsQueryRepository } from './sql/blog.banUsers.query.repository';
 import { GetBannedUsersByBlogIdCase } from './blogger/use-cases/user/get-banned-users-by-blog-id-case';
+import { CommentBloggersController } from './blogger/controllers/comment.blogger.controller';
+import { Comment } from './entities/sql/comment.entity';
+import { CommentLikes } from './entities/sql/comment.like.entity';
+import { GetCommentsWithPostInfoByUserIdCase } from './blogger/use-cases/comment/get-comments-with-post-info-for-current-user';
+import { LikeCommentRepository } from './sql/comment.like.repository';
+import { CommentQueryRepository } from './sql/comment.query.repository';
 
 const validations = [
   // ValidationBlogId
@@ -80,15 +86,15 @@ const useCasesPost = [
   UpdatePostCase,
 ];
 
-// const useCasesComment = [
-//   CreateCommentByBlogIdCase,
-//   DeleteCommentCase,
-//   GetAllCommentsByBlogIdCase,
-//   GetCommentByCommentIdCase,
-//   GetCommentsWithPostInfoByUserIdCase,
-//   LikeCommentCase,
-//   UpdateCommentCase,
-// ];
+const useCasesComment = [
+  //   CreateCommentByBlogIdCase,
+  //   DeleteCommentCase,
+  //   GetAllCommentsByBlogIdCase,
+  //   GetCommentByCommentIdCase,
+  GetCommentsWithPostInfoByUserIdCase,
+  //   LikeCommentCase,
+  //   UpdateCommentCase,
+];
 
 const useCasesSession = [
   //   DeleteAllSessionsWithoutCurrentCase,
@@ -145,12 +151,30 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Session, Blog, PostLikes, Post, BanedUser],
+        entities: [
+          User,
+          Session,
+          Blog,
+          PostLikes,
+          Post,
+          BanedUser,
+          CommentLikes,
+          Comment,
+        ],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, BanedUser, Session, Blog, PostLikes, Post]),
+    TypeOrmModule.forFeature([
+      User,
+      BanedUser,
+      Session,
+      Blog,
+      PostLikes,
+      Post,
+      CommentLikes,
+      Comment,
+    ]),
 
     // ThrottlerModule.forRoot({
     //   ttl: 60,
@@ -163,7 +187,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     BlogBloggersController,
     // BlogController,
     // BlogSAController,
-    // CommentBloggersController,
+    CommentBloggersController,
     // CommentController,
     PostBloggersController,
     // PostController,
@@ -179,7 +203,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     // },
     ...strategies /* стратегия */,
     ...useCasesBlog /* кейсы */,
-    // ...useCasesComment /* кейсы */,
+    ...useCasesComment /* кейсы */,
     ...useCasesPost /* кейсы */,
     ...useCasesSession /* кейсы */,
     ...useCasesUser /* кейсы */,
@@ -192,10 +216,12 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     BanedUsersBlogsRepository,
     BanedUsersBlogsQueryRepository,
     // CommentRepository,
+    CommentQueryRepository,
     JWTService,
     JwtService,
     PostRepository,
     LikePostRepository,
+    LikeCommentRepository,
     SessionRepository,
     SessionService,
     UserRepository,
