@@ -28,7 +28,7 @@ export class SA_CreateUserCase
     user.hash = hashBcrypt;
     user.isConfirmed = true;
 
-    const result: User = await this.userRepository.save(user);
+    const result: User = await this.userRepository.create(user);
 
     return SAGetViewModel(result);
   }

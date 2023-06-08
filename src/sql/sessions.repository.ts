@@ -60,27 +60,27 @@ export class SessionRepository {
   //     return result;
   //   }
 
-  //   async deleteSessionsByDeviceId(deviceId: string) {
-  //     const result = await this.SessionModel.deleteOne({
-  //       deviceId: deviceId,
-  //     });
-  //     return result.deletedCount === 1;
-  //   }
+  async deleteSessionsByDeviceId(deviceId: string) {
+    const result = await this.sessionsRepository.delete({
+      deviceId: deviceId,
+    });
 
-  async save(session: Session) {
+    return result.affected > 0;
+  }
+
+  async create(session: Session) {
     await this.sessionsRepository.create(session);
     return await this.sessionsRepository.save(session);
   }
+  async update(session: Session) {
+    return await this.sessionsRepository.save(session);
+  }
 
-  //   async findSessionByDeviceIdAndUserId(deviceId: string, userId: string) {
-  //     try {
-  //       const result = await this.SessionModel.findOne({
-  //         deviceId: deviceId,
-  //         userId: userId,
-  //       });
-  //       return result;
-  //     } catch (error) {
-  //       return null;
-  //     }
-  //   }
+  async findSessionByDeviceIdAndUserId(deviceId: string, userId: string) {
+    const result = await this.sessionsRepository.findOneBy({
+      deviceId: deviceId,
+      userId: userId,
+    });
+    return result;
+  }
 }

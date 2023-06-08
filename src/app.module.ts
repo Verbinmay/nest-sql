@@ -18,7 +18,7 @@ import { UserRepository } from './sql/user.repository';
 import { UserQueryRepository } from './sql/user.query.repository';
 import { SA_GetAllUsersCase } from './sa/use-cases/users/sa-get-all-users-case';
 import { SA_DeleteUserCase } from './sa/use-cases/users/sa-delete-user-case';
-import { LoginCase } from './public/use-cases/login-case';
+import { LoginCase } from './public/use-cases/auth/login-case';
 import { AppController } from './app.controller';
 import { JWTService } from './jwt/jwt.service';
 import { AuthController } from './public/controllers/auth.controller';
@@ -57,6 +57,10 @@ import { CommentLikes } from './entities/sql/comment.like.entity';
 import { GetCommentsWithPostInfoByUserIdCase } from './blogger/use-cases/comment/get-comments-with-post-info-for-current-user';
 import { LikeCommentRepository } from './sql/comment.like.repository';
 import { CommentQueryRepository } from './sql/comment.query.repository';
+import { GetNewTokensCase } from './public/use-cases/auth/get-new-refresh-token-case';
+import { LogoutCase } from './public/use-cases/auth/logout-case';
+import { GetMeCase } from './public/use-cases/auth/get-me-case';
+import { RegistrationConfirmationCase } from './public/use-cases/auth/registration-confirmation-case';
 
 const validations = [
   // ValidationBlogId
@@ -104,13 +108,13 @@ const useCasesSession = [
 
 const useCasesAuth = [
   //   ConfirmPasswordRecoveryCase,
-  //   GetMeCase,
-  //   GetNewTokensCase,
+  GetMeCase,
+  GetNewTokensCase,
   LoginCase,
-  //   LogoutCase,
+  LogoutCase,
   //   PasswordRecoveryCase,
   //   RegistrationCase,
-  //   RegistrationConfirmationCase,
+  RegistrationConfirmationCase,
   //   ResendingEmailCase,
 ];
 

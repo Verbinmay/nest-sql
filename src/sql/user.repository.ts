@@ -11,8 +11,11 @@ export class UserRepository {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
 
-  async save(user: User) {
+  async create(user: User) {
     await this.usersRepository.create(user);
+    return await this.usersRepository.save(user);
+  }
+  async update(user: User) {
     return await this.usersRepository.save(user);
   }
 
@@ -52,52 +55,30 @@ export class UserRepository {
     return result;
   }
 
-  // async findUserByConfirmationCode(code: string) {
-  //   const result: User | null = await this.UserModel.findOne({
-  //     'emailConfirmation.confirmationCode': code,
-  //   }).lean();
-  //   return result;
-  // }
+  async findUserByConfirmationCode(code: string) {
+    const result: User | null = await this.usersRepository.findOneBy({
+      confirmationCode: code,
+    });
+    return result;
+  }
 
-  // async updateConfirmation(id: string) {
-  //   try {
-  //     const result = await this.UserModel.findById(id);
+  async updateConfirmation(id: string) {
+    try {
+      const result = await this.usersRepository.findOneBy({ id: id });
 
-  //     if (!result) return false;
+      result.isConfirmed = true;
 
-  //     result.emailConfirmation.isConfirmed = true;
+      await this.usersRepository.save(result);
 
-  //     result.save();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
-  //     return true;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
-
-  // async findUserByEmail(email: string) {
-  //   try {
-  //     return this.UserModel.findOne({
-  //       email: email,
-  //     });
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
-
-  // async updateConfirmationAndHash(a: { id: string; hash: string }) {
-  //   try {
-  //     const result = await this.UserModel.findById(a.id);
-
-  //     if (!result) return false;
-
-  //     result.emailConfirmation.isConfirmed = true;
-  //     result.hash = a.hash;
-  //     result.save();
-
-  //     return true;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+  async findUserByEmail(email: string) {
+    return this.usersRepository.findOneBy({
+      email: email,
+    });
+  }
 }

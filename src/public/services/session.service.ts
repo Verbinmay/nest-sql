@@ -21,34 +21,35 @@ export class SessionService {
       session.expirationDate = new Date(inputModel.iat * 1000).toISOString();
       session.deviceId = inputModel.deviceId;
       session.userId = inputModel.userId;
-      await this.sessionRepository.save(session);
+      await this.sessionRepository.create(session);
       return true;
     } catch (error) {
       return false;
     }
   }
 
-  // async changeRefreshTokenInfo(a: { newToken: string; iatOldSession: number }) {
-  //   try {
-  //     const decoded = await this.jwtService.decoderJWTs(a.newToken);
-  //     if (typeof decoded === 'string') {
-  //       return false;
-  //     }
-  //     const session: Session | null =
-  //       await this.sessionRepository.findSessionByDeviceIdAndUserId(
-  //         decoded.deviceId,
-  //         decoded.sub,
-  //       );
-  //     if (!session) {
-  //       return false;
-  //     }
+  async changeRefreshTokenInfo(a: { newToken: string; iatOldSession: number }) {
+    try {
+      const decoded = await this.jwtService.decoderJWTs(a.newToken);
+      if (typeof decoded === 'string') {
+        return false;
+      }
+      const session: Session | null =
+        await this.sessionRepository.findSessionByDeviceIdAndUserId(
+          decoded.deviceId,
+          decoded.sub,
+        );
+      if (!session) {
+        return false;
+      }
 
-  //     const sessionUpdated = session.updateInfo(decoded);
+      session.lastActiveDate = new Date(decoded.iat * 1000).toISOString();
+      session.expirationDate = new Date(decoded.exp * 1000).toISOString();
 
-  //     await this.sessionRepository.save(sessionUpdated);
-  //     return true;
-  //   } catch (error) {
-  //     return false;
-  //   }
-  // }
+      await this.sessionRepository.update(session);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 }

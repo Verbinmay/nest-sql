@@ -2,10 +2,10 @@ import { randomUUID } from 'crypto';
 
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { JWTService } from '../../jwt/jwt.service';
-import { UserRepository } from '../../sql/user.repository';
-import { Tokens } from '../dto/auth/tokens.dto';
-import { SessionService } from '../services/session.service';
+import { JWTService } from '../../../jwt/jwt.service';
+import { UserRepository } from '../../../sql/user.repository';
+import { Tokens } from '../../dto/auth/tokens.dto';
+import { SessionService } from '../../services/session.service';
 
 export class LoginCommand {
   constructor(
