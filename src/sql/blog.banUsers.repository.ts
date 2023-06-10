@@ -18,10 +18,14 @@ export class BanedUsersBlogsRepository {
   }
 
   async findBanedUsersByBlogId(userId: string, blogId: string) {
-    return await this.banedUsersRepository.findOneBy({
-      userId: userId,
-      blogId: blogId,
-    });
+    try {
+      return await this.banedUsersRepository.findOneBy({
+        userId: userId,
+        blogId: blogId,
+      });
+    } catch (error) {
+      return null;
+    }
   }
 
   async deleteBanedUserByBlogId(userId: string, blogId: string) {

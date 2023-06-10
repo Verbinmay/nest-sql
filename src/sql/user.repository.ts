@@ -37,10 +37,14 @@ export class UserRepository {
   // }
 
   async findUserById(id: string): Promise<User> {
-    const result: User | null = await this.usersRepository.findOne({
-      where: { id: id },
-    });
-    return result;
+    try {
+      const result: User | null = await this.usersRepository.findOne({
+        where: { id: id },
+      });
+      return result;
+    } catch (error) {
+      return null;
+    }
   }
 
   async delete(id: string) {
@@ -48,22 +52,30 @@ export class UserRepository {
   }
 
   async findUserByLoginOrEmail(loginOrEmail: string) {
-    const result = await this.usersRepository
-      .createQueryBuilder()
-      .select('user')
-      .from(User, 'user')
-      .where('user.login = :loginOrEmail', { loginOrEmail })
-      .orWhere('user.email = :loginOrEmail', { loginOrEmail })
-      .getOne();
+    try {
+      const result = await this.usersRepository
+        .createQueryBuilder()
+        .select('user')
+        .from(User, 'user')
+        .where('user.login = :loginOrEmail', { loginOrEmail })
+        .orWhere('user.email = :loginOrEmail', { loginOrEmail })
+        .getOne();
 
-    return result;
+      return result;
+    } catch (error) {
+      return null;
+    }
   }
 
   async findUserByConfirmationCode(code: string) {
-    const result: User | null = await this.usersRepository.findOneBy({
-      confirmationCode: code,
-    });
-    return result;
+    try {
+      const result: User | null = await this.usersRepository.findOneBy({
+        confirmationCode: code,
+      });
+      return result;
+    } catch (error) {
+      return null;
+    }
   }
 
   async updateConfirmation(id: string) {

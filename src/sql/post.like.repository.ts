@@ -26,9 +26,13 @@ export class LikePostRepository {
   }
 
   async findLikeByUserId(userId: string) {
-    return await this.likesPostRepository.findOneBy({
-      userId: userId,
-    });
+    try {
+      return await this.likesPostRepository.findOneBy({
+        userId: userId,
+      });
+    } catch (error) {
+      return null;
+    }
   }
   async findLikesForPosts(posts: Array<Post>) {
     return await this.likesPostRepository.findBy({
@@ -39,7 +43,7 @@ export class LikePostRepository {
     return await this.likesPostRepository.clear();
   }
 
-  async baLikePostByUserId(userId: string, isBanned: boolean) {
+  async banLikePostByUserId(userId: string, isBanned: boolean) {
     return await this.likesPostRepository.update(
       { userId: userId },
       { isBanned: isBanned },

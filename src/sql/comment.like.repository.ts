@@ -29,9 +29,13 @@ export class LikeCommentRepository {
   }
 
   async findLikeByUserId(userId: string) {
-    return await this.commentLikesRepository.findOneBy({
-      userId: userId,
-    });
+    try {
+      return await this.commentLikesRepository.findOneBy({
+        userId: userId,
+      });
+    } catch (error) {
+      return null;
+    }
   }
 
   async findLikesForComments(comments: Array<Comment>) {

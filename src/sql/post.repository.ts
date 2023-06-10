@@ -41,14 +41,22 @@ export class PostRepository {
   //   return result;
   // }
   async findPostsByUserId(userId: string) {
-    const result: Array<Post> = await this.postsRepository.findBy({
-      userId: userId,
-    });
-    return result;
+    try {
+      const result: Array<Post> = await this.postsRepository.findBy({
+        userId: userId,
+      });
+      return result;
+    } catch (error) {
+      return null;
+    }
   }
 
   async findPostById(id: string): Promise<Post> {
-    return await this.postsRepository.findOneBy({ id: id });
+    try {
+      return await this.postsRepository.findOneBy({ id: id });
+    } catch (error) {
+      return null;
+    }
   }
 
   //testing

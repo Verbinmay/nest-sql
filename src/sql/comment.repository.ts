@@ -12,7 +12,11 @@ export class CommentRepository {
     private readonly commentRepository: Repository<Comment>,
   ) {}
   async findById(id: string) {
-    return await this.commentRepository.findOneBy({ id: id });
+    try {
+      return await this.commentRepository.findOneBy({ id: id });
+    } catch (error) {
+      return null;
+    }
   }
 
   async truncate(): Promise<void> {

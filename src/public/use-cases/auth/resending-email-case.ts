@@ -26,7 +26,7 @@ export class ResendingEmailCase
       command.email,
     );
 
-    if (!userFind && userFind.isConfirmed) {
+    if (!userFind || userFind.isConfirmed === true) {
       return {
         s: 400,
         mf: errorMaker([

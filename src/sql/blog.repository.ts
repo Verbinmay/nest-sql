@@ -12,7 +12,11 @@ export class BlogRepository {
   ) {}
 
   async findBlogById(id: string) {
-    return await this.blogsRepository.findOneBy({ id: id });
+    try {
+      return await this.blogsRepository.findOneBy({ id: id });
+    } catch (error) {
+      return null;
+    }
   }
 
   async create(blog: Blog) {

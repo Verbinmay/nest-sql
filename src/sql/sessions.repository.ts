@@ -13,7 +13,11 @@ export class SessionRepository {
   ) {}
 
   async findSessionsByUserId(userId: string) {
-    return await this.sessionsRepository.findBy({ userId: userId });
+    try {
+      return await this.sessionsRepository.findBy({ userId: userId });
+    } catch (error) {
+      return null;
+    }
   }
 
   async checkRefreshTokenEqual(a: {
@@ -47,10 +51,14 @@ export class SessionRepository {
   }
 
   async findSessionByDeviceId(deviceId: string) {
-    const result: Session | null = await this.sessionsRepository.findOneBy({
-      deviceId: deviceId,
-    });
-    return result;
+    try {
+      const result: Session | null = await this.sessionsRepository.findOneBy({
+        deviceId: deviceId,
+      });
+      return result;
+    } catch (error) {
+      return null;
+    }
   }
 
   async deleteSessionsByDeviceId(deviceId: string) {

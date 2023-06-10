@@ -47,7 +47,7 @@ export class SA_BanUserCase implements ICommandHandler<SA_BanUserCommand> {
       command.userId,
       command.inputModel.isBanned,
     );
-    await this.likePostRepository.baLikePostByUserId(
+    await this.likePostRepository.banLikePostByUserId(
       command.userId,
       command.inputModel.isBanned,
     );
