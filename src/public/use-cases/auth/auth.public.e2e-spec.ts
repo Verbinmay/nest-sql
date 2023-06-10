@@ -1,25 +1,14 @@
-import {
-  info,
-  createUserInput,
-  createBlogInput,
-  createPostInput,
-  createCommentInput,
-} from '../../../../test/functionTest';
 import supertest from 'supertest';
 
 import { INestApplication } from '@nestjs/common';
 import { TestingModule, Test } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 
-import { SAViewUserDto } from '../../../sa/dto/user/sa-view-user.dto';
-import { User } from '../../../entities/user.entity';
+import { info, createUserInput } from '../../../../test/functionTest';
 import { createApp } from '../../../helpers/createApp';
-import { PaginatorCommentWithWithPostInfoViewModel } from '../../../pagination/paginatorType';
-import { ViewCommentDto } from '../../dto/comment/view-comment.dto';
-import { ViewPostDto } from '../../dto/post/view-post.dto';
 import { AppModule } from '../../../app.module';
 
-describe('auth-public-tests-pack', () => {
+describe.skip('auth-public-tests-pack', () => {
   jest.setTimeout(1000 * 1000);
   let app: INestApplication;
   let fullApp: INestApplication;

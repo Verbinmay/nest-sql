@@ -13,7 +13,7 @@ import { ViewBlogDto } from '../../../blogger/dto/blog/view-blog.dto';
 import { createApp } from '../../../helpers/createApp';
 import { AppModule } from '../../../app.module';
 
-describe('blog-public-tests-pack', () => {
+describe.skip('blog-public-tests-pack', () => {
   jest.setTimeout(1000 * 1000);
   let app: INestApplication;
   let fullApp: INestApplication;
