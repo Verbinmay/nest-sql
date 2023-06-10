@@ -45,7 +45,7 @@ export class User {
   @Column({ type: 'boolean', default: false })
   isBanned = false;
 
-  @Column({ default: null, type: 'date', nullable: true })
+  @Column({ default: null, type: 'timestamp', nullable: true })
   banDate: Date | null;
 
   @Column({ type: 'text', nullable: true, default: null })

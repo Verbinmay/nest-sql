@@ -19,9 +19,9 @@ export class RegistrationConfirmationCase
       await this.userRepository.findUserByConfirmationCode(command.code);
 
     if (
-      !userFind &&
-      userFind.isConfirmed === true &&
-      userFind.confirmationCode !== command.code &&
+      !userFind ||
+      userFind.isConfirmed === true ||
+      userFind.confirmationCode !== command.code ||
       userFind.expirationDate < new Date()
     )
       return {
