@@ -2,15 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CreateBlogDto } from '../../blogger/dto/blog/create-blog.dto';
 import { ViewBlogDto } from '../../blogger/dto/blog/view-blog.dto';
-import { BanedUser } from './blogsBannedUsers.entity';
+import { SAViewBlogDto } from '../../sa/dto/blog/sa-view-blog.dto';
 
 @Entity()
 export class Blog {
@@ -46,26 +42,6 @@ export class Blog {
 
   @Column({ default: null })
   public banDate: Date | null = null;
-
-  // SAgetViewModel(): SAViewBlogDto {
-  //   const result = {
-  //     id: this.id.toString(),
-  //     name: this.name,
-  //     description: this.description,
-  //     websiteUrl: this.websiteUrl,
-  //     createdAt: this.createdAt.toISOString(),
-  //     isMembership: this.isMembership,
-  //     blogOwnerInfo: {
-  //       userId: this.userId,
-  //       userLogin: this.userLogin,
-  //     },
-  //     banInfo: {
-  //       isBanned: this.isBanned,
-  //       banDate: this.banDate.toISOString(),
-  //     },
-  //   };
-  //   return result;
-  // }
 }
 
 export function getBlogViewModel(blog: Blog): ViewBlogDto {
@@ -76,6 +52,25 @@ export function getBlogViewModel(blog: Blog): ViewBlogDto {
     websiteUrl: blog.websiteUrl,
     createdAt: blog.createdAt.toISOString(),
     isMembership: blog.isMembership,
+  };
+  return result;
+}
+export function SAgetViewModel(blog: Blog): SAViewBlogDto {
+  const result = {
+    id: blog.id.toString(),
+    name: blog.name,
+    description: blog.description,
+    websiteUrl: blog.websiteUrl,
+    createdAt: blog.createdAt.toISOString(),
+    isMembership: blog.isMembership,
+    blogOwnerInfo: {
+      userId: blog.userId,
+      userLogin: blog.userLogin,
+    },
+    banInfo: {
+      isBanned: blog.isBanned,
+      banDate: blog.banDate.toISOString(),
+    },
   };
   return result;
 }

@@ -15,6 +15,10 @@ export class CommentRepository {
     return await this.commentRepository.findOneBy({ id: id });
   }
 
+  async truncate(): Promise<void> {
+    return await this.commentRepository.clear();
+  }
+
   //   async findCountComments(filter: { name: { $regex: string } } | object) {
   //     return await this.CommentModel.countDocuments(filter);
   //   }
@@ -45,20 +49,10 @@ export class CommentRepository {
     return await this.commentRepository.delete(commentId);
   }
 
-  //   async banCommentByUserId(userId: string, isBanned: boolean) {
-  //     try {
-  //       await this.CommentModel.updateMany(
-  //         { 'commentatorInfo.userId': userId },
-  //         { $set: { isBaned: isBanned } },
-  //       );
-  //       await this.CommentModel.updateMany(
-  //         {},
-  //         { $set: { 'likesInfo.$[elem].isBaned': isBanned } },
-  //         { arrayFilters: [{ 'elem.userId': userId }] },
-  //       );
-  //       return true;
-  //     } catch (error) {
-  //       return null;
-  //     }
-  //   }
+  async banCommentByUserId(userId: string, isBanned: boolean) {
+    return await this.commentRepository.update(
+      { userId: userId },
+      { isBanned: isBanned },
+    );
+  }
 }

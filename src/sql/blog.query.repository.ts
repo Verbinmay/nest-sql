@@ -85,4 +85,36 @@ export class BlogQueryRepository {
     };
     return result;
   }
+
+  async SA_findBlogs(query: PaginationQuery) {
+    const totalCount: number = await this.blogsRepository.count({
+      where: {
+        name: ILike('%' + query.searchNameTerm + '%'),
+      },
+    });
+
+    const pagesCount = query.countPages(totalCount);
+
+    const blogsFromDB: Array<Blog> = await this.blogsRepository.find({
+      where: {
+        name: ILike('%' + query.searchNameTerm + '%'),
+      },
+      order: {
+        [query.sortBy]: query.sortDirection,
+      },
+      skip: query.skip(),
+      take: query.pageSize,
+    });
+
+    const blogs: ViewBlogDto[] = blogsFromDB.map((m) => getBlogViewModel(m));
+
+    const result: PaginatorBlog = {
+      pagesCount: pagesCount,
+      page: query.pageNumber,
+      pageSize: query.pageSize,
+      totalCount: totalCount,
+      items: blogs,
+    };
+    return result;
+  }
 }

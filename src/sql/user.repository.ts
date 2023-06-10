@@ -19,6 +19,10 @@ export class UserRepository {
     return await this.usersRepository.save(user);
   }
 
+  async truncate(): Promise<void> {
+    return await this.usersRepository.clear();
+  }
+
   // async findCountUsers(filter: object) {
   //   return await this.UserModel.countDocuments(filter);
   // }
@@ -79,6 +83,12 @@ export class UserRepository {
   async findUserByEmail(email: string) {
     return this.usersRepository.findOneBy({
       email: email,
+    });
+  }
+
+  async findUsersByLogin(login: string) {
+    return this.usersRepository.findBy({
+      login: login,
     });
   }
 }

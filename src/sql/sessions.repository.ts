@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { Equal, Not, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,9 +12,9 @@ export class SessionRepository {
     private readonly sessionsRepository: Repository<Session>,
   ) {}
 
-  //   async findSessionsByUserId(userId: string) {
-  //     return await this.SessionModel.find({ userId: userId });
-  //   }
+  async findSessionsByUserId(userId: string) {
+    return await this.sessionsRepository.findBy({ userId: userId });
+  }
 
   async checkRefreshTokenEqual(a: {
     iat: number;
@@ -31,34 +31,27 @@ export class SessionRepository {
     return result != null;
   }
 
-  //   async deleteAllWithoutCurrent(userId: string, deviceId: string) {
-  //     try {
-  //       await this.SessionModel.deleteMany({
-  //         userId: userId,
-  //         deviceId: { $ne: deviceId },
-  //       });
-  //       return true;
-  //     } catch (error) {
-  //       return false;
-  //     }
-  //   }
-  //   async deleteAll(userId: string) {
-  //     try {
-  //       await this.SessionModel.deleteMany({
-  //         userId: userId,
-  //       });
-  //       return true;
-  //     } catch (error) {
-  //       return false;
-  //     }
-  //   }
+  async deleteAllWithoutCurrent(userId: string, deviceId: string) {
+    const result = await this.sessionsRepository.delete({
+      userId: userId,
+      deviceId: Not(Equal(deviceId)),
+    });
+    return result;
+  }
 
-  //   async findSessionByDeviceId(deviceId: string) {
-  //     const result: Session | null = await this.SessionModel.findOne({
-  //       deviceId: deviceId,
-  //     });
-  //     return result;
-  //   }
+  async deleteAll(userId: string) {
+    await this.sessionsRepository.delete({
+      userId: userId,
+    });
+    return true;
+  }
+
+  async findSessionByDeviceId(deviceId: string) {
+    const result: Session | null = await this.sessionsRepository.findOneBy({
+      deviceId: deviceId,
+    });
+    return result;
+  }
 
   async deleteSessionsByDeviceId(deviceId: string) {
     const result = await this.sessionsRepository.delete({
@@ -82,5 +75,9 @@ export class SessionRepository {
       userId: userId,
     });
     return result;
+  }
+
+  async truncate(): Promise<void> {
+    return await this.sessionsRepository.clear();
   }
 }

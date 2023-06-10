@@ -20,6 +20,9 @@ export class PostRepository {
     return await this.postsRepository.save(post);
   }
 
+  async truncate(): Promise<void> {
+    return await this.postsRepository.clear();
+  }
   // async findCountPosts(filter: object) {
   //   return await this.PostModel.countDocuments(filter);
   // }
@@ -52,32 +55,17 @@ export class PostRepository {
     return await this.postsRepository.delete({ id: id });
   }
 
-  // async banPostByUserId(userId: string, isBanned: boolean) {
-  //   try {
-  //     await this.PostModel.updateMany(
-  //       { userId: userId },
-  //       { $set: { isBaned: isBanned } },
-  //     );
-  //     await this.PostModel.updateMany(
-  //       {},
-  //       { $set: { 'extendedLikesInfo.$[elem].isBaned': isBanned } },
-  //       { arrayFilters: [{ 'elem.userId': userId }] },
-  //     );
+  async banPostByUserId(userId: string, isBanned: boolean) {
+    return await this.postsRepository.update(
+      { userId: userId },
+      { isBanned: isBanned },
+    );
+  }
 
-  //     return true;
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // }
-  // async banPostByBlogId(blogId: string, isBanned: boolean) {
-  //   try {
-  //     await this.PostModel.updateMany(
-  //       { blogId: blogId },
-  //       { $set: { isBaned: isBanned } },
-  //     );
-  //     return true;
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // }
+  async banPostByBlogId(blogId: string, isBanned: boolean) {
+    return await this.postsRepository.update(
+      { blogId: blogId },
+      { isBanned: isBanned },
+    );
+  }
 }

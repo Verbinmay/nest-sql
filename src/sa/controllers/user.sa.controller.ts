@@ -12,10 +12,12 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 
+import { BasicAuthGuard } from '../../guard/auth-passport/guard-passport/basic-auth.guard';
 import { makeAnswerInController } from '../../helpers/errors';
 import { PaginationQuery } from '../../pagination/base-pagination';
 import { BanDto } from '../dto/user/ban-user.dto copy';
 import { CreateUserDto } from '../dto/user/create-user.dto';
+import { SA_BanUserCommand } from '../use-cases/users/sa-ban-user-case';
 import { SA_CreateUserCommand } from '../use-cases/users/sa-create-user-case';
 import { SA_DeleteUserCommand } from '../use-cases/users/sa-delete-user-case';
 import { SA_GetAllUsersCommand } from '../use-cases/users/sa-get-all-users-case';
@@ -23,7 +25,7 @@ import { SA_GetAllUsersCommand } from '../use-cases/users/sa-get-all-users-case'
 @Controller('sa/users')
 export class UserSAController {
   constructor(private commandBus: CommandBus) {}
-  // @UseGuards(BasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Post()
   async createUser(@Body() inputModel: CreateUserDto) {
     const result = await this.commandBus.execute(
@@ -32,7 +34,7 @@ export class UserSAController {
     return makeAnswerInController(result);
   }
 
-  // @UseGuards(BasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Get()
   async findUsers(@Query() query: PaginationQuery) {
     const result = await this.commandBus.execute(
@@ -41,7 +43,7 @@ export class UserSAController {
     return makeAnswerInController(result);
   }
 
-  // @UseGuards(BasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Delete(':id')
   @HttpCode(204)
   async deleteUser(@Param('id') id: string) {
@@ -51,13 +53,13 @@ export class UserSAController {
     return makeAnswerInController(result);
   }
 
-  // @UseGuards(BasicAuthGuard)
-  // @Put(':id/ban')
-  // @HttpCode(204)
-  // async banUser(@Param('id') userId: string, @Body() inputModel: BanDto) {
-  //   const result: boolean | string = await this.commandBus.execute(
-  //     new SA_BanUserCommand(userId, inputModel),
-  //   );
-  //   return makeAnswerInController(result);
-  // }
+  @UseGuards(BasicAuthGuard)
+  @Put(':id/ban')
+  @HttpCode(204)
+  async banUser(@Param('id') userId: string, @Body() inputModel: BanDto) {
+    const result: boolean | string = await this.commandBus.execute(
+      new SA_BanUserCommand(userId, inputModel),
+    );
+    return makeAnswerInController(result);
+  }
 }

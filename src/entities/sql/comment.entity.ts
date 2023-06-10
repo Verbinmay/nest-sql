@@ -54,14 +54,14 @@ export function getCommentWithPostInfoViewModel(
     likesCount = likes.filter(
       (m) =>
         m.status === 'Like' &&
-        m.isBaned === false &&
+        m.isBanned === false &&
         m.commentId === comment.id,
     ).length;
 
     dislikeCount = likes.filter(
       (m) =>
         m.status === 'Dislike' &&
-        m.isBaned === false &&
+        m.isBanned === false &&
         m.commentId === comment.id,
     ).length;
   }
@@ -102,14 +102,14 @@ export function getCommentViewModel(
     likesCount = likes.filter(
       (m) =>
         m.status === 'Like' &&
-        m.isBaned === false &&
+        m.isBanned === false &&
         m.commentId === comment.id,
     ).length;
 
     dislikeCount = likes.filter(
       (m) =>
         m.status === 'Dislike' &&
-        m.isBaned === false &&
+        m.isBanned === false &&
         m.commentId === comment.id,
     ).length;
   }

@@ -66,6 +66,25 @@ import { RegistrationCase } from './public/use-cases/auth/registration-case';
 import { ResendingEmailCase } from './public/use-cases/auth/resending-email-case';
 import { PostQueryRepository } from './sql/post.query.repository';
 import { GetAllPostsByBlogIdCase } from './public/use-cases/post/get-post-by-blog-id-case';
+import { BlogController } from './public/controllers/blog.controller';
+import { CommentController } from './public/controllers/comment.controller';
+import { PostController } from './public/controllers/post.controller';
+import { SessionsController } from './public/controllers/session.controller';
+import { ConfirmPasswordRecoveryCase } from './public/use-cases/auth/confirm-password-recovery-case';
+import { GetAllBlogsCase } from './public/use-cases/blog/get-all-blogs-case';
+import { GetBlogByBlogIdCase } from './public/use-cases/blog/get-blog-by-blog-id-case';
+import { CreateCommentByBlogIdCase } from './public/use-cases/comment/create-comment-by-post-id-case';
+import { DeleteCommentCase } from './public/use-cases/comment/delete-comment-case';
+import { GetCommentByCommentIdCase } from './public/use-cases/comment/get-comment-by-comment-id-case';
+import { LikeCommentCase } from './public/use-cases/comment/like-comment-case';
+import { UpdateCommentCase } from './public/use-cases/comment/update-comment-case';
+import { GetAllPostsCase } from './public/use-cases/post/get-all-posts-case';
+import { GetPostByIdCase } from './public/use-cases/post/get-post-by-id-case';
+import { LikePostCase } from './public/use-cases/post/like-post-case';
+import { DeleteAllSessionsWithoutCurrentCase } from './public/use-cases/session/delete-all-session-without-current-case';
+import { DeleteSessionByDeviceIdCase } from './public/use-cases/session/delete-session-by-device-id-case';
+import { GetAllSessionsCase } from './public/use-cases/session/get-all-sessions-case';
+import { CommentRepository } from './sql/comment.repository';
 
 const validations = [
   // ValidationBlogId

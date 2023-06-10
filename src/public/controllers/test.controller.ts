@@ -1,40 +1,43 @@
-// import { Controller, Delete, Get, HttpCode, Param } from '@nestjs/common';
-// import { InjectModel } from '@nestjs/mongoose';
+import { Controller, Delete, Get, HttpCode, Param } from '@nestjs/common';
+import { BanedUsersBlogsRepository } from '../../sql/blog.banUsers.repository';
+import { BlogRepository } from '../../sql/blog.repository';
+import { LikeCommentRepository } from '../../sql/comment.like.repository';
+import { CommentRepository } from '../../sql/comment.repository';
+import { LikePostRepository } from '../../sql/post.like.repository';
+import { PostRepository } from '../../sql/post.repository';
+import { SessionRepository } from '../../sql/sessions.repository';
+import { UserRepository } from '../../sql/user.repository';
 
-// import { Blog, BlogsModelType } from '../../entities/blog.entity';
-// import { Comment, CommentsModelType } from '../../entities/comment.entity';
-// import { Post, PostsModelType } from '../../entities/post.entity';
-// import { Session, SessionModelType } from '../../entities/session.entity';
-// import { User, UserModelType } from '../../entities/user.entity';
+@Controller('testing')
+export class TestController {
+  constructor(
+    private readonly banedUsersBlogsRepository: BanedUsersBlogsRepository,
+    private readonly blogRepository: BlogRepository,
+    private readonly commentRepository: CommentRepository,
+    private readonly likeCommentRepository: LikeCommentRepository,
+    private readonly likePostRepository: LikePostRepository,
+    private readonly postRepository: PostRepository,
+    private readonly sessionRepository: SessionRepository,
+    private readonly userRepository: UserRepository,
+  ) {}
 
-// @Controller('testing')
-// export class TestController {
-//   constructor(
-//     @InjectModel(Blog.name)
-//     private blogsModel: BlogsModelType,
-//     @InjectModel(Comment.name)
-//     private commentsModel: CommentsModelType,
-//     @InjectModel(Post.name)
-//     private postsModel: PostsModelType,
-//     @InjectModel(Session.name)
-//     private sessionsModel: SessionModelType,
-//     @InjectModel(User.name)
-//     private usersModel: UserModelType,
-//   ) {}
+  @HttpCode(204)
+  @Delete('all-data')
+  async deleteAll() {
+    await this.banedUsersBlogsRepository.truncate();
+    await this.blogRepository.truncate();
+    await this.commentRepository.truncate();
+    await this.likeCommentRepository.truncate();
+    await this.likePostRepository.truncate();
+    await this.postRepository.truncate();
+    await this.sessionRepository.truncate();
+    await this.userRepository.truncate();
 
-//   @HttpCode(204)
-//   @Delete('all-data')
-//   async deleteAll() {
-//     await this.blogsModel.deleteMany({});
-//     await this.postsModel.deleteMany({});
-//     await this.usersModel.deleteMany({});
-//     await this.commentsModel.deleteMany({});
-//     await this.sessionsModel.deleteMany({});
-//     return;
-//   }
+    return;
+  }
 
-//   @Get('user/:login')
-//   async getUsers(@Param('login') login: string) {
-//     return await this.usersModel.find({ login: login });
-//   }
-// }
+  @Get('user/:login')
+  async getUsers(@Param('login') login: string) {
+    return await this.userRepository.findUsersByLogin(login);
+  }
+}

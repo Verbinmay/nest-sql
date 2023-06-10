@@ -15,17 +15,21 @@ export class BlogRepository {
     return await this.blogsRepository.findOneBy({ id: id });
   }
 
-  async createBlog(blog: Blog) {
+  async create(blog: Blog) {
     await this.blogsRepository.create(blog);
     return await this.blogsRepository.save(blog);
   }
 
-  async updateBlog(blog: Blog) {
+  async update(blog: Blog) {
     return await this.blogsRepository.save(blog);
   }
 
   async delete(id: string) {
     return await this.blogsRepository.delete({ id: id });
+  }
+
+  async truncate(): Promise<void> {
+    return await this.blogsRepository.clear();
   }
 
   //   async findCountBlogs(filter: any) {

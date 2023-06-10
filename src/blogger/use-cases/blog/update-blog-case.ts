@@ -26,7 +26,7 @@ export class UpdateBlogCase implements ICommandHandler<UpdateBlogCommand> {
     blog.name = command.inputModel.name;
     blog.description = command.inputModel.description;
     blog.websiteUrl = command.inputModel.websiteUrl;
-    this.blogRepository.updateBlog(blog);
-    return this.blogRepository.updateBlog(blog);
+    this.blogRepository.update(blog);
+    return this.blogRepository.update(blog);
   }
 }

@@ -28,5 +28,5 @@ export class CommentLike {
   public status: statusLikeEnum;
 
   @Column({ type: 'boolean', default: false })
-  public isBaned = false;
+  public isBanned = false;
 }

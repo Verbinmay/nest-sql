@@ -35,4 +35,14 @@ export class LikePostRepository {
       postId: In(posts.map((p) => p.id)),
     });
   }
+  async truncate(): Promise<void> {
+    return await this.likesPostRepository.clear();
+  }
+
+  async baLikePostByUserId(userId: string, isBanned: boolean) {
+    return await this.likesPostRepository.update(
+      { userId: userId },
+      { isBanned: isBanned },
+    );
+  }
 }

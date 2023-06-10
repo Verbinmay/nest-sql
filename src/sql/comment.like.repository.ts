@@ -39,4 +39,15 @@ export class LikeCommentRepository {
       commentId: In(comments.map((p) => p.id)),
     });
   }
+
+  async truncate(): Promise<void> {
+    return await this.commentLikesRepository.clear();
+  }
+
+  async banLikeCommentByUserId(userId: string, isBanned: boolean) {
+    return await this.commentLikesRepository.update(
+      { userId: userId },
+      { isBanned: isBanned },
+    );
+  }
 }

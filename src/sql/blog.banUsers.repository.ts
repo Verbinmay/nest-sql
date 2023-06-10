@@ -30,4 +30,8 @@ export class BanedUsersBlogsRepository {
       blogId: blogId,
     });
   }
+
+  async truncate(): Promise<void> {
+    return await this.banedUsersRepository.clear();
+  }
 }
