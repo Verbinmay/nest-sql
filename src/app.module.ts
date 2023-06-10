@@ -85,11 +85,16 @@ import { DeleteAllSessionsWithoutCurrentCase } from './public/use-cases/session/
 import { DeleteSessionByDeviceIdCase } from './public/use-cases/session/delete-session-by-device-id-case';
 import { GetAllSessionsCase } from './public/use-cases/session/get-all-sessions-case';
 import { CommentRepository } from './sql/comment.repository';
+import { TestController } from './public/controllers/test.controller';
+import { BlogSAController } from './sa/controllers/blog.sa.controller';
+import { SA_BanBlogCase } from './sa/use-cases/blogs/sa-ban-blog-case';
+import { SA_BindBlogWithUserCase } from './sa/use-cases/blogs/sa-bind-blog-with-user-case';
+import { SA_GetAllBlogsCase } from './sa/use-cases/blogs/sa-get-all-blogs-case';
+import { SA_BanUserCase } from './sa/use-cases/users/sa-ban-user-case';
+import { ValidationBlogId } from './validation/validationBlogId';
+import { GetAllCommentsByPostIdCase } from './public/use-cases/comment/get-all-comments-by-post-id-case';
 
-const validations = [
-  // ValidationBlogId
-  ValidationLoginEmail,
-];
+const validations = [ValidationBlogId, ValidationLoginEmail];
 
 const useCasesBlog = [
   CreateBlogCase,
@@ -116,9 +121,10 @@ const useCasesPost = [
 const useCasesComment = [
   CreateCommentByBlogIdCase,
   DeleteCommentCase,
-  GetAllCommentsByBlogIdCase,
+  GetAllPostsByBlogIdCase,
   GetCommentByCommentIdCase,
   GetCommentsWithPostInfoByUserIdCase,
+  GetAllCommentsByPostIdCase,
   LikeCommentCase,
   UpdateCommentCase,
 ];
@@ -237,7 +243,6 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     ...useCasesAuth /* кейсы */,
     ...validations /*валидаторы */,
     AppService,
-    AuthRepository,
     BlogRepository,
     BlogQueryRepository,
     BanedUsersBlogsRepository,

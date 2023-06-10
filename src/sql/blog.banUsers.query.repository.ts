@@ -32,9 +32,9 @@ export class BanedUsersBlogsQueryRepository {
         blogId: blogId,
       },
       // ошибка из за того, что тут нет дефолтного значения для сортировки
-      order: {
-        [query.sortBy]: query.sortDirection,
-      },
+      // order: {
+      //   [query.sortBy]: query.sortDirection,
+      // },
       skip: query.skip(),
       take: query.pageSize,
     });
