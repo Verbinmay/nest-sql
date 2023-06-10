@@ -5,10 +5,6 @@ import {
   createPostInput,
   createCommentInput,
 } from '../../../../test/functionTest';
-import {
-  PaginatorCommentWithLikeViewModel,
-  PaginatorCommentWithWithPostInfoViewModel,
-} from '../../../pagination/paginatorType';
 import supertest from 'supertest';
 
 import { INestApplication } from '@nestjs/common';
@@ -17,8 +13,8 @@ import { faker } from '@faker-js/faker';
 
 import { ViewBlogDto } from '../../../blogger/dto/blog/view-blog.dto';
 import { SAViewUserDto } from '../../../sa/dto/user/sa-view-user.dto';
-import { User } from '../../../entities/user.entity';
 import { createApp } from '../../../helpers/createApp';
+import { PaginatorCommentWithLikeViewModel } from '../../../pagination/paginatorType';
 import { ViewCommentDto } from '../../dto/comment/view-comment.dto';
 import { LikeDto } from '../../dto/likes/like.dto';
 import { ViewPostDto } from '../../dto/post/view-post.dto';

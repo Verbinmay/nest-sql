@@ -2,8 +2,6 @@ import {
   info,
   createUserInput,
   createBlogInput,
-  createPostInput,
-  createCommentInput,
 } from '../../../../test/functionTest';
 import supertest from 'supertest';
 
@@ -12,15 +10,10 @@ import { TestingModule, Test } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 
 import { ViewBlogDto } from '../../../blogger/dto/blog/view-blog.dto';
-import { SAViewUserDto } from '../../../sa/dto/user/sa-view-user.dto';
-import { User } from '../../../entities/user.entity';
 import { createApp } from '../../../helpers/createApp';
-import { PaginatorCommentWithWithPostInfoViewModel } from '../../../pagination/paginatorType';
-import { ViewCommentDto } from '../../dto/comment/view-comment.dto';
-import { ViewPostDto } from '../../dto/post/view-post.dto';
 import { AppModule } from '../../../app.module';
 
-describe.skip('blog-public-tests-pack', () => {
+describe('blog-public-tests-pack', () => {
   jest.setTimeout(1000 * 1000);
   let app: INestApplication;
   let fullApp: INestApplication;
