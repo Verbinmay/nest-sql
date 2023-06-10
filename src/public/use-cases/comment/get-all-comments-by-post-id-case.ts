@@ -1,62 +1,56 @@
 import {
-  PaginatorCommentWithWithPostInfoViewModel,
+  PaginatorCommentWithLikeViewModel,
   PaginatorEnd,
 } from '../../../pagination/paginatorType';
 import {
   Comment,
-  getCommentWithPostInfoViewModel,
+  getCommentViewModel,
 } from '../../../entities/sql/comment.entity';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { CommentLike } from '../../../entities/sql/comment.like.entity';
-import { Post } from '../../../entities/sql/post.entity';
 import { PaginationQuery } from '../../../pagination/base-pagination';
 import { LikeCommentRepository } from '../../../sql/comment.like.repository';
 import { CommentQueryRepository } from '../../../sql/comment.query.repository';
 import { PostRepository } from '../../../sql/post.repository';
 
-/**Блоггер может запросить все комментарии своих постов
- */
-export class GetCommentsWithPostInfoByUserIdCommand {
-  constructor(public userId: string, public query: PaginationQuery) {}
+export class GetAllCommentsByPostIdCommand {
+  constructor(
+    public postId: string,
+    public userId: string,
+    public query: PaginationQuery,
+  ) {}
 }
 
-@CommandHandler(GetCommentsWithPostInfoByUserIdCommand)
-export class GetCommentsWithPostInfoByUserIdCase
-  implements ICommandHandler<GetCommentsWithPostInfoByUserIdCommand>
+@CommandHandler(GetAllCommentsByPostIdCommand)
+export class GetAllCommentsByPostIdCase
+  implements ICommandHandler<GetAllCommentsByPostIdCommand>
 {
   constructor(
-    private readonly postRepository: PostRepository,
     private readonly commentQueryRepository: CommentQueryRepository,
+    private readonly postRepository: PostRepository,
     private readonly likeCommentRepository: LikeCommentRepository,
   ) {}
 
-  async execute(command: GetCommentsWithPostInfoByUserIdCommand) {
-    const postsFromDb: Post[] = await this.postRepository.findPostsByUserId(
-      command.userId,
-    );
+  async execute(command: GetAllCommentsByPostIdCommand) {
+    const post = await this.postRepository.findPostById(command.postId);
+    if (!post) return { s: 404 };
 
     const commentsFromDbWithPagination: PaginatorEnd & {
       items: Array<Comment>;
-    } = await this.commentQueryRepository.getCommentsByPostsId(
-      command.query,
-      postsFromDb.map((p) => p.id),
-    );
+    } = await this.commentQueryRepository.getCommentsByPostsId(command.query, [
+      post.id,
+    ]);
 
     const likesCommentsFromDb: Array<CommentLike> =
       await this.likeCommentRepository.findLikesForComments(
         commentsFromDbWithPagination.items,
       );
 
-    const result: PaginatorCommentWithWithPostInfoViewModel = {
+    const result: PaginatorCommentWithLikeViewModel = {
       ...commentsFromDbWithPagination,
       items: commentsFromDbWithPagination.items.map((c) =>
-        getCommentWithPostInfoViewModel(
-          c,
-          likesCommentsFromDb,
-          postsFromDb,
-          command.userId,
-        ),
+        getCommentViewModel(c, likesCommentsFromDb, command.userId),
       ),
     };
     return result;

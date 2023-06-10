@@ -18,7 +18,7 @@ export class CommentQueryRepository {
     const totalCount: number = await this.commentsRepository.count({
       where: {
         postId: In(postsId),
-        isBaned: false,
+        isBanned: false,
       },
     });
 
@@ -27,7 +27,7 @@ export class CommentQueryRepository {
     const commentsFromDB: Array<Comment> = await this.commentsRepository.find({
       where: {
         postId: In(postsId),
-        isBaned: false,
+        isBanned: false,
       },
       order: {
         [query.sortBy]: query.sortDirection,

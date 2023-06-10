@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ViewPostDto } from '../../public/dto/post/view-post.dto';
-import { PostLikes } from './post.like.entity';
+import { PostLike } from './post.like.entity';
 
 @Entity()
 export class Post {
@@ -32,7 +32,7 @@ export class Post {
   public userId: string;
 
   @Column({ type: 'boolean', default: false })
-  public isBaned = false;
+  public isBanned = false;
 
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt!: Date;
@@ -43,7 +43,7 @@ export class Post {
 
 export function getPostViewModel(
   post: Post,
-  likes: Array<PostLikes>,
+  likes: Array<PostLike>,
   userId: string,
 ): ViewPostDto {
   let status: 'None' | 'Like' | 'Dislike' = 'None';
@@ -55,18 +55,19 @@ export function getPostViewModel(
     if (like) status = like.status;
 
     likesCount = likes.filter(
-      (m) => m.status === 'Like' && m.isBaned === false && m.postId === post.id,
+      (m) =>
+        m.status === 'Like' && m.isBanned === false && m.postId === post.id,
     ).length;
 
     dislikeCount = likes.filter(
       (m) =>
-        m.status === 'Dislike' && m.isBaned === false && m.postId === post.id,
+        m.status === 'Dislike' && m.isBanned === false && m.postId === post.id,
     ).length;
 
     newestLikes = likes
       .filter(
         (m) =>
-          m.status === 'Like' && m.isBaned === false && m.postId === post.id,
+          m.status === 'Like' && m.isBanned === false && m.postId === post.id,
       )
       .sort((a, b) => {
         const dateA = new Date(a.addedAt).getTime();

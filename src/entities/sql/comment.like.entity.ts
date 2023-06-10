@@ -8,7 +8,7 @@ import {
 export type statusLikeEnum = 'Like' | 'Dislike';
 
 @Entity()
-export class CommentLikes {
+export class CommentLike {
   @PrimaryGeneratedColumn('uuid')
   public id!: string;
 

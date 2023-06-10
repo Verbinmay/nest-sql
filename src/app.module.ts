@@ -37,7 +37,7 @@ import { UpdateBlogCase } from './blogger/use-cases/blog/update-blog-case';
 import { DeleteBlogCase } from './blogger/use-cases/blog/delete-blog-case';
 import { BlogQueryRepository } from './sql/blog.query.repository';
 import { GetCurrentUserBlogsCase } from './blogger/use-cases/blog/get-current-user-blogs-case';
-import { PostLikes } from './entities/sql/post.like.entity';
+import { PostLike } from './entities/sql/post.like.entity';
 import { Post } from './entities/sql/post.entity';
 import { CreatePostByBlogIdCase } from './blogger/use-cases/post/create-post-by-blog-id-case';
 import { PostBloggersController } from './blogger/controllers/post.blogger.controller';
@@ -53,7 +53,7 @@ import { BanedUsersBlogsQueryRepository } from './sql/blog.banUsers.query.reposi
 import { GetBannedUsersByBlogIdCase } from './blogger/use-cases/user/get-banned-users-by-blog-id-case';
 import { CommentBloggersController } from './blogger/controllers/comment.blogger.controller';
 import { Comment } from './entities/sql/comment.entity';
-import { CommentLikes } from './entities/sql/comment.like.entity';
+import { CommentLike } from './entities/sql/comment.like.entity';
 import { GetCommentsWithPostInfoByUserIdCase } from './blogger/use-cases/comment/get-comments-with-post-info-for-current-user';
 import { LikeCommentRepository } from './sql/comment.like.repository';
 import { CommentQueryRepository } from './sql/comment.query.repository';
@@ -61,6 +61,11 @@ import { GetNewTokensCase } from './public/use-cases/auth/get-new-refresh-token-
 import { LogoutCase } from './public/use-cases/auth/logout-case';
 import { GetMeCase } from './public/use-cases/auth/get-me-case';
 import { RegistrationConfirmationCase } from './public/use-cases/auth/registration-confirmation-case';
+import { PasswordRecoveryCase } from './public/use-cases/auth/password-recovery-case';
+import { RegistrationCase } from './public/use-cases/auth/registration-case';
+import { ResendingEmailCase } from './public/use-cases/auth/resending-email-case';
+import { PostQueryRepository } from './sql/post.query.repository';
+import { GetAllPostsByBlogIdCase } from './public/use-cases/post/get-post-by-blog-id-case';
 
 const validations = [
   // ValidationBlogId
@@ -70,52 +75,51 @@ const validations = [
 const useCasesBlog = [
   CreateBlogCase,
   DeleteBlogCase,
-  //   GetAllBlogsCase,
-  //   GetBlogByBlogIdCase,
+  GetAllBlogsCase,
+  GetBlogByBlogIdCase,
   GetCurrentUserBlogsCase,
-  //   SA_BindBlogWithUserCase,
-  //
-  //   SA_GetAllBlogsCase,
+  SA_BindBlogWithUserCase,
+  SA_GetAllBlogsCase,
   UpdateBlogCase,
-  //   SA_BanBlogCase,
+  SA_BanBlogCase,
 ];
 
 const useCasesPost = [
   CreatePostByBlogIdCase,
   DeletePostCase,
-  //   GetAllPostsByBlogIdCase,
-  //   GetAllPostsCase,
-  //   GetPostByIdCase,
-  //   LikePostCase,
+  GetAllPostsByBlogIdCase,
+  GetAllPostsCase,
+  GetPostByIdCase,
+  LikePostCase,
   UpdatePostCase,
 ];
 
 const useCasesComment = [
-  //   CreateCommentByBlogIdCase,
-  //   DeleteCommentCase,
-  //   GetAllCommentsByBlogIdCase,
-  //   GetCommentByCommentIdCase,
+  CreateCommentByBlogIdCase,
+  DeleteCommentCase,
+  GetAllCommentsByBlogIdCase,
+  GetCommentByCommentIdCase,
   GetCommentsWithPostInfoByUserIdCase,
-  //   LikeCommentCase,
-  //   UpdateCommentCase,
+  LikeCommentCase,
+  UpdateCommentCase,
 ];
 
 const useCasesSession = [
-  //   DeleteAllSessionsWithoutCurrentCase,
-  //   DeleteSessionByDeviceIdCase,
-  //   GetAllSessionsCase,
+  DeleteAllSessionsWithoutCurrentCase,
+  DeleteSessionByDeviceIdCase,
+  GetAllSessionsCase,
 ];
 
 const useCasesAuth = [
-  //   ConfirmPasswordRecoveryCase,
+  ConfirmPasswordRecoveryCase,
   GetMeCase,
   GetNewTokensCase,
   LoginCase,
   LogoutCase,
-  //   PasswordRecoveryCase,
-  //   RegistrationCase,
+  PasswordRecoveryCase,
+  RegistrationCase,
   RegistrationConfirmationCase,
-  //   ResendingEmailCase,
+  ResendingEmailCase,
 ];
 
 const useCasesUser = [
@@ -123,7 +127,7 @@ const useCasesUser = [
   SA_CreateUserCase,
   SA_GetAllUsersCase,
   SA_DeleteUserCase,
-  // SA_BanUserCase,
+  SA_BanUserCase,
   GetBannedUsersByBlogIdCase,
 ];
 
@@ -159,10 +163,10 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
           User,
           Session,
           Blog,
-          PostLikes,
+          PostLike,
           Post,
           BanedUser,
-          CommentLikes,
+          CommentLike,
           Comment,
         ],
         synchronize: true,
@@ -174,9 +178,9 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
       BanedUser,
       Session,
       Blog,
-      PostLikes,
+      PostLike,
       Post,
-      CommentLikes,
+      CommentLike,
       Comment,
     ]),
 
@@ -189,14 +193,14 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     AppController,
     AuthController,
     BlogBloggersController,
-    // BlogController,
-    // BlogSAController,
+    BlogController,
+    BlogSAController,
     CommentBloggersController,
-    // CommentController,
+    CommentController,
     PostBloggersController,
-    // PostController,
-    // SessionsController,
-    // TestController,
+    PostController,
+    SessionsController,
+    TestController,
     UserBloggersController,
     UserSAController,
   ],
@@ -214,16 +218,17 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     ...useCasesAuth /* кейсы */,
     ...validations /*валидаторы */,
     AppService,
-    // AuthRepository,
+    AuthRepository,
     BlogRepository,
     BlogQueryRepository,
     BanedUsersBlogsRepository,
     BanedUsersBlogsQueryRepository,
-    // CommentRepository,
+    CommentRepository,
     CommentQueryRepository,
     JWTService,
     JwtService,
     PostRepository,
+    PostQueryRepository,
     LikePostRepository,
     LikeCommentRepository,
     SessionRepository,

@@ -1,81 +1,64 @@
-// import { Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
-// import { Injectable } from '@nestjs/common';
-// import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
-// @Injectable()
-// export class CommentRepository {
-//   constructor(
-//     @InjectRepository(Comment)
-//     private readonly commentRepository: Repository<Comment>,
-//   ) {}
-//   async findById(id: string) {
-//     try {
-//       return await this.CommentModel.findById(id);
-//     } catch (error) {
-//       return null;
-//     }
-//   }
+import { Comment } from '../entities/sql/comment.entity';
 
-//   async findCountComments(filter: { name: { $regex: string } } | object) {
-//     return await this.CommentModel.countDocuments(filter);
-//   }
-//   async getCommentsByPostId(a: {
-//     find: { name: { $regex: string } } | object;
-//     sort: any;
-//     skip: number;
-//     limit: number;
-//   }) {
-//     const result: Array<Comment> = await this.CommentModel.find(a.find)
-//       .sort(a.sort)
-//       .skip(a.skip)
-//       .limit(a.limit);
+@Injectable()
+export class CommentRepository {
+  constructor(
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
+  ) {}
+  async findById(id: string) {
+    return await this.commentRepository.findOneBy({ id: id });
+  }
 
-//     return result;
-//   }
+  //   async findCountComments(filter: { name: { $regex: string } } | object) {
+  //     return await this.CommentModel.countDocuments(filter);
+  //   }
+  //   async getCommentsByPostId(a: {
+  //     find: { name: { $regex: string } } | object;
+  //     sort: any;
+  //     skip: number;
+  //     limit: number;
+  //   }) {
+  //     const result: Array<Comment> = await this.CommentModel.find(a.find)
+  //       .sort(a.sort)
+  //       .skip(a.skip)
+  //       .limit(a.limit);
 
-//   async save(comment: Comment) {
-//     const commentModel = new this.CommentModel(comment);
-//     return commentModel.save();
-//   }
+  //     return result;
+  //   }
 
-//   async updateComment(commentId: string, content: string) {
-//     try {
-//       const result = await this.CommentModel.findById(commentId);
+  async create(comment: Comment) {
+    await this.commentRepository.create(comment);
+    return await this.commentRepository.save(comment);
+  }
 
-//       if (!result) return false;
-//       result.content = content;
-//       result.save();
+  async update(comment: Comment) {
+    return await this.commentRepository.save(comment);
+  }
 
-//       return true;
-//     } catch (error) {
-//       return false;
-//     }
-//   }
+  async delete(commentId: string) {
+    return await this.commentRepository.delete(commentId);
+  }
 
-//   async deleteComment(commentId: string) {
-//     try {
-//       await this.CommentModel.findByIdAndDelete(commentId);
-//       return true;
-//     } catch (error) {
-//       return false;
-//     }
-//   }
-
-//   async banCommentByUserId(userId: string, isBanned: boolean) {
-//     try {
-//       await this.CommentModel.updateMany(
-//         { 'commentatorInfo.userId': userId },
-//         { $set: { isBaned: isBanned } },
-//       );
-//       await this.CommentModel.updateMany(
-//         {},
-//         { $set: { 'likesInfo.$[elem].isBaned': isBanned } },
-//         { arrayFilters: [{ 'elem.userId': userId }] },
-//       );
-//       return true;
-//     } catch (error) {
-//       return null;
-//     }
-//   }
-// }
+  //   async banCommentByUserId(userId: string, isBanned: boolean) {
+  //     try {
+  //       await this.CommentModel.updateMany(
+  //         { 'commentatorInfo.userId': userId },
+  //         { $set: { isBaned: isBanned } },
+  //       );
+  //       await this.CommentModel.updateMany(
+  //         {},
+  //         { $set: { 'likesInfo.$[elem].isBaned': isBanned } },
+  //         { arrayFilters: [{ 'elem.userId': userId }] },
+  //       );
+  //       return true;
+  //     } catch (error) {
+  //       return null;
+  //     }
+  //   }
+}

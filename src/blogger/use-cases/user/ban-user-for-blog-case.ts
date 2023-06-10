@@ -35,26 +35,30 @@ export class BanUserForBlogByUserIdCase
 
     const userBan = await this.userRepository.findUserById(command.userIdBlock);
     if (!userBan) return { s: 404 };
-    if (command.inputModel.isBanned === true) {
-      const userBanInfo = new BanedUser();
 
-      userBanInfo.userId = userBan.id;
-      userBanInfo.userLogin = userBan.login;
-      userBanInfo.banReason = command.inputModel.banReason;
-      userBanInfo.blogId = blog.id;
+    const userBanIsBaned =
+      await this.banedUsersBlogsRepository.findBanedUsersByBlogId(
+        userBan.id,
+        blog.id,
+      );
 
-      return await this.banedUsersBlogsRepository.create(userBanInfo);
-    } else {
-      const userIsBaned =
-        await this.banedUsersBlogsRepository.findBanedUserByBlogId(blog.id);
-      if (userIsBaned != null) {
-        const userDeleted =
-          await this.banedUsersBlogsRepository.deleteBanedUserByBlogId(blog.id);
-        if (!(userDeleted.affected > 0)) {
-          return { s: 500 };
-        }
-        return true;
+    if (userBanIsBaned) {
+      if (command.inputModel.isBanned === false) {
+        await this.banedUsersBlogsRepository.deleteBanedUserByBlogId(
+          userBan.id,
+          blog.id,
+        );
       }
+      return true;
+    } else {
+      const newUserBanInfo = new BanedUser();
+
+      newUserBanInfo.userId = userBan.id;
+      newUserBanInfo.userLogin = userBan.login;
+      newUserBanInfo.banReason = command.inputModel.banReason;
+      newUserBanInfo.blogId = blog.id;
+
+      await this.banedUsersBlogsRepository.create(newUserBanInfo);
       return true;
     }
   }

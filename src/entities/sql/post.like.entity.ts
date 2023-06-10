@@ -8,7 +8,7 @@ import {
 export type statusLikeEnum = 'Like' | 'Dislike';
 
 @Entity()
-export class PostLikes {
+export class PostLike {
   @PrimaryGeneratedColumn('uuid')
   public id!: string;
 
@@ -28,5 +28,5 @@ export class PostLikes {
   public status: statusLikeEnum;
 
   @Column({ type: 'boolean', default: false })
-  public isBaned = false;
+  public isBanned = false;
 }

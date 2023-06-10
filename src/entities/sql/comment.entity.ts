@@ -6,7 +6,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ViewCommentWithPostInfoDto } from '../../blogger/dto/comment/view-comment-with-post-info.dto';
-import { CommentLikes } from './comment.like.entity';
+import { ViewCommentDto } from '../../public/dto/comment/view-comment.dto';
+import { CommentLike } from './comment.like.entity';
 import { Post } from './post.entity';
 
 @Entity()
@@ -33,12 +34,12 @@ export class Comment {
   public updatedAt: Date;
 
   @Column({ type: 'boolean', default: false })
-  public isBaned = false;
+  public isBanned = false;
 }
 
 export function getCommentWithPostInfoViewModel(
   comment: Comment,
-  likes: Array<CommentLikes>,
+  likes: Array<CommentLike>,
   posts: Array<Post>,
   userId: string,
 ): ViewCommentWithPostInfoDto {
@@ -78,6 +79,48 @@ export function getCommentWithPostInfoViewModel(
       blogId: post.blogId,
       blogName: post.blogName,
     },
+    likesInfo: {
+      likesCount: likesCount,
+      dislikesCount: dislikeCount,
+      myStatus: status,
+    },
+  };
+}
+
+export function getCommentViewModel(
+  comment: Comment,
+  likes: Array<CommentLike>,
+  userId: string,
+): ViewCommentDto {
+  let status: 'None' | 'Like' | 'Dislike' = 'None';
+  let likesCount = 0;
+  let dislikeCount = 0;
+  if (likes.length !== 0) {
+    const like = likes.find((m) => m.userId === userId);
+    if (like) status = like.status;
+
+    likesCount = likes.filter(
+      (m) =>
+        m.status === 'Like' &&
+        m.isBaned === false &&
+        m.commentId === comment.id,
+    ).length;
+
+    dislikeCount = likes.filter(
+      (m) =>
+        m.status === 'Dislike' &&
+        m.isBaned === false &&
+        m.commentId === comment.id,
+    ).length;
+  }
+  return {
+    id: comment.id,
+    content: comment.content,
+    commentatorInfo: {
+      userId: comment.userId,
+      userLogin: comment.userLogin,
+    },
+    createdAt: comment.createdAt.toISOString(),
     likesInfo: {
       likesCount: likesCount,
       dislikesCount: dislikeCount,
