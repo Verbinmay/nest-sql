@@ -51,6 +51,15 @@ export class PostRepository {
     return await this.postsRepository.findOneBy({ id: id });
   }
 
+  //testing
+  async findPost_test() {
+    return await this.postsRepository.find({
+      // relations: {
+      //   likes: true,
+      // },
+    });
+  }
+
   async delete(id: string) {
     return await this.postsRepository.delete({ id: id });
   }

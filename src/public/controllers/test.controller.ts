@@ -1,4 +1,5 @@
 import { Controller, Delete, Get, HttpCode, Param } from '@nestjs/common';
+
 import { BanedUsersBlogsRepository } from '../../sql/blog.banUsers.repository';
 import { BlogRepository } from '../../sql/blog.repository';
 import { LikeCommentRepository } from '../../sql/comment.like.repository';
@@ -39,5 +40,10 @@ export class TestController {
   @Get('user/:login')
   async getUsers(@Param('login') login: string) {
     return await this.userRepository.findUsersByLogin(login);
+  }
+
+  @Get('posts')
+  async getPosts() {
+    return await this.postRepository.findPost_test();
   }
 }

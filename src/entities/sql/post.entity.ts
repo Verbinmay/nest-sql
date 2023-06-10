@@ -4,6 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+  BeforeRemove,
 } from 'typeorm';
 import { ViewPostDto } from '../../public/dto/post/view-post.dto';
 import { PostLike } from './post.like.entity';
@@ -39,6 +42,9 @@ export class Post {
 
   @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt!: Date;
+
+  // @OneToMany(() => PostLike, (postLike) => postLike.post, { eager: true })
+  // likes: PostLike[];
 }
 
 export function getPostViewModel(

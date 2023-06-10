@@ -3,7 +3,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   Column,
+  ManyToOne,
 } from 'typeorm';
+import { Post } from './post.entity';
 
 export type statusLikeEnum = 'Like' | 'Dislike';
 
@@ -29,4 +31,7 @@ export class PostLike {
 
   @Column({ type: 'boolean', default: false })
   public isBanned = false;
+
+  // @ManyToOne(() => Post, (post) => post.likes)
+  // post: Post;
 }
