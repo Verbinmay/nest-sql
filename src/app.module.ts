@@ -197,7 +197,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
           CommentLike,
           Comment,
         ],
-        synchronize: false,
+        synchronize: true,
       }),
       inject: [ConfigService],
     }),
