@@ -28,7 +28,7 @@ export class Blog {
   @Column('text')
   public userLogin: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
   @UpdateDateColumn()

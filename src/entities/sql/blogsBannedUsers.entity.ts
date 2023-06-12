@@ -21,6 +21,8 @@ export class BanedUser {
   public banDate!: Date;
   @Column('uuid')
   public blogId: string;
+  @CreateDateColumn({ type: 'timestamp' })
+  public createdAt: Date;
 }
 export function getBannedUserViewModel(bannedUser: BanedUser) {
   return {
