@@ -42,7 +42,7 @@ describe.skip('user-blogger-tests-pack', () => {
     await fullApp.close();
   });
 
-  describe('bun.user.blogger', () => {
+  describe.skip('bun.user.blogger', () => {
     const users: Array<SAViewUserDto> = [];
     const accessTokens: Array<string> = [];
     const blogs: Array<ViewBlogDto> = [];
@@ -251,6 +251,16 @@ describe.skip('user-blogger-tests-pack', () => {
           blogId: blogs[0].id,
         })
         .expect(204);
+
+      const banUserResponse2 = await agent
+        .put(info.blogger.users + users[1].id + info.ban)
+        .auth(accessTokens[0], { type: 'bearer' })
+        .send({
+          isBanned: true,
+          banReason: faker.lorem.sentence(6),
+          blogId: blogs[0].id,
+        })
+        .expect(204);
     });
     it('get banned user - 200', async () => {
       const getBannedUserResponse = await agent
@@ -261,13 +271,35 @@ describe.skip('user-blogger-tests-pack', () => {
       expect(getBannedUserResponse.body)
         .toMatchObject<PaginatorBannedUsersViewModel>;
 
+      expect(getBannedUserResponse.body.items.length).toBe(1);
       expect(getBannedUserResponse.body.items[0].id).toBe(users[1].id);
+    });
+
+    it('unban user', async () => {
+      await agent
+        .put(info.blogger.users + users[1].id + info.ban)
+        .auth(accessTokens[0], { type: 'bearer' })
+        .send({
+          isBanned: false,
+          banReason: faker.lorem.sentence(6),
+          blogId: blogs[0].id,
+        })
+        .expect(204);
+
+      const getBannedUserResponse = await agent
+        .get(info.blogger.usersBlog + blogs[0].id)
+        .auth(accessTokens[0], { type: 'bearer' })
+        .expect(200);
+
+      expect(getBannedUserResponse.body)
+        .toMatchObject<PaginatorBannedUsersViewModel>;
+
+      expect(getBannedUserResponse.body.items.length).toBe(0);
     });
 
     it('get banned user - 401 - unauthorized', async () => {
       const getBannedUserResponse = await agent
         .get(info.blogger.usersBlog + blogs[0].id)
-
         .expect(401);
     });
   });

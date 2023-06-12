@@ -42,15 +42,15 @@ export class BanUserForBlogByUserIdCase
         blog.id,
       );
 
-    if (userBanIsBaned) {
-      if (command.inputModel.isBanned === false) {
-        await this.banedUsersBlogsRepository.deleteBanedUserByBlogId(
-          userBan.id,
-          blog.id,
-        );
-      }
+    if (userBanIsBaned && command.inputModel.isBanned === false) {
+      await this.banedUsersBlogsRepository.deleteBanedUserByBlogId(
+        userBan.id,
+        blog.id,
+      );
       return true;
-    } else {
+    } else if (userBanIsBaned && command.inputModel.isBanned === true) {
+      return true;
+    } else if (!userBanIsBaned && command.inputModel.isBanned === true) {
       const newUserBanInfo = new BanedUser();
 
       newUserBanInfo.userId = userBan.id;
@@ -59,6 +59,9 @@ export class BanUserForBlogByUserIdCase
       newUserBanInfo.blogId = blog.id;
 
       await this.banedUsersBlogsRepository.create(newUserBanInfo);
+      return true;
+    } else {
+      // return { s: 404 };
       return true;
     }
   }

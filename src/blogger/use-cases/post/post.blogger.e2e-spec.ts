@@ -223,9 +223,6 @@ describe.skip('post-blogger-tests-pack', () => {
         .auth(accessTokens[0], { type: 'bearer' })
         .expect(200);
 
-      console.log(getPostResponse.body, 'getPostResponse.body');
-      console.log(postInput, 'postInput');
-
       expect(getPostResponse.body).toMatchObject<ViewPostDto>;
       expect(getPostResponse.body.id).toBe(posts[0].id);
       expect(getPostResponse.body.content).toBe(postInput.content);
