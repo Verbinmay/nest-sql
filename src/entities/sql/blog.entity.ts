@@ -40,7 +40,7 @@ export class Blog {
   @Column('boolean')
   public isBanned = false;
 
-  @Column({ default: null })
+  @Column({ default: null, type: 'timestamp' })
   public banDate: Date | null = null;
 }
 
@@ -69,7 +69,7 @@ export function SAgetViewModel(blog: Blog): SAViewBlogDto {
     },
     banInfo: {
       isBanned: blog.isBanned,
-      banDate: blog.banDate.toISOString(),
+      banDate: blog.banDate === null ? null : blog.banDate.toISOString(),
     },
   };
   return result;
