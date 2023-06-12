@@ -4,7 +4,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { ViewBlogDto } from '../blogger/dto/blog/view-blog.dto';
-import { Blog, getBlogViewModel } from '../entities/sql/blog.entity';
+import {
+  Blog,
+  SAgetViewModel,
+  getBlogViewModel,
+} from '../entities/sql/blog.entity';
 import { PaginationQuery } from '../pagination/base-pagination';
 import { PaginatorBlog } from '../pagination/paginatorType';
 
@@ -106,7 +110,7 @@ export class BlogQueryRepository {
       take: query.pageSize,
     });
 
-    const blogs: ViewBlogDto[] = blogsFromDB.map((m) => getBlogViewModel(m));
+    const blogs: ViewBlogDto[] = blogsFromDB.map((m) => SAgetViewModel(m));
 
     const result: PaginatorBlog = {
       pagesCount: pagesCount,

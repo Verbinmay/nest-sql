@@ -26,15 +26,16 @@ export class BanedUsersBlogsQueryRepository {
     });
 
     const pagesCount = query.countPages(totalCount);
+    if (query.sortBy === 'login') query.sortBy = 'userLogin';
 
     const usersFromDB: Array<BanedUser> = await this.banedUsersRepository.find({
       where: {
         blogId: blogId,
       },
       // ошибка из за того, что тут нет дефолтного значения для сортировки
-      // order: {
-      //   [query.sortBy]: query.sortDirection,
-      // },
+      order: {
+        [query.sortBy]: query.sortDirection,
+      },
       skip: query.skip(),
       take: query.pageSize,
     });

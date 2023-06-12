@@ -15,7 +15,7 @@ export class SA_GetAllBlogsCase
   constructor(private readonly blogQueryRepository: BlogQueryRepository) {}
 
   async execute(command: SA_GetAllBlogsCommand) {
-    const result: PaginatorBlog = await this.blogQueryRepository.findBlogs(
+    const result: PaginatorBlog = await this.blogQueryRepository.SA_findBlogs(
       command.query,
     );
 
