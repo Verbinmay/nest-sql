@@ -93,6 +93,8 @@ import { SA_GetAllBlogsCase } from './sa/use-cases/blogs/sa-get-all-blogs-case';
 import { SA_BanUserCase } from './sa/use-cases/users/sa-ban-user-case';
 import { ValidationBlogId } from './validation/validationBlogId';
 import { GetAllCommentsByPostIdCase } from './public/use-cases/comment/get-all-comments-by-post-id-case';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 
 const validations = [ValidationBlogId, ValidationLoginEmail];
 
@@ -210,10 +212,10 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
       Comment,
     ]),
 
-    // ThrottlerModule.forRoot({
-    //   ttl: 60,
-    //   limit: 10,
-    // }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
   ],
   controllers: [
     AppController,
@@ -231,10 +233,10 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     UserSAController,
   ],
   providers: [
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: ThrottlerGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
     ...strategies /* стратегия */,
     ...useCasesBlog /* кейсы */,
     ...useCasesComment /* кейсы */,
