@@ -25,7 +25,7 @@ export class GetBannedUsersByBlogIdCase
   async execute(command: GetBannedUsersByBlogIdCommand) {
     const blog = await this.blogRepository.findBlogById(command.blogId);
     if (!blog) return { s: 404 };
-    if (blog.userId !== command.userId) return { s: 403 };
+    if (blog.user.id !== command.userId) return { s: 403 };
     const result: PaginatorBannedUsersViewModel =
       await this.banedUsersBlogsQueryRepository.findBannedUsersByBlogId(
         command.query,

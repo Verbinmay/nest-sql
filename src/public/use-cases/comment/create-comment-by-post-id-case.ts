@@ -4,12 +4,10 @@ import {
 } from '../../../entities/sql/comment.entity';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { Blog } from '../../../entities/sql/blog.entity';
 import { BanedUser } from '../../../entities/sql/blogsBannedUsers.entity';
 import { Post } from '../../../entities/sql/post.entity';
 import { User } from '../../../entities/sql/user.entity';
 import { BanedUsersBlogsRepository } from '../../../sql/blog.banUsers.repository';
-import { BlogRepository } from '../../../sql/blog.repository';
 import { CommentRepository } from '../../../sql/comment.repository';
 import { PostRepository } from '../../../sql/post.repository';
 import { UserRepository } from '../../../sql/user.repository';
@@ -52,16 +50,16 @@ export class CreateCommentByBlogIdCase
     const blogsBan: BanedUser | null =
       await this.banedUsersBlogsRepository.findBanedUsersByBlogId(
         user.id,
-        post.blogId,
+        post.blog.id,
       );
     if (blogsBan) {
       return { s: 403 };
     }
     const comment = new Comment();
     comment.content = command.inputModel.content;
-    comment.postId = post.id;
-    comment.userId = user.id;
-    comment.userLogin = user.login;
+    comment.post = post;
+    comment.user = user;
+
     await this.commentRepository.create(comment);
 
     return getCommentViewModel(comment, [], command.userId);

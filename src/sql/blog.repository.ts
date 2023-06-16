@@ -13,7 +13,12 @@ export class BlogRepository {
 
   async findBlogById(id: string) {
     try {
-      return await this.blogsRepository.findOneBy({ id: id });
+      return await this.blogsRepository.findOne({
+        relations: {
+          user: true,
+        },
+        where: { id: id },
+      });
     } catch (error) {
       return null;
     }
@@ -32,8 +37,8 @@ export class BlogRepository {
     return await this.blogsRepository.delete({ id: id });
   }
 
-  async truncate(): Promise<void> {
-    return await this.blogsRepository.clear();
+  async deleteAll() {
+    return await this.blogsRepository.delete({});
   }
 
   //   async findCountBlogs(filter: any) {

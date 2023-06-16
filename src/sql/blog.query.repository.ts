@@ -1,14 +1,14 @@
+import {
+  Blog,
+  SAgetViewModel,
+  getBlogViewModel,
+} from '../entities/sql/blog.entity';
 import { ILike, Like, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { ViewBlogDto } from '../blogger/dto/blog/view-blog.dto';
-import {
-  Blog,
-  SAgetViewModel,
-  getBlogViewModel,
-} from '../entities/sql/blog.entity';
 import { PaginationQuery } from '../pagination/base-pagination';
 import { PaginatorBlog } from '../pagination/paginatorType';
 
@@ -24,8 +24,9 @@ export class BlogQueryRepository {
 
   async findBlogsByUserId(query: PaginationQuery, userId: string) {
     const totalCount: number = await this.blogsRepository.count({
+      relations: { user: true },
       where: {
-        userId: userId,
+        user: { id: userId },
         name: ILike('%' + query.searchNameTerm + '%'),
       },
     });
@@ -33,8 +34,9 @@ export class BlogQueryRepository {
     const pagesCount = query.countPages(totalCount);
 
     const blogsFromDB: Array<Blog> = await this.blogsRepository.find({
+      relations: { user: true },
       where: {
-        userId: userId,
+        user: { id: userId },
         name: ILike('%' + query.searchNameTerm + '%'),
       },
       order: {
@@ -55,7 +57,7 @@ export class BlogQueryRepository {
     };
     return result;
   }
-
+  //ok
   async findBlogs(query: PaginationQuery) {
     const totalCount: number = await this.blogsRepository.count({
       where: {
@@ -92,6 +94,7 @@ export class BlogQueryRepository {
 
   async SA_findBlogs(query: PaginationQuery) {
     const totalCount: number = await this.blogsRepository.count({
+      relations: { user: true },
       where: {
         name: ILike('%' + query.searchNameTerm + '%'),
       },
@@ -100,6 +103,7 @@ export class BlogQueryRepository {
     const pagesCount = query.countPages(totalCount);
 
     const blogsFromDB: Array<Blog> = await this.blogsRepository.find({
+      relations: { user: true },
       where: {
         name: ILike('%' + query.searchNameTerm + '%'),
       },

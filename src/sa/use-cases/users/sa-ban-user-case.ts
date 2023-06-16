@@ -41,7 +41,7 @@ export class SA_BanUserCase implements ICommandHandler<SA_BanUserCommand> {
     await this.userRepository.update(user);
 
     if (command.inputModel.isBanned === true) {
-      await this.sessionRepository.deleteAll(command.userId);
+      await this.sessionRepository.deleteAllByUserId(command.userId);
     }
     await this.postRepository.banPostByUserId(
       command.userId,

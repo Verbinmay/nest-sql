@@ -20,8 +20,8 @@ export class PostRepository {
     return await this.postsRepository.save(post);
   }
 
-  async truncate(): Promise<void> {
-    return await this.postsRepository.clear();
+  async deleteAll() {
+    return await this.postsRepository.delete({});
   }
   // async findCountPosts(filter: object) {
   //   return await this.PostModel.countDocuments(filter);
@@ -42,8 +42,11 @@ export class PostRepository {
   // }
   async findPostsByUserId(userId: string) {
     try {
-      const result: Array<Post> = await this.postsRepository.findBy({
-        userId: userId,
+      const result: Array<Post> = await this.postsRepository.find({
+        relations: { user: true, blog: true },
+        where: {
+          user: { id: userId },
+        },
       });
       return result;
     } catch (error) {
@@ -53,7 +56,14 @@ export class PostRepository {
 
   async findPostById(id: string): Promise<Post> {
     try {
-      return await this.postsRepository.findOneBy({ id: id });
+      return await this.postsRepository.findOne({
+        relations: {
+          blog: true,
+          user: true,
+          likes: true,
+        },
+        where: { id: id },
+      });
     } catch (error) {
       return null;
     }
@@ -74,14 +84,14 @@ export class PostRepository {
 
   async banPostByUserId(userId: string, isBanned: boolean) {
     return await this.postsRepository.update(
-      { userId: userId },
+      { user: { id: userId } },
       { isBanned: isBanned },
     );
   }
 
   async banPostByBlogId(blogId: string, isBanned: boolean) {
     return await this.postsRepository.update(
-      { blogId: blogId },
+      { blog: { id: blogId } },
       { isBanned: isBanned },
     );
   }

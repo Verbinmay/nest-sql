@@ -55,9 +55,8 @@ export class LikeCommentCase implements ICommandHandler<LikeCommentCommand> {
       return true;
     } else if (!like && command.inputModel.likeStatus !== 'None') {
       const newLike = new CommentLike();
-      newLike.userId = command.userId;
-      newLike.login = user.login;
-      newLike.commentId = comment.id;
+      newLike.user = user;
+      newLike.comment = comment;
       newLike.status = command.inputModel.likeStatus;
       await this.likeCommentRepository.create(newLike);
       return true;

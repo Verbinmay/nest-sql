@@ -32,8 +32,9 @@ export class RegistrationConfirmationCase
         ]),
       };
 
-    const result = await this.userRepository.updateConfirmation(userFind.id);
-    if (result === false) return { s: 500 };
+    userFind.isConfirmed = true;
+    const result = await this.userRepository.update(userFind);
+    if (!result) return { s: 500 };
 
     return true;
   }

@@ -4,11 +4,14 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { ViewCommentWithPostInfoDto } from '../../blogger/dto/comment/view-comment-with-post-info.dto';
 import { ViewCommentDto } from '../../public/dto/comment/view-comment.dto';
 import { CommentLike } from './comment.like.entity';
 import { Post } from './post.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Comment {
@@ -18,14 +21,26 @@ export class Comment {
   @Column()
   public content: string;
 
-  @Column('uuid')
-  userId: string;
+  // @Column('uuid')
+  // userId: string;
 
-  @Column()
-  userLogin: string;
+  // @Column()
+  // userLogin: string;
+  @ManyToOne(() => User, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  user: User;
 
-  @Column('uuid')
-  public postId: string;
+  // @Column('uuid')
+  // public postId: string;
+  @ManyToOne(() => Post, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  post: Post;
 
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
@@ -35,6 +50,9 @@ export class Comment {
 
   @Column({ type: 'boolean', default: false })
   public isBanned = false;
+
+  @OneToMany(() => CommentLike, (commentLike) => commentLike.comment)
+  likes: CommentLike[];
 }
 
 export function getCommentWithPostInfoViewModel(
@@ -43,41 +61,41 @@ export function getCommentWithPostInfoViewModel(
   posts: Array<Post>,
   userId: string,
 ): ViewCommentWithPostInfoDto {
-  const post: Post = posts.find((post) => post.id === comment.postId);
+  const post: Post = posts.find((post) => post.id === comment.post.id);
   let status: 'None' | 'Like' | 'Dislike' = 'None';
   let likesCount = 0;
   let dislikeCount = 0;
   if (likes.length !== 0) {
-    const like = likes.find((m) => m.userId === userId);
+    const like = likes.find((m) => m.user.id === userId);
     if (like) status = like.status;
 
     likesCount = likes.filter(
       (m) =>
         m.status === 'Like' &&
         m.isBanned === false &&
-        m.commentId === comment.id,
+        m.comment.id === comment.id,
     ).length;
 
     dislikeCount = likes.filter(
       (m) =>
         m.status === 'Dislike' &&
         m.isBanned === false &&
-        m.commentId === comment.id,
+        m.comment.id === comment.id,
     ).length;
   }
   return {
     id: comment.id,
     content: comment.content,
     commentatorInfo: {
-      userId: comment.userId,
-      userLogin: comment.userLogin,
+      userId: comment.user.id,
+      userLogin: comment.user.login,
     },
     createdAt: comment.createdAt.toISOString(),
     postInfo: {
       id: post.id,
       title: post.title,
-      blogId: post.blogId,
-      blogName: post.blogName,
+      blogId: post.blog.id,
+      blogName: post.blog.name,
     },
     likesInfo: {
       likesCount: likesCount,
@@ -96,29 +114,29 @@ export function getCommentViewModel(
   let likesCount = 0;
   let dislikeCount = 0;
   if (likes.length !== 0) {
-    const like = likes.find((m) => m.userId === userId);
+    const like = likes.find((m) => m.user.id === userId);
     if (like) status = like.status;
 
     likesCount = likes.filter(
       (m) =>
         m.status === 'Like' &&
         m.isBanned === false &&
-        m.commentId === comment.id,
+        m.comment.id === comment.id,
     ).length;
 
     dislikeCount = likes.filter(
       (m) =>
         m.status === 'Dislike' &&
         m.isBanned === false &&
-        m.commentId === comment.id,
+        m.comment.id === comment.id,
     ).length;
   }
   return {
     id: comment.id,
     content: comment.content,
     commentatorInfo: {
-      userId: comment.userId,
-      userLogin: comment.userLogin,
+      userId: comment.user.id,
+      userLogin: comment.user.login,
     },
     createdAt: comment.createdAt.toISOString(),
     likesInfo: {

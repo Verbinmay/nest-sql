@@ -19,9 +19,14 @@ export class UserRepository {
     return await this.usersRepository.save(user);
   }
 
-  async truncate(): Promise<void> {
-    return await this.usersRepository.clear();
+  async deleteAll() {
+    return await this.usersRepository.delete({});
   }
+  // async truncate(): Promise<void> {
+  //   return await this.usersRepository.query(
+  //     `TRUNCATE TABLE user RESTART IDENTITY CASCADE`,
+  //   );
+  // }
 
   // async findCountUsers(filter: object) {
   //   return await this.UserModel.countDocuments(filter);
@@ -47,8 +52,8 @@ export class UserRepository {
     }
   }
 
-  async delete(id: string) {
-    return await this.usersRepository.delete({ id: id });
+  async delete(user: User) {
+    return await this.usersRepository.remove(user);
   }
 
   async findUserByLoginOrEmail(loginOrEmail: string) {
@@ -75,20 +80,6 @@ export class UserRepository {
       return result;
     } catch (error) {
       return null;
-    }
-  }
-
-  async updateConfirmation(id: string) {
-    try {
-      const result = await this.usersRepository.findOneBy({ id: id });
-
-      result.isConfirmed = true;
-
-      await this.usersRepository.save(result);
-
-      return true;
-    } catch (e) {
-      return false;
     }
   }
 

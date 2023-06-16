@@ -24,7 +24,7 @@ export class SA_BindBlogWithUserCase
       command.blogId,
     );
 
-    if (!blog || !('userId' in blog)) errors.push('not normal', 'blog');
+    if (!blog || !('user' in blog)) errors.push('not normal', 'blog');
 
     const user = await this.userRepository.findUserById(command.userId);
     if (!user) errors.push('user not exist', 'user');
@@ -35,8 +35,7 @@ export class SA_BindBlogWithUserCase
         mf: errorMaker(errors),
       };
     }
-    blog.userId = command.userId;
-    blog.userLogin = user.login;
+    blog.user = user;
 
     return await this.blogRepository.update(blog);
   }

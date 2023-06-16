@@ -20,8 +20,9 @@ export class BanedUsersBlogsQueryRepository {
 
   async findBannedUsersByBlogId(query: PaginationQuery, blogId: string) {
     const totalCount: number = await this.banedUsersRepository.count({
+      relations: { blog: true, user: true },
       where: {
-        blogId: blogId,
+        blog: { id: blogId },
       },
     });
 
@@ -29,8 +30,9 @@ export class BanedUsersBlogsQueryRepository {
     if (query.sortBy === 'login') query.sortBy = 'userLogin';
 
     const usersFromDB: Array<BanedUser> = await this.banedUsersRepository.find({
+      relations: { blog: true, user: true },
       where: {
-        blogId: blogId,
+        blog: { id: blogId },
       },
       // ошибка из за того, что тут нет дефолтного значения для сортировки
       order: {

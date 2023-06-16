@@ -17,10 +17,10 @@ export class SA_DeleteUserCase
     if (!user) {
       return { s: 404 };
     }
-    const userDelete = await this.userRepository.delete(command.id);
-    if (!(userDelete.affected > 0)) {
-      return { s: 500 };
-    }
+    const userDelete = await this.userRepository.delete(user);
+    // if (!(userDelete.affected > 0)) {
+    //   return { s: 500 };
+    // }
     return userDelete;
   }
 }

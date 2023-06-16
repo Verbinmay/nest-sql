@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { ViewSessionDto } from '../../public/dto/session/view-session.dto';
+import { User } from './user.entity';
 
 @Entity()
 export class Session {
@@ -22,8 +23,11 @@ export class Session {
   @Column()
   public deviceId: string;
 
-  @Column('uuid')
-  public userId: string;
+  // @Column('uuid')
+  // public userId: string;
+
+  @ManyToOne(() => User, { cascade: true, onDelete: 'CASCADE' })
+  user: User;
 }
 
 export function getSessionViewModel(session: Session): ViewSessionDto {

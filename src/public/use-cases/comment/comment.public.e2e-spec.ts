@@ -20,7 +20,7 @@ import { LikeDto } from '../../dto/likes/like.dto';
 import { ViewPostDto } from '../../dto/post/view-post.dto';
 import { AppModule } from '../../../app.module';
 
-describe.skip('post-public-tests-pack', () => {
+describe('post-public-tests-pack', () => {
   jest.setTimeout(1000 * 1000);
   let app: INestApplication;
   let fullApp: INestApplication;
@@ -43,7 +43,7 @@ describe.skip('post-public-tests-pack', () => {
     await fullApp.close();
   });
 
-  describe.skip('createComment.public', () => {
+  describe('createComment.public', () => {
     const users: Array<SAViewUserDto> = [];
     const blogs: Array<ViewBlogDto> = [];
     const posts: Array<ViewPostDto> = [];
@@ -106,7 +106,7 @@ describe.skip('post-public-tests-pack', () => {
     });
   });
 
-  describe.skip('getCommentsByPostId.public', () => {
+  describe('getCommentsByPostId.public', () => {
     const users: Array<SAViewUserDto> = [];
     const blogs: Array<ViewBlogDto> = [];
     const posts: Array<ViewPostDto> = [];
@@ -184,7 +184,7 @@ describe.skip('post-public-tests-pack', () => {
     });
   });
 
-  describe.skip('getCommentById.public', () => {
+  describe('getCommentById.public', () => {
     const users: Array<SAViewUserDto> = [];
     const blogs: Array<ViewBlogDto> = [];
     const posts: Array<ViewPostDto> = [];
@@ -261,7 +261,7 @@ describe.skip('post-public-tests-pack', () => {
     });
   });
 
-  describe.skip('likeComment.public', () => {
+  describe('likeComment.public', () => {
     const users: Array<SAViewUserDto> = [];
     const blogs: Array<ViewBlogDto> = [];
     const posts: Array<ViewPostDto> = [];
@@ -383,7 +383,7 @@ describe.skip('post-public-tests-pack', () => {
         .expect(404);
     });
   });
-  describe.skip('updateCommentById.public', () => {
+  describe('updateCommentById.public', () => {
     const users: Array<SAViewUserDto> = [];
     const blogs: Array<ViewBlogDto> = [];
     const posts: Array<ViewPostDto> = [];

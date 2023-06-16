@@ -4,17 +4,23 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Session } from '../entities/sql/session.entity';
+import { User } from '../entities/sql/user.entity';
 
 @Injectable()
 export class SessionRepository {
   constructor(
     @InjectRepository(Session)
     private readonly sessionsRepository: Repository<Session>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async findSessionsByUserId(userId: string) {
     try {
-      return await this.sessionsRepository.findBy({ userId: userId });
+      return await this.sessionsRepository.find({
+        relations: { user: true },
+        where: { user: { id: userId } },
+      });
     } catch (error) {
       return null;
     }
@@ -26,10 +32,11 @@ export class SessionRepository {
     userId: string;
   }) {
     const result: Session | null = await this.sessionsRepository.findOne({
+      relations: { user: true },
       where: {
         lastActiveDate: new Date(a.iat * 1000).toISOString(),
         deviceId: a.deviceId,
-        userId: a.userId,
+        user: { id: a.userId },
       },
     });
     return result != null;
@@ -37,23 +44,26 @@ export class SessionRepository {
 
   async deleteAllWithoutCurrent(userId: string, deviceId: string) {
     const result = await this.sessionsRepository.delete({
-      userId: userId,
+      user: { id: userId },
       deviceId: Not(Equal(deviceId)),
     });
     return result;
   }
 
-  async deleteAll(userId: string) {
+  async deleteAllByUserId(userId: string) {
     await this.sessionsRepository.delete({
-      userId: userId,
+      user: { id: userId },
     });
     return true;
   }
 
   async findSessionByDeviceId(deviceId: string) {
     try {
-      const result: Session | null = await this.sessionsRepository.findOneBy({
-        deviceId: deviceId,
+      const result: Session | null = await this.sessionsRepository.findOne({
+        relations: { user: true },
+        where: {
+          deviceId: deviceId,
+        },
       });
       return result;
     } catch (error) {
@@ -78,14 +88,17 @@ export class SessionRepository {
   }
 
   async findSessionByDeviceIdAndUserId(deviceId: string, userId: string) {
-    const result = await this.sessionsRepository.findOneBy({
-      deviceId: deviceId,
-      userId: userId,
+    const result = await this.sessionsRepository.findOne({
+      relations: { user: true },
+      where: {
+        deviceId: deviceId,
+        user: { id: userId },
+      },
     });
     return result;
   }
 
-  async truncate(): Promise<void> {
-    return await this.sessionsRepository.clear();
+  async deleteAll() {
+    return await this.sessionsRepository.delete({});
   }
 }

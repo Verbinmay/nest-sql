@@ -18,7 +18,7 @@ import { PaginatorCommentWithWithPostInfoViewModel } from '../../../pagination/p
 import { ViewBlogDto } from '../../dto/blog/view-blog.dto';
 import { AppModule } from '../../../app.module';
 
-describe.skip('comment-blogger-tests-pack', () => {
+describe('comment-blogger-tests-pack', () => {
   jest.setTimeout(1000 * 1000);
   let app: INestApplication;
   let fullApp: INestApplication;

@@ -14,7 +14,7 @@ import { createApp } from '../../../helpers/createApp';
 import { ViewBlogDto } from '../../dto/blog/view-blog.dto';
 import { AppModule } from '../../../app.module';
 
-describe.skip('blog-blogger-tests-pack', () => {
+describe('blog-blogger-tests-pack', () => {
   jest.setTimeout(1000 * 1000);
   let app: INestApplication;
   let fullApp: INestApplication;

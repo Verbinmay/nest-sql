@@ -14,8 +14,9 @@ export class PostQueryRepository {
   ) {}
   async findPostsByBlogId(query: PaginationQuery, blogId: string) {
     const totalCount: number = await this.postsRepository.count({
+      relations: { blog: true },
       where: {
-        blogId: blogId,
+        blog: { id: blogId },
         isBanned: false,
       },
     });
@@ -23,8 +24,9 @@ export class PostQueryRepository {
     const pagesCount = query.countPages(totalCount);
 
     const postsFromDB: Array<Post> = await this.postsRepository.find({
+      relations: { blog: true },
       where: {
-        blogId: blogId,
+        blog: { id: blogId },
         isBanned: false,
       },
       order: {
@@ -46,6 +48,7 @@ export class PostQueryRepository {
 
   async findAllPosts(query: PaginationQuery) {
     const totalCount: number = await this.postsRepository.count({
+      relations: { blog: true },
       where: {
         isBanned: false,
       },
@@ -54,6 +57,7 @@ export class PostQueryRepository {
     const pagesCount = query.countPages(totalCount);
 
     const postsFromDB: Array<Post> = await this.postsRepository.find({
+      relations: { blog: true },
       where: {
         isBanned: false,
       },

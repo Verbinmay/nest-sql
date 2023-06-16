@@ -4,8 +4,11 @@ import {
   CreateDateColumn,
   Column,
   ManyToOne,
+  JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { Post } from './post.entity';
+import { User } from './user.entity';
 
 export type statusLikeEnum = 'Like' | 'Dislike';
 
@@ -17,14 +20,14 @@ export class PostLike {
   @CreateDateColumn({ type: 'timestamp' })
   public addedAt: Date;
 
-  @Column()
-  public login: string;
+  // @Column()
+  // public login: string;
 
-  @Column('uuid')
-  public userId: string;
+  // @Column('uuid')
+  // public userId: string;
 
-  @Column('uuid')
-  public postId: string;
+  // @Column('uuid')
+  // public postId: string;
 
   @Column({ type: 'enum', enum: ['Like', 'Dislike'] })
   public status: statusLikeEnum;
@@ -32,6 +35,17 @@ export class PostLike {
   @Column({ type: 'boolean', default: false })
   public isBanned = false;
 
-  // @ManyToOne(() => Post, (post) => post.likes)
-  // post: Post;
+  @ManyToOne(() => Post, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  post: Post;
+
+  @ManyToOne(() => User, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  user: User;
 }

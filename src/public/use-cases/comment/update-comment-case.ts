@@ -25,7 +25,7 @@ export class UpdateCommentCase
     if (!comment) {
       return { s: 404 };
     }
-    if (comment.userId !== command.userId) {
+    if (comment.user.id !== command.userId) {
       return { s: 403 };
     }
 

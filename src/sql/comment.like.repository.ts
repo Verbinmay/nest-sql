@@ -30,8 +30,13 @@ export class LikeCommentRepository {
 
   async findLikeByUserId(userId: string) {
     try {
-      return await this.commentLikesRepository.findOneBy({
-        userId: userId,
+      return await this.commentLikesRepository.findOne({
+        relations: {
+          user: true,
+        },
+        where: {
+          user: { id: userId },
+        },
       });
     } catch (error) {
       return null;
@@ -39,18 +44,21 @@ export class LikeCommentRepository {
   }
 
   async findLikesForComments(comments: Array<Comment>) {
-    return await this.commentLikesRepository.findBy({
-      commentId: In(comments.map((p) => p.id)),
+    return await this.commentLikesRepository.find({
+      relations: { comment: true, user: true },
+      where: {
+        comment: { id: In(comments.map((p) => p.id)) },
+      },
     });
   }
 
-  async truncate(): Promise<void> {
-    return await this.commentLikesRepository.clear();
+  async deleteAll() {
+    return await this.commentLikesRepository.delete({});
   }
 
   async banLikeCommentByUserId(userId: string, isBanned: boolean) {
     return await this.commentLikesRepository.update(
-      { userId: userId },
+      { user: { id: userId } },
       { isBanned: isBanned },
     );
   }

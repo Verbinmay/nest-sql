@@ -21,7 +21,7 @@ export class UpdateBlogCase implements ICommandHandler<UpdateBlogCommand> {
       command.blogId,
     );
     if (!blog) return { s: 404 };
-    if (blog.userId !== command.userId) return { s: 403 };
+    if (blog.user.id !== command.userId) return { s: 403 };
 
     blog.name = command.inputModel.name;
     blog.description = command.inputModel.description;

@@ -1,12 +1,18 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ViewBlogDto } from '../../blogger/dto/blog/view-blog.dto';
 import { SAViewBlogDto } from '../../sa/dto/blog/sa-view-blog.dto';
+import { BanedUser } from './blogsBannedUsers.entity';
+import { Post } from './post.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Blog {
@@ -22,11 +28,12 @@ export class Blog {
   @Column({ length: 100 })
   public websiteUrl: string;
 
-  @Column('uuid')
-  public userId: string;
-
-  @Column('text')
-  public userLogin: string;
+  @ManyToOne(() => User, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  user: User;
 
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
@@ -42,6 +49,9 @@ export class Blog {
 
   @Column({ default: null, type: 'timestamp' })
   public banDate: Date | null = null;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
 
 export function getBlogViewModel(blog: Blog): ViewBlogDto {
@@ -64,8 +74,8 @@ export function SAgetViewModel(blog: Blog): SAViewBlogDto {
     createdAt: blog.createdAt.toISOString(),
     isMembership: blog.isMembership,
     blogOwnerInfo: {
-      userId: blog.userId,
-      userLogin: blog.userLogin,
+      userId: blog.user.id,
+      userLogin: blog.user.login,
     },
     banInfo: {
       isBanned: blog.isBanned,

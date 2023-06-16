@@ -27,25 +27,31 @@ export class LikePostRepository {
 
   async findLikeByUserId(userId: string) {
     try {
-      return await this.likesPostRepository.findOneBy({
-        userId: userId,
+      return await this.likesPostRepository.findOne({
+        relations: { user: true },
+        where: {
+          user: { id: userId },
+        },
       });
     } catch (error) {
       return null;
     }
   }
   async findLikesForPosts(posts: Array<Post>) {
-    return await this.likesPostRepository.findBy({
-      postId: In(posts.map((p) => p.id)),
+    return await this.likesPostRepository.find({
+      relations: { post: true, user: true },
+      where: {
+        post: { id: In(posts.map((p) => p.id)) },
+      },
     });
   }
-  async truncate(): Promise<void> {
-    return await this.likesPostRepository.clear();
+  async deleteAll() {
+    return await this.likesPostRepository.delete({});
   }
 
   async banLikePostByUserId(userId: string, isBanned: boolean) {
     return await this.likesPostRepository.update(
-      { userId: userId },
+      { user: { id: userId } },
       { isBanned: isBanned },
     );
   }

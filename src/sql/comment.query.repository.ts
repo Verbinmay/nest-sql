@@ -16,8 +16,9 @@ export class CommentQueryRepository {
 
   async getCommentsByPostsId(query: PaginationQuery, postsId: Array<string>) {
     const totalCount: number = await this.commentsRepository.count({
+      relations: { post: true, user: true },
       where: {
-        postId: In(postsId),
+        post: { id: In(postsId) },
         isBanned: false,
       },
     });
@@ -25,8 +26,9 @@ export class CommentQueryRepository {
     const pagesCount = query.countPages(totalCount);
 
     const commentsFromDB: Array<Comment> = await this.commentsRepository.find({
+      relations: { post: true, user: true },
       where: {
-        postId: In(postsId),
+        post: { id: In(postsId) },
         isBanned: false,
       },
       order: {

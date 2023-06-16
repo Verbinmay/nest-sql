@@ -19,9 +19,12 @@ export class BanedUsersBlogsRepository {
 
   async findBanedUsersByBlogId(userId: string, blogId: string) {
     try {
-      return await this.banedUsersRepository.findOneBy({
-        userId: userId,
-        blogId: blogId,
+      return await this.banedUsersRepository.findOne({
+        relations: { user: true, blog: true },
+        where: {
+          user: { id: userId },
+          blog: { id: blogId },
+        },
       });
     } catch (error) {
       return null;
@@ -30,12 +33,12 @@ export class BanedUsersBlogsRepository {
 
   async deleteBanedUserByBlogId(userId: string, blogId: string) {
     return await this.banedUsersRepository.delete({
-      userId: userId,
-      blogId: blogId,
+      user: { id: userId },
+      blog: { id: blogId },
     });
   }
 
-  async truncate(): Promise<void> {
-    return await this.banedUsersRepository.clear();
+  async deleteAll() {
+    return await this.banedUsersRepository.delete({});
   }
 }

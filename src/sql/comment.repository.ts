@@ -13,14 +13,38 @@ export class CommentRepository {
   ) {}
   async findById(id: string) {
     try {
-      return await this.commentRepository.findOneBy({ id: id });
+      return await this.commentRepository.findOne({
+        relations: {
+          post: true,
+          user: true,
+          likes: {
+            user: true,
+          },
+        },
+        select: {
+          id: true,
+          content: true,
+          isBanned: true,
+          createdAt: true,
+          updatedAt: true,
+          post: {
+            id: true,
+          },
+          user: {
+            id: true,
+            login: true,
+          },
+          likes: true,
+        },
+        where: { id: id },
+      });
     } catch (error) {
       return null;
     }
   }
 
-  async truncate(): Promise<void> {
-    return await this.commentRepository.clear();
+  async deleteAll() {
+    return await this.commentRepository.delete({});
   }
 
   //   async findCountComments(filter: { name: { $regex: string } } | object) {
@@ -55,7 +79,7 @@ export class CommentRepository {
 
   async banCommentByUserId(userId: string, isBanned: boolean) {
     return await this.commentRepository.update(
-      { userId: userId },
+      { user: { id: userId } },
       { isBanned: isBanned },
     );
   }

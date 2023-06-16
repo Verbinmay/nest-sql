@@ -52,9 +52,8 @@ export class LikePostCase implements ICommandHandler<LikePostCommand> {
       return true;
     } else if (!like && command.inputModel.likeStatus !== 'None') {
       const newLike = new PostLike();
-      newLike.userId = command.userId;
-      newLike.login = user.login;
-      newLike.postId = post.id;
+      newLike.user = user;
+      newLike.post = post;
       newLike.status = command.inputModel.likeStatus;
       await this.likePostRepository.create(newLike);
       return true;

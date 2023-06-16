@@ -16,7 +16,7 @@ import { createApp } from '../../../helpers/createApp';
 import { ViewBlogDto } from '../../dto/blog/view-blog.dto';
 import { AppModule } from '../../../app.module';
 
-describe.skip('post-blogger-tests-pack', () => {
+describe('post-blogger-tests-pack', () => {
   jest.setTimeout(1000 * 1000);
   let app: INestApplication;
   let fullApp: INestApplication;
@@ -156,7 +156,7 @@ describe.skip('post-blogger-tests-pack', () => {
     });
   });
 
-  describe.skip('update.post.blogger', () => {
+  describe('update.post.blogger', () => {
     const users: Array<SAViewUserDto> = [];
     const accessTokens: Array<string> = [];
     const blogs: Array<ViewBlogDto> = [];
@@ -315,7 +315,7 @@ describe.skip('post-blogger-tests-pack', () => {
     });
   });
 
-  describe.skip('delete.post.blogger', () => {
+  describe('delete.post.blogger', () => {
     const users: Array<SAViewUserDto> = [];
     const accessTokens: Array<string> = [];
     const blogs: Array<ViewBlogDto> = [];

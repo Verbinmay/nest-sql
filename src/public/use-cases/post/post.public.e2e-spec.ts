@@ -16,7 +16,7 @@ import { LikeDto } from '../../dto/likes/like.dto';
 import { ViewPostDto } from '../../dto/post/view-post.dto';
 import { AppModule } from '../../../app.module';
 
-describe.skip('post-public-tests-pack', () => {
+describe('post-public-tests-pack', () => {
   jest.setTimeout(1000 * 1000);
   let app: INestApplication;
   let fullApp: INestApplication;

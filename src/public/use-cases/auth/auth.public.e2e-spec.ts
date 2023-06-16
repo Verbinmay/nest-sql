@@ -8,7 +8,7 @@ import { info, createUserInput } from '../../../../test/functionTest';
 import { createApp } from '../../../helpers/createApp';
 import { AppModule } from '../../../app.module';
 
-describe.skip('auth-public-tests-pack', () => {
+describe('auth-public-tests-pack', () => {
   jest.setTimeout(1000 * 1000);
   let app: INestApplication;
   let fullApp: INestApplication;
@@ -31,7 +31,7 @@ describe.skip('auth-public-tests-pack', () => {
     await fullApp.close();
   });
 
-  describe.skip('registration.public', () => {
+  describe('registration.public', () => {
     beforeAll(async () => {
       await agent.delete(info.testingDelete);
     });
@@ -102,7 +102,7 @@ describe.skip('auth-public-tests-pack', () => {
     });
   });
 
-  describe.skip('resendingEmail.public', () => {
+  describe('resendingEmail.public', () => {
     const userInput = createUserInput();
     beforeAll(async () => {
       await agent.delete(info.testingDelete);
@@ -127,9 +127,8 @@ describe.skip('auth-public-tests-pack', () => {
         .get(info.test.user + userInput.login)
         .expect(200);
 
-      expect(userResponse.body[0].emailConfirmation.confirmationCode).not.toBe(
-        userWithNewConfirmationResponse.body[0].emailConfirmation
-          .confirmationCode,
+      expect(userResponse.body[0].confirmationCode).not.toBe(
+        userWithNewConfirmationResponse.body[0].confirmationCode,
       );
     });
 
@@ -141,7 +140,7 @@ describe.skip('auth-public-tests-pack', () => {
     });
   });
 
-  describe.skip('confirmation.public', () => {
+  describe('confirmation.public', () => {
     const userInput = createUserInput();
     beforeAll(async () => {
       await agent.delete(info.testingDelete);
@@ -159,16 +158,14 @@ describe.skip('auth-public-tests-pack', () => {
 
       const confirmationResponse = await agent
         .post(info.auth.registrationConfirmation)
-        .send({ code: userResponse.body[0].emailConfirmation.confirmationCode })
+        .send({ code: userResponse.body[0].confirmationCode })
         .expect(204);
 
       const userConfirmedResponse = await agent
         .get(info.test.user + userInput.login)
         .expect(200);
 
-      expect(userConfirmedResponse.body[0].emailConfirmation.isConfirmed).toBe(
-        true,
-      );
+      expect(userConfirmedResponse.body[0].isConfirmed).toBe(true);
     });
     it('confirmed registration - 400 - code error', async () => {
       const confirmationResponse = await agent
@@ -178,7 +175,7 @@ describe.skip('auth-public-tests-pack', () => {
     });
   });
 
-  describe.skip('login.public', () => {
+  describe('login.public', () => {
     const userInput = createUserInput();
     beforeAll(async () => {
       await agent.delete(info.testingDelete);
@@ -228,7 +225,7 @@ describe.skip('auth-public-tests-pack', () => {
     });
   });
 
-  describe.skip('newPassword-code.public', () => {
+  describe('newPassword-code.public', () => {
     const userInput = createUserInput();
     beforeAll(async () => {
       await agent.delete(info.testingDelete);
@@ -253,8 +250,8 @@ describe.skip('auth-public-tests-pack', () => {
         .get(info.test.user + userInput.login)
         .expect(200);
 
-      expect(userResponse.body[0].emailConfirmation.confirmationCode).not.toBe(
-        userWithNewPasswordResponse.body[0].emailConfirmation.confirmationCode,
+      expect(userResponse.body[0].confirmationCode).not.toBe(
+        userWithNewPasswordResponse.body[0].confirmationCode,
       );
     });
 
@@ -266,7 +263,7 @@ describe.skip('auth-public-tests-pack', () => {
     });
   });
 
-  describe.skip('newPassword.public', () => {
+  describe('newPassword.public', () => {
     const userInput = createUserInput();
     beforeAll(async () => {
       await agent.delete(info.testingDelete);
@@ -292,7 +289,7 @@ describe.skip('auth-public-tests-pack', () => {
         .post(info.auth.newPassword)
         .send({
           newPassword: newPassword,
-          recoveryCode: userResponse.body[0].emailConfirmation.confirmationCode,
+          recoveryCode: userResponse.body[0].confirmationCode,
         })
         .expect(204);
 
@@ -317,7 +314,7 @@ describe.skip('auth-public-tests-pack', () => {
     });
   });
 
-  describe.skip('get me.public', () => {
+  describe('get me.public', () => {
     const userInput = createUserInput();
     let accessToken: string;
     beforeAll(async () => {
@@ -354,7 +351,7 @@ describe.skip('auth-public-tests-pack', () => {
       const meResponse = await agent.get(info.auth.me).expect(401);
     });
   });
-  describe.skip('logout.public', () => {
+  describe('logout.public', () => {
     const userInput = createUserInput();
     let accessToken: string;
     let cookie: string[];

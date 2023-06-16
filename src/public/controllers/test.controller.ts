@@ -25,14 +25,14 @@ export class TestController {
   @HttpCode(204)
   @Delete('all-data')
   async deleteAll() {
-    await this.banedUsersBlogsRepository.truncate();
-    await this.blogRepository.truncate();
-    await this.commentRepository.truncate();
-    await this.likeCommentRepository.truncate();
-    await this.likePostRepository.truncate();
-    await this.postRepository.truncate();
-    await this.sessionRepository.truncate();
-    await this.userRepository.truncate();
+    await this.banedUsersBlogsRepository.deleteAll();
+    await this.likeCommentRepository.deleteAll();
+    await this.likePostRepository.deleteAll();
+    await this.sessionRepository.deleteAll();
+    await this.commentRepository.deleteAll();
+    await this.postRepository.deleteAll();
+    await this.blogRepository.deleteAll();
+    await this.userRepository.deleteAll();
 
     return;
   }

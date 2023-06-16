@@ -20,7 +20,7 @@ export class SessionService {
       session.lastActiveDate = new Date(inputModel.iat * 1000).toISOString();
       session.expirationDate = new Date(inputModel.iat * 1000).toISOString();
       session.deviceId = inputModel.deviceId;
-      session.userId = inputModel.userId;
+      session.user = inputModel.user;
       await this.sessionRepository.create(session);
       return true;
     } catch (error) {

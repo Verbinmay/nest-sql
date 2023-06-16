@@ -31,7 +31,7 @@ export class BanUserForBlogByUserIdCase
       command.inputModel.blogId,
     );
     if (!blog) return { s: 404 };
-    if (blog.userId !== command.userId) return { s: 403 };
+    if (blog.user.id !== command.userId) return { s: 403 };
 
     const userBan = await this.userRepository.findUserById(command.userIdBlock);
     if (!userBan) return { s: 404 };
@@ -53,10 +53,9 @@ export class BanUserForBlogByUserIdCase
     } else if (!userBanIsBaned && command.inputModel.isBanned === true) {
       const newUserBanInfo = new BanedUser();
 
-      newUserBanInfo.userId = userBan.id;
-      newUserBanInfo.userLogin = userBan.login;
+      newUserBanInfo.user = userBan;
       newUserBanInfo.banReason = command.inputModel.banReason;
-      newUserBanInfo.blogId = blog.id;
+      newUserBanInfo.blog = blog;
 
       await this.banedUsersBlogsRepository.create(newUserBanInfo);
       return true;

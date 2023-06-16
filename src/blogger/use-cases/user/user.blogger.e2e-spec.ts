@@ -19,7 +19,7 @@ import { PaginatorBannedUsersViewModel } from '../../../pagination/paginatorType
 import { ViewBlogDto } from '../../dto/blog/view-blog.dto';
 import { AppModule } from '../../../app.module';
 
-describe.skip('user-blogger-tests-pack', () => {
+describe('user-blogger-tests-pack', () => {
   jest.setTimeout(1000 * 1000);
   let app: INestApplication;
   let fullApp: INestApplication;
@@ -42,7 +42,7 @@ describe.skip('user-blogger-tests-pack', () => {
     await fullApp.close();
   });
 
-  describe.skip('bun.user.blogger', () => {
+  describe('bun.user.blogger', () => {
     const users: Array<SAViewUserDto> = [];
     const accessTokens: Array<string> = [];
     const blogs: Array<ViewBlogDto> = [];

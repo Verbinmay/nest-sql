@@ -19,7 +19,7 @@ export class DeleteSessionByDeviceIdCase
     if (!session) {
       return { s: 404 };
     }
-    if (session.userId !== command.userId) {
+    if (session.user.id !== command.userId) {
       return { s: 403 };
     }
 

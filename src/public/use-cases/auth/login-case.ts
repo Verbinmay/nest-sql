@@ -37,13 +37,17 @@ export class LoginCase implements ICommandHandler<LoginCommand> {
     if (typeof decoder == 'string') {
       return { s: 500 };
     }
+    const user = await this.userRepository.findUserById(command.userId);
+    if (!user) {
+      return { s: 404 };
+    }
     const sessionCreate: boolean = await this.sessionService.createSession({
       iat: decoder.iat,
       expirationDate: decoder.exp,
       ip: command.ip,
       title: command.title,
       deviceId: deviceId,
-      userId: command.userId,
+      user: user,
     });
 
     return sessionCreate ? tokens : { s: 500 };
