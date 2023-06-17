@@ -22,10 +22,7 @@ export class GetCommentByCommentIdCase
     if (!comment || comment.isBanned === true) {
       return { s: 404 };
     }
-    const likes = await this.likeCommentRepository.findLikesForComments([
-      comment,
-    ]);
 
-    return getCommentViewModel(comment, likes, command.userId);
+    return getCommentViewModel(comment, command.userId);
   }
 }

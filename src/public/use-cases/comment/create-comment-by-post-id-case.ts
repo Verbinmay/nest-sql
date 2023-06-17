@@ -60,8 +60,11 @@ export class CreateCommentByBlogIdCase
     comment.post = post;
     comment.user = user;
 
-    await this.commentRepository.create(comment);
+    const commentCreated = await this.commentRepository.create(comment);
+    const commentFound = await this.commentRepository.findById(
+      commentCreated.id,
+    );
 
-    return getCommentViewModel(comment, [], command.userId);
+    return getCommentViewModel(commentFound, command.userId);
   }
 }

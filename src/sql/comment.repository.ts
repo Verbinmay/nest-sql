@@ -14,26 +14,10 @@ export class CommentRepository {
   async findById(id: string) {
     try {
       return await this.commentRepository.findOne({
+        //TODO это говно тоже работает ?
         relations: {
           post: true,
           user: true,
-          likes: {
-            user: true,
-          },
-        },
-        select: {
-          id: true,
-          content: true,
-          isBanned: true,
-          createdAt: true,
-          updatedAt: true,
-          post: {
-            id: true,
-          },
-          user: {
-            id: true,
-            login: true,
-          },
           likes: true,
         },
         where: { id: id },
@@ -74,7 +58,8 @@ export class CommentRepository {
   }
 
   async delete(commentId: string) {
-    return await this.commentRepository.delete(commentId);
+    const result = await this.commentRepository.delete(commentId);
+    return result.affected > 0;
   }
 
   async banCommentByUserId(userId: string, isBanned: boolean) {

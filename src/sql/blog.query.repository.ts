@@ -18,10 +18,6 @@ export class BlogQueryRepository {
     @InjectRepository(Blog) private readonly blogsRepository: Repository<Blog>,
   ) {}
 
-  //   async findCountBlogs(filter: any) {
-  //     return await this.BlogModel.countDocuments(filter);
-  //   }
-
   async findBlogsByUserId(query: PaginationQuery, userId: string) {
     const totalCount: number = await this.blogsRepository.count({
       relations: { user: true },

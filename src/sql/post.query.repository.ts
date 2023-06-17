@@ -3,9 +3,9 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Post } from '../entities/sql/post.entity';
+import { Post, getPostViewModel } from '../entities/sql/post.entity';
 import { PaginationQuery } from '../pagination/base-pagination';
-import { PaginatorEnd } from '../pagination/paginatorType';
+import { PaginatorEnd, PaginatorPost } from '../pagination/paginatorType';
 
 @Injectable()
 export class PostQueryRepository {
@@ -46,9 +46,9 @@ export class PostQueryRepository {
     return result;
   }
 
-  async findAllPosts(query: PaginationQuery) {
+  async findAllPosts(query: PaginationQuery, userId: string) {
     const totalCount: number = await this.postsRepository.count({
-      relations: { blog: true },
+      relations: { blog: true, user: true, likes: { user: true } },
       where: {
         isBanned: false,
       },
@@ -57,7 +57,7 @@ export class PostQueryRepository {
     const pagesCount = query.countPages(totalCount);
 
     const postsFromDB: Array<Post> = await this.postsRepository.find({
-      relations: { blog: true },
+      relations: { blog: true, user: true, likes: { user: true } },
       where: {
         isBanned: false,
       },
@@ -68,12 +68,13 @@ export class PostQueryRepository {
       take: query.pageSize,
     });
 
-    const result: PaginatorEnd & { items: Post[] } = {
+    const post = postsFromDB.map((p) => getPostViewModel(p, userId));
+    const result: PaginatorPost = {
       pagesCount: pagesCount,
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalCount,
-      items: postsFromDB,
+      items: post,
     };
     return result;
   }

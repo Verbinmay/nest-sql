@@ -46,8 +46,8 @@ export class CreatePostByBlogIdCase
     post.user = user;
 
     const postSaved = await this.postRepository.create(post);
-    const likes = await this.likePostRepository.findLikesForPosts([postSaved]);
+    const postFined = await this.postRepository.findPostById(postSaved.id);
 
-    return getPostViewModel(postSaved, likes, command.userId);
+    return getPostViewModel(postFined, command.userId);
   }
 }

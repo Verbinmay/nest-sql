@@ -36,23 +36,13 @@ export class GetAllCommentsByPostIdCase
     const post = await this.postRepository.findPostById(command.postId);
     if (!post) return { s: 404 };
 
-    const commentsFromDbWithPagination: PaginatorEnd & {
-      items: Array<Comment>;
-    } = await this.commentQueryRepository.getCommentsByPostsId(command.query, [
-      post.id,
-    ]);
-
-    const likesCommentsFromDb: Array<CommentLike> =
-      await this.likeCommentRepository.findLikesForComments(
-        commentsFromDbWithPagination.items,
+    const result: PaginatorCommentWithLikeViewModel =
+      await this.commentQueryRepository.getCommentsByPostId(
+        command.query,
+        post.id,
+        command.userId,
       );
 
-    const result: PaginatorCommentWithLikeViewModel = {
-      ...commentsFromDbWithPagination,
-      items: commentsFromDbWithPagination.items.map((c) =>
-        getCommentViewModel(c, likesCommentsFromDb, command.userId),
-      ),
-    };
     return result;
   }
 }

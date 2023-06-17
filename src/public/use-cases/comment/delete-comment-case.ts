@@ -28,7 +28,7 @@ export class DeleteCommentCase
 
     const commentDelete = await this.commentRepository.delete(comment.id);
 
-    if (!(commentDelete.affected > 0)) {
+    if (commentDelete === false) {
       return { s: 500 };
     }
     return true;

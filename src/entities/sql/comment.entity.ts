@@ -57,30 +57,21 @@ export class Comment {
 
 export function getCommentWithPostInfoViewModel(
   comment: Comment,
-  likes: Array<CommentLike>,
-  posts: Array<Post>,
   userId: string,
 ): ViewCommentWithPostInfoDto {
-  const post: Post = posts.find((post) => post.id === comment.post.id);
   let status: 'None' | 'Like' | 'Dislike' = 'None';
   let likesCount = 0;
   let dislikeCount = 0;
-  if (likes.length !== 0) {
-    const like = likes.find((m) => m.user.id === userId);
+  if (comment.likes.length !== 0) {
+    const like = comment.likes.find((m) => m.user.id === userId);
     if (like) status = like.status;
 
-    likesCount = likes.filter(
-      (m) =>
-        m.status === 'Like' &&
-        m.isBanned === false &&
-        m.comment.id === comment.id,
+    likesCount = comment.likes.filter(
+      (m) => m.status === 'Like' && m.isBanned === false,
     ).length;
 
-    dislikeCount = likes.filter(
-      (m) =>
-        m.status === 'Dislike' &&
-        m.isBanned === false &&
-        m.comment.id === comment.id,
+    dislikeCount = comment.likes.filter(
+      (m) => m.status === 'Dislike' && m.isBanned === false,
     ).length;
   }
   return {
@@ -92,10 +83,10 @@ export function getCommentWithPostInfoViewModel(
     },
     createdAt: comment.createdAt.toISOString(),
     postInfo: {
-      id: post.id,
-      title: post.title,
-      blogId: post.blog.id,
-      blogName: post.blog.name,
+      id: comment.post.id,
+      title: comment.post.title,
+      blogId: comment.post.blog.id,
+      blogName: comment.post.blog.name,
     },
     likesInfo: {
       likesCount: likesCount,
@@ -107,28 +98,21 @@ export function getCommentWithPostInfoViewModel(
 
 export function getCommentViewModel(
   comment: Comment,
-  likes: Array<CommentLike>,
   userId: string,
 ): ViewCommentDto {
   let status: 'None' | 'Like' | 'Dislike' = 'None';
   let likesCount = 0;
   let dislikeCount = 0;
-  if (likes.length !== 0) {
-    const like = likes.find((m) => m.user.id === userId);
+  if (comment.likes.length !== 0) {
+    const like = comment.likes.find((m) => m.user.id === userId);
     if (like) status = like.status;
 
-    likesCount = likes.filter(
-      (m) =>
-        m.status === 'Like' &&
-        m.isBanned === false &&
-        m.comment.id === comment.id,
+    likesCount = comment.likes.filter(
+      (m) => m.status === 'Like' && m.isBanned === false,
     ).length;
 
-    dislikeCount = likes.filter(
-      (m) =>
-        m.status === 'Dislike' &&
-        m.isBanned === false &&
-        m.comment.id === comment.id,
+    dislikeCount = comment.likes.filter(
+      (m) => m.status === 'Dislike' && m.isBanned === false,
     ).length;
   }
   return {

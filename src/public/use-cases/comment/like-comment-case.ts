@@ -39,6 +39,7 @@ export class LikeCommentCase implements ICommandHandler<LikeCommentCommand> {
     }
     const like: CommentLike = await this.likeCommentRepository.findLikeByUserId(
       user.id,
+      comment.id,
     );
 
     if (like) {

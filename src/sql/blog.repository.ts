@@ -29,12 +29,14 @@ export class BlogRepository {
     return await this.blogsRepository.save(blog);
   }
 
-  async update(blog: Blog) {
+  async update(blog: Blog): Promise<Blog> {
     return await this.blogsRepository.save(blog);
   }
 
-  async delete(id: string) {
-    return await this.blogsRepository.delete({ id: id });
+  async delete(id: string): Promise<boolean> {
+    const result = await this.blogsRepository.delete({ id: id });
+
+    return result.affected > 0;
   }
 
   async deleteAll() {

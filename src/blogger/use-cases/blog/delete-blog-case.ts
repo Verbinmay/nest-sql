@@ -1,5 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
+import { Blog } from '../../../entities/sql/blog.entity';
 import { BlogRepository } from '../../../sql/blog.repository';
 
 export class DeleteBlogCommand {
@@ -11,13 +12,15 @@ export class DeleteBlogCase implements ICommandHandler<DeleteBlogCommand> {
   constructor(private readonly blogRepository: BlogRepository) {}
 
   async execute(command: DeleteBlogCommand) {
-    const blog = await this.blogRepository.findBlogById(command.blogId);
+    const blog: Blog = await this.blogRepository.findBlogById(command.blogId);
     if (!blog) return { s: 404 };
     if (blog.user.id !== command.userId) return { s: 403 };
 
-    const deletedBlog = await this.blogRepository.delete(command.blogId);
+    const deletedBlog: boolean = await this.blogRepository.delete(
+      command.blogId,
+    );
 
-    if (!(deletedBlog.affected > 0)) {
+    if (deletedBlog === false) {
       return { s: 500 };
     }
     return deletedBlog;

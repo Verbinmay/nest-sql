@@ -78,8 +78,10 @@ export class PostRepository {
     });
   }
 
-  async delete(id: string) {
-    return await this.postsRepository.delete({ id: id });
+  async delete(id: string): Promise<boolean> {
+    const result = await this.postsRepository.delete({ id: id });
+
+    return result.affected > 0;
   }
 
   async banPostByUserId(userId: string, isBanned: boolean) {

@@ -4,14 +4,11 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ViewBlogDto } from '../../blogger/dto/blog/view-blog.dto';
 import { SAViewBlogDto } from '../../sa/dto/blog/sa-view-blog.dto';
-import { BanedUser } from './blogsBannedUsers.entity';
-import { Post } from './post.entity';
 import { User } from './user.entity';
 
 @Entity()
@@ -56,7 +53,7 @@ export class Blog {
 
 export function getBlogViewModel(blog: Blog): ViewBlogDto {
   const result = {
-    id: blog.id.toString(),
+    id: blog.id,
     name: blog.name,
     description: blog.description,
     websiteUrl: blog.websiteUrl,
@@ -67,7 +64,7 @@ export function getBlogViewModel(blog: Blog): ViewBlogDto {
 }
 export function SAgetViewModel(blog: Blog): SAViewBlogDto {
   const result = {
-    id: blog.id.toString(),
+    id: blog.id,
     name: blog.name,
     description: blog.description,
     websiteUrl: blog.websiteUrl,

@@ -33,7 +33,8 @@ export class UpdatePostCase implements ICommandHandler<UpdatePostCommand> {
     post.title = command.inputModel.title;
     post.shortDescription = command.inputModel.shortDescription;
     post.content = command.inputModel.content;
-
-    return await this.postRepository.update(post);
+    const result = await this.postRepository.update(post);
+    if (!result) return { s: 500 };
+    return true;
   }
 }

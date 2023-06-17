@@ -36,29 +36,13 @@ export class GetCommentsWithPostInfoByUserIdCase
       command.userId,
     );
 
-    const commentsFromDbWithPagination: PaginatorEnd & {
-      items: Array<Comment>;
-    } = await this.commentQueryRepository.getCommentsByPostsId(
-      command.query,
-      postsFromDb.map((p) => p.id),
-    );
-
-    const likesCommentsFromDb: Array<CommentLike> =
-      await this.likeCommentRepository.findLikesForComments(
-        commentsFromDbWithPagination.items,
+    const result: PaginatorCommentWithWithPostInfoViewModel =
+      await this.commentQueryRepository.getCommentsWithPostInfoByPostsId(
+        command.query,
+        postsFromDb.map((p) => p.id),
+        command.userId,
       );
 
-    const result: PaginatorCommentWithWithPostInfoViewModel = {
-      ...commentsFromDbWithPagination,
-      items: commentsFromDbWithPagination.items.map((c) =>
-        getCommentWithPostInfoViewModel(
-          c,
-          likesCommentsFromDb,
-          postsFromDb,
-          command.userId,
-        ),
-      ),
-    };
     return result;
   }
 }

@@ -28,10 +28,12 @@ export class DeletePostCase implements ICommandHandler<DeletePostCommand> {
       command.postId,
     );
     if (!post) return { s: 404 };
-    const postDelete = await this.postRepository.delete(command.postId);
-    if (!(postDelete.affected > 0)) {
+    const postDelete: boolean = await this.postRepository.delete(
+      command.postId,
+    );
+    if (postDelete === false) {
       return { s: 500 };
     }
-    return postDelete;
+    return true;
   }
 }

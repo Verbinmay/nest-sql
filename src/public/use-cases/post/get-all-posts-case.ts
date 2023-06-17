@@ -18,20 +18,11 @@ export class GetAllPostsCase implements ICommandHandler<GetAllPostsCommand> {
   ) {}
 
   async execute(command: GetAllPostsCommand) {
-    const postsWithPaginator = await this.postRepository.findAllPosts(
+    const result: PaginatorPost = await this.postRepository.findAllPosts(
       command.query,
+      command.userId,
     );
 
-    const likes = await this.likePostRepository.findLikesForPosts(
-      postsWithPaginator.items,
-    );
-
-    const result: PaginatorPost = {
-      ...postsWithPaginator,
-      items: postsWithPaginator.items.map((p) =>
-        getPostViewModel(p, likes, command.userId),
-      ),
-    };
     return result;
   }
 }

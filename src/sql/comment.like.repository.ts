@@ -28,14 +28,16 @@ export class LikeCommentRepository {
     });
   }
 
-  async findLikeByUserId(userId: string) {
+  async findLikeByUserId(userId: string, commentId: string) {
     try {
       return await this.commentLikesRepository.findOne({
         relations: {
           user: true,
+          comment: true,
         },
         where: {
           user: { id: userId },
+          comment: { id: commentId },
         },
       });
     } catch (error) {

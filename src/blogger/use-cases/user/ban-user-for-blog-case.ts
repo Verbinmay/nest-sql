@@ -43,6 +43,7 @@ export class BanUserForBlogByUserIdCase
       );
 
     if (userBanIsBaned && command.inputModel.isBanned === false) {
+      //TODO это работает вообще ?
       await this.banedUsersBlogsRepository.deleteBanedUserByBlogId(
         userBan.id,
         blog.id,

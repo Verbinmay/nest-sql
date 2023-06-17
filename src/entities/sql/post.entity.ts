@@ -62,39 +62,33 @@ export class Post {
 
   @OneToMany(() => PostLike, (postLike) => postLike.post)
   likes: PostLike[];
+
+  // @OneToMany(() => Comment, (comment) => comment.post)
+  // comments: Comment[];
 }
 
-export function getPostViewModel(
-  post: Post,
-  likes: Array<PostLike>,
-  userId: string,
-): ViewPostDto {
+export function getPostViewModel(post: Post, userId: string): ViewPostDto {
   let status: 'None' | 'Like' | 'Dislike' = 'None';
   let likesCount = 0;
   let dislikeCount = 0;
   let newestLikes = [];
-  if (likes.length !== 0) {
-    const like = likes.find((m) => m.user.id === userId);
+  if (post.likes.length !== 0) {
+    const like = post.likes.find((m) => m.user.id === userId);
     if (like) status = like.status;
 
-    likesCount = likes.filter(
-      (m) =>
-        m.status === 'Like' && m.isBanned === false && m.post.id === post.id,
+    likesCount = post.likes.filter(
+      (m) => m.status === 'Like' && m.isBanned === false,
     ).length;
 
-    dislikeCount = likes.filter(
-      (m) =>
-        m.status === 'Dislike' && m.isBanned === false && m.post.id === post.id,
+    dislikeCount = post.likes.filter(
+      (m) => m.status === 'Dislike' && m.isBanned === false,
     ).length;
 
-    newestLikes = likes
-      .filter(
-        (m) =>
-          m.status === 'Like' && m.isBanned === false && m.post.id === post.id,
-      )
+    newestLikes = post.likes
+      .filter((m) => m.status === 'Like' && m.isBanned === false)
       .sort((a, b) => {
-        const dateA = new Date(a.addedAt).getTime();
-        const dateB = new Date(b.addedAt).getTime();
+        const dateA = a.addedAt.getTime();
+        const dateB = b.addedAt.getTime();
         return dateA - dateB;
       })
       .slice(-3)

@@ -26,7 +26,9 @@ export class UpdateBlogCase implements ICommandHandler<UpdateBlogCommand> {
     blog.name = command.inputModel.name;
     blog.description = command.inputModel.description;
     blog.websiteUrl = command.inputModel.websiteUrl;
-    this.blogRepository.update(blog);
-    return this.blogRepository.update(blog);
+    const updatedBlog = await this.blogRepository.update(blog);
+
+    if (!updatedBlog) return { s: 500 };
+    return true;
   }
 }
