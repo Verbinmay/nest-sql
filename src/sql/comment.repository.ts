@@ -18,7 +18,7 @@ export class CommentRepository {
         relations: {
           post: true,
           user: true,
-          likes: true,
+          likes: { user: true },
         },
         where: { id: id },
       });

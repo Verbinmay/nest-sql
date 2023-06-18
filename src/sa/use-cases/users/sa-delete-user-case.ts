@@ -17,7 +17,7 @@ export class SA_DeleteUserCase
     if (!user) {
       return { s: 404 };
     }
-    const userDelete = await this.userRepository.delete(user);
+    const userDelete = await this.userRepository.delete(user.id);
     // if (!(userDelete.affected > 0)) {
     //   return { s: 500 };
     // }

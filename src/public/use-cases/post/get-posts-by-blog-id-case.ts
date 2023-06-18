@@ -3,6 +3,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Blog } from '../../../entities/sql/blog.entity';
 import { getPostViewModel } from '../../../entities/sql/post.entity';
 import { PaginationQuery } from '../../../pagination/base-pagination';
+import { PaginatorPost } from '../../../pagination/paginatorType';
 import { BlogRepository } from '../../../sql/blog.repository';
 import { LikePostRepository } from '../../../sql/post.like.repository';
 import { PostQueryRepository } from '../../../sql/post.query.repository';
@@ -33,20 +34,13 @@ export class GetAllPostsByBlogIdCase
       return { s: 404 };
     }
 
-    const postsWithPaginator = await this.postRepository.findPostsByBlogId(
-      command.query,
-      command.blogId,
-    );
+    const postsWithPaginator: PaginatorPost =
+      await this.postRepository.findPostsByBlogId(
+        command.query,
+        command.blogId,
+        command.userId,
+      );
 
-    const likes = await this.likePostRepository.findLikesForPosts(
-      postsWithPaginator.items,
-    );
-
-    return {
-      ...postsWithPaginator,
-      items: postsWithPaginator.items.map((p) =>
-        getPostViewModel(p, likes, command.userId),
-      ),
-    };
+    return postsWithPaginator;
   }
 }

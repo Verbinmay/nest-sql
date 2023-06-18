@@ -25,12 +25,13 @@ export class LikePostRepository {
     return await this.likesPostRepository.delete({ id: likeId });
   }
 
-  async findLikeByUserId(userId: string) {
+  async findLikeByUserId(userId: string, postId: string) {
     try {
       return await this.likesPostRepository.findOne({
-        relations: { user: true },
+        relations: { user: true, post: true },
         where: {
           user: { id: userId },
+          post: { id: postId },
         },
       });
     } catch (error) {

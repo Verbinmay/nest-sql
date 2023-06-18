@@ -6,7 +6,7 @@ import { makeAnswerInController } from '../../helpers/errors';
 import { PaginationQuery } from '../../pagination/base-pagination';
 import { GetAllBlogsCommand } from '../use-cases/blog/get-all-blogs-case';
 import { GetBlogByBlogIdCommand } from '../use-cases/blog/get-blog-by-blog-id-case';
-import { GetAllPostsByBlogIdCommand } from '../use-cases/post/get-post-by-blog-id-case';
+import { GetAllPostsByBlogIdCommand } from '../use-cases/post/get-posts-by-blog-id-case';
 
 @Controller('blogs')
 export class BlogController {

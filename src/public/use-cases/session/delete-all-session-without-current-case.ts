@@ -17,7 +17,7 @@ export class DeleteAllSessionsWithoutCurrentCase
       command.userId,
       command.deviceId,
     );
-    if (!(sessionsDelete.affected > 0)) {
+    if (sessionsDelete === false) {
       return { s: 404 };
     }
     return true;

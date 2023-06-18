@@ -21,9 +21,7 @@ export class GetPostByIdCase implements ICommandHandler<GetPostByIdCommand> {
     if (!post || post.isBanned === true) {
       return { s: 404 };
     }
-    const likes: Array<PostLike> =
-      await this.likePostRepository.findLikesForPosts([post]);
 
-    return getPostViewModel(post, likes, command.userId);
+    return getPostViewModel(post, command.userId);
   }
 }

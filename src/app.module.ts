@@ -65,7 +65,7 @@ import { PasswordRecoveryCase } from './public/use-cases/auth/password-recovery-
 import { RegistrationCase } from './public/use-cases/auth/registration-case';
 import { ResendingEmailCase } from './public/use-cases/auth/resending-email-case';
 import { PostQueryRepository } from './sql/post.query.repository';
-import { GetAllPostsByBlogIdCase } from './public/use-cases/post/get-post-by-blog-id-case';
+import { GetAllPostsByBlogIdCase } from './public/use-cases/post/get-posts-by-blog-id-case';
 import { BlogController } from './public/controllers/blog.controller';
 import { CommentController } from './public/controllers/comment.controller';
 import { PostController } from './public/controllers/post.controller';

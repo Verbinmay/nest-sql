@@ -47,7 +47,7 @@ export class SessionRepository {
       user: { id: userId },
       deviceId: Not(Equal(deviceId)),
     });
-    return result;
+    return result.affected > 0;
   }
 
   async deleteAllByUserId(userId: string) {

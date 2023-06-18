@@ -28,7 +28,7 @@ export class BanedUsersBlogsQueryRepository {
 
     const pagesCount = query.countPages(totalCount);
     if (query.sortBy === 'login') query.sortBy = 'userLogin';
-
+    //TODO ошибка связанная с тем, что login теперь в юзере и как сортировать хз
     const usersFromDB: Array<BanedUser> = await this.banedUsersRepository.find({
       relations: { blog: true, user: true },
       where: {

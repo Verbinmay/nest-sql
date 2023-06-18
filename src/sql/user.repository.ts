@@ -52,8 +52,8 @@ export class UserRepository {
     }
   }
 
-  async delete(user: User) {
-    return await this.usersRepository.remove(user);
+  async delete(userId: string) {
+    return await this.usersRepository.delete(userId);
   }
 
   async findUserByLoginOrEmail(loginOrEmail: string) {
