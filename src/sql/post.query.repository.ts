@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { Repository, createQueryBuilder } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -64,14 +64,21 @@ export class PostQueryRepository {
 
     const pagesCount = query.countPages(totalCount);
 
+    let orderInfo: any = {
+      [query.sortBy]: query.sortDirection,
+    };
+
+    if (query.sortBy === 'blogName')
+      orderInfo = { blog: { name: query.sortDirection } };
+    if (query.sortBy === 'blogId')
+      orderInfo = { blog: { id: query.sortDirection } };
+
     const postsFromDB: Array<Post> = await this.postsRepository.find({
       relations: { blog: true, user: true, likes: { user: true } },
       where: {
         isBanned: false,
       },
-      order: {
-        [query.sortBy]: query.sortDirection,
-      },
+      order: orderInfo,
       skip: query.skip(),
       take: query.pageSize,
     });

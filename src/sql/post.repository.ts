@@ -93,7 +93,6 @@ export class PostRepository {
 
   async banPostByBlogId(blogId: string, isBanned: boolean) {
     return await this.postsRepository.update(
-      //TODO ???
       { blog: { id: blogId } },
       { isBanned: isBanned },
     );

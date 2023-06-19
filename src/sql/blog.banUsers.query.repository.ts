@@ -27,7 +27,13 @@ export class BanedUsersBlogsQueryRepository {
     });
 
     const pagesCount = query.countPages(totalCount);
-    if (query.sortBy === 'login') query.sortBy = 'userLogin';
+
+    let orderInfo: any = {
+      [query.sortBy]: query.sortDirection,
+    };
+    console.log(query);
+    if (query.sortBy === 'login')
+      orderInfo = { user: { login: query.sortDirection } };
     //TODO ошибка связанная с тем, что login теперь в юзере и как сортировать хз
     const usersFromDB: Array<BanedUser> = await this.banedUsersRepository.find({
       relations: { blog: true, user: true },
@@ -35,9 +41,7 @@ export class BanedUsersBlogsQueryRepository {
         blog: { id: blogId },
       },
       // ошибка из за того, что тут нет дефолтного значения для сортировки
-      order: {
-        [query.sortBy]: query.sortDirection,
-      },
+      order: orderInfo,
       skip: query.skip(),
       take: query.pageSize,
     });

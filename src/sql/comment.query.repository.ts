@@ -41,9 +41,20 @@ export class CommentQueryRepository {
 
     const pagesCount = query.countPages(totalCount);
 
+    let orderInfo: any = {
+      [query.sortBy]: query.sortDirection,
+    };
+
+    if (query.sortBy === 'blogName')
+      orderInfo = { post: { blog: { name: query.sortDirection } } };
+    if (query.sortBy === 'blogId')
+      orderInfo = { post: { blog: { id: query.sortDirection } } };
+    if (query.sortBy === 'userLogin')
+      orderInfo = { user: { login: query.sortDirection } };
+
     const commentsFromDB: Array<Comment> = await this.commentsRepository.find({
       relations: {
-        post: true,
+        post: { blog: true },
         user: true,
         likes: { comment: true, user: true },
       },
@@ -51,9 +62,7 @@ export class CommentQueryRepository {
         post: { id: In(postsId) },
         isBanned: false,
       },
-      order: {
-        [query.sortBy]: query.sortDirection,
-      },
+      order: orderInfo,
       skip: query.skip(),
       take: query.pageSize,
     });

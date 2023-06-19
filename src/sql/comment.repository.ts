@@ -14,7 +14,6 @@ export class CommentRepository {
   async findById(id: string) {
     try {
       return await this.commentRepository.findOne({
-        //TODO это говно тоже работает ?
         relations: {
           post: true,
           user: true,
