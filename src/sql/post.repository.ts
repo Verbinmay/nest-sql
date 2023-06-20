@@ -11,7 +11,7 @@ export class PostRepository {
     @InjectRepository(Post) private readonly postsRepository: Repository<Post>,
   ) {}
 
-  async create(post: Post) {
+  async create(post: Post): Promise<Post> {
     await this.postsRepository.create(post);
     return await this.postsRepository.save(post);
   }

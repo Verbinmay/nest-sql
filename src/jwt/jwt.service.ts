@@ -13,14 +13,14 @@ export class JWTService {
   async createJWTAccessToken(id: string) {
     return this.jwt.sign(
       { sub: id },
-      { secret: process.env.JWT_SECRET, expiresIn: '10s' },
+      { secret: process.env.JWT_SECRET, expiresIn: '100m' },
     );
   }
 
   async createJWTRefreshToken(a: { deviceId: string; sub: string }) {
     return this.jwt.sign(
       { deviceId: a.deviceId, sub: a.sub },
-      { secret: process.env.JWT_SECRET, expiresIn: '20s' },
+      { secret: process.env.JWT_SECRET, expiresIn: '200m' },
     );
   }
 
