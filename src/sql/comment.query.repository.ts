@@ -6,7 +6,6 @@ import {
 import {
   PaginatorCommentWithLikeViewModel,
   PaginatorCommentWithWithPostInfoViewModel,
-  PaginatorEnd,
 } from '../pagination/paginatorType';
 import { In, Repository } from 'typeorm';
 

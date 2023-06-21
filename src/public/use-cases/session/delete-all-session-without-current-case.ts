@@ -13,10 +13,11 @@ export class DeleteAllSessionsWithoutCurrentCase
   constructor(private readonly sessionRepository: SessionRepository) {}
 
   async execute(command: DeleteAllSessionsWithoutCurrentCommand) {
-    const sessionsDelete = await this.sessionRepository.deleteAllWithoutCurrent(
-      command.userId,
-      command.deviceId,
-    );
+    const sessionsDelete =
+      await this.sessionRepository.deleteSessionsExceptCurrent(
+        command.userId,
+        command.deviceId,
+      );
     if (sessionsDelete === false) {
       return { s: 404 };
     }

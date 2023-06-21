@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { getPostViewModel } from '../../../entities/sql/post.entity';
 import { PaginationQuery } from '../../../pagination/base-pagination';
 import { PaginatorPost } from '../../../pagination/paginatorType';
 import { LikePostRepository } from '../../../sql/post.like.repository';

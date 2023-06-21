@@ -1,7 +1,6 @@
 import { In, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Post } from '../entities/sql/post.entity';

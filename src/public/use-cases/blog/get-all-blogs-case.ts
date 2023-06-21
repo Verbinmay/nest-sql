@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { ViewBlogDto } from '../../../blogger/dto/blog/view-blog.dto';
 import { PaginationQuery } from '../../../pagination/base-pagination';
 import { PaginatorBlog } from '../../../pagination/paginatorType';
 import { BlogQueryRepository } from '../../../sql/blog.query.repository';

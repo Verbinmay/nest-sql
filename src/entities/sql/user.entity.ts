@@ -3,7 +3,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -11,13 +10,6 @@ import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 
 import { SAViewUserDto } from '../../sa/dto/user/sa-view-user.dto';
-import { Blog } from './blog.entity';
-import { BanedUser } from './blogsBannedUsers.entity';
-import { Comment } from './comment.entity';
-import { CommentLike } from './comment.like.entity';
-import { Post } from './post.entity';
-import { PostLike } from './post.like.entity';
-import { Session } from './session.entity';
 
 @Entity()
 export class User {

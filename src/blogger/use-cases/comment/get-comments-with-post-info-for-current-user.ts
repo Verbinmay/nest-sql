@@ -1,14 +1,6 @@
-import {
-  PaginatorCommentWithWithPostInfoViewModel,
-  PaginatorEnd,
-} from '../../../pagination/paginatorType';
-import {
-  Comment,
-  getCommentWithPostInfoViewModel,
-} from '../../../entities/sql/comment.entity';
+import { PaginatorCommentWithWithPostInfoViewModel } from '../../../pagination/paginatorType';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { CommentLike } from '../../../entities/sql/comment.like.entity';
 import { Post } from '../../../entities/sql/post.entity';
 import { PaginationQuery } from '../../../pagination/base-pagination';
 import { LikeCommentRepository } from '../../../sql/comment.like.repository';

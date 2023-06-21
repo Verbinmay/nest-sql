@@ -6,11 +6,9 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
-  BeforeRemove,
 } from 'typeorm';
 import { ViewPostDto } from '../../public/dto/post/view-post.dto';
 import { Blog } from './blog.entity';
-import { Comment } from './comment.entity';
 import { PostLike } from './post.like.entity';
 import { User } from './user.entity';
 

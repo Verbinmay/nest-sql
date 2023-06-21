@@ -1,4 +1,4 @@
-import { Repository, createQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,7 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ViewPostDto } from '../public/dto/post/view-post.dto';
 import { Post, getPostViewModel } from '../entities/sql/post.entity';
 import { PaginationQuery } from '../pagination/base-pagination';
-import { PaginatorEnd, PaginatorPost } from '../pagination/paginatorType';
+import { PaginatorPost } from '../pagination/paginatorType';
 
 @Injectable()
 export class PostQueryRepository {

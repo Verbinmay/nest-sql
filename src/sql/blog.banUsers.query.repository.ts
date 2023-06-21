@@ -2,7 +2,7 @@ import {
   BanedUser,
   getBannedUserViewModel,
 } from '../entities/sql/blogsBannedUsers.entity';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';

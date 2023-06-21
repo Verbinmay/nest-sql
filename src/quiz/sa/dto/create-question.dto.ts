@@ -1,11 +1,4 @@
-import {
-  ArrayNotEmpty,
-  IsArray,
-  IsNotEmpty,
-  IsNumberString,
-  IsString,
-  Length,
-} from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsString, Length } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateQuestionDto {

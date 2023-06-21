@@ -3,7 +3,7 @@ import {
   SAgetViewModel,
   getBlogViewModel,
 } from '../entities/sql/blog.entity';
-import { ILike, Like, Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';

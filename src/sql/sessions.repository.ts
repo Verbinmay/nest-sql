@@ -42,7 +42,7 @@ export class SessionRepository {
     return result != null;
   }
 
-  async deleteAllWithoutCurrent(userId: string, deviceId: string) {
+  async deleteSessionsExceptCurrent(userId: string, deviceId: string) {
     const result = await this.sessionsRepository.delete({
       user: { id: userId },
       deviceId: Not(Equal(deviceId)),

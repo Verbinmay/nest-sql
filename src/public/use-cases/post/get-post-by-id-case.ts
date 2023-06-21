@@ -1,7 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { getPostViewModel } from '../../../entities/sql/post.entity';
-import { PostLike } from '../../../entities/sql/post.like.entity';
 import { LikePostRepository } from '../../../sql/post.like.repository';
 import { PostRepository } from '../../../sql/post.repository';
 
