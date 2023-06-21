@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { CreateQuestionDto } from '../dto/create-question.dto';
 import { Question, SA_GetQuestionViewModel } from '../entities/question.entity';
-import { QuestionRepository } from '../repositories/blog.repository';
+import { QuestionRepository } from '../repositories/question.quiz.repository';
 
 export class SA_CreateQuestionCommand {
   constructor(public inputModel: CreateQuestionDto) {}

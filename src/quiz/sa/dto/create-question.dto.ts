@@ -2,25 +2,32 @@ import {
   ArrayNotEmpty,
   IsArray,
   IsNotEmpty,
+  IsNumberString,
   IsString,
   Length,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateQuestionDto {
-  @IsNotEmpty()
   @IsString()
-  @Transform(({ value }): string => value.trim())
+  @Transform(({ value }) => {
+    if (typeof value === 'number') {
+      return false;
+    }
+    return value.trim();
+  })
   @Length(10, 500)
   body: string;
 
   @IsArray()
   @ArrayNotEmpty()
-  @Transform(
-    ({ value }): Array<string> =>
-      value.forEach((item: string | number | boolean) =>
-        item.toString().trim(),
-      ),
-  )
+  @Transform(({ value }) => {
+    if (!Array.isArray(value)) {
+      return false;
+    }
+    return value.map((item: string | number | boolean) =>
+      item.toString().trim(),
+    );
+  })
   correctAnswers: Array<string>;
 }

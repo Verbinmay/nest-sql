@@ -95,6 +95,12 @@ import { ValidationBlogId } from './validation/validationBlogId';
 import { GetAllCommentsByPostIdCase } from './public/use-cases/comment/get-all-comments-by-post-id-case';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { SA_CreateQuestionCase } from './quiz/sa/use-cases/sa-create-question-case';
+import { SA_GetQuestionCase } from './quiz/sa/use-cases/sa-get-question-case';
+import { QuestionSAController } from './quiz/sa/controllers/question.sa.controller';
+import { QuestionRepository } from './quiz/sa/repositories/question.quiz.repository';
+import { Question } from './quiz/sa/entities/question.entity';
+import { SA_DeleteQuestionCase } from './quiz/sa/use-cases/sa-delete-question-case copy';
 
 const validations = [ValidationBlogId, ValidationLoginEmail];
 
@@ -158,6 +164,12 @@ const useCasesUser = [
   GetBannedUsersByBlogIdCase,
 ];
 
+const useCasesQuiz = [
+  SA_GetQuestionCase,
+  SA_CreateQuestionCase,
+  SA_DeleteQuestionCase,
+];
+
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
 
 @Module({
@@ -196,7 +208,9 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
           BanedUser,
           CommentLike,
           Comment,
+          Question,
         ],
+        autoLoadEntities: true,
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -210,6 +224,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
       Post,
       CommentLike,
       Comment,
+      Question,
     ]),
 
     // ThrottlerModule.forRoot({
@@ -231,6 +246,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     TestController,
     UserBloggersController,
     UserSAController,
+    QuestionSAController,
   ],
   providers: [
     // {
@@ -244,9 +260,11 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     ...useCasesSession /* кейсы */,
     ...useCasesUser /* кейсы */,
     ...useCasesAuth /* кейсы */,
+    ...useCasesQuiz /* кейсы */,
     ...validations /*валидаторы */,
     AppService,
     BlogRepository,
+    QuestionRepository,
     BlogQueryRepository,
     BanedUsersBlogsRepository,
     BanedUsersBlogsQueryRepository,

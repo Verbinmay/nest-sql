@@ -1,16 +1,11 @@
 import {
   banStatusVariates,
+  publishedStatusVariates,
   sortDirectionVariates,
   sortingByVariates,
 } from './paginatorType';
-import {
-  IsIn,
-  IsInt,
-  IsOptional,
-  IsString,
-  IsUppercase,
-} from 'class-validator';
 import { Transform } from 'class-transformer';
+import { IsIn, IsOptional, IsString } from 'class-validator';
 
 export class BasicPagination {
   @IsOptional()
@@ -66,6 +61,13 @@ export class PaginationQuery extends BasicPagination {
     message: ' ban status not exist',
   })
   banStatus: 'all' | 'banned' | 'notBanned' = 'all';
+  @IsString()
+  @IsOptional()
+  @Transform(({ value }) => value.toLowerCase())
+  @IsIn(publishedStatusVariates, {
+    message: ' ban status not exist',
+  })
+  publishedStatus: 'all' | 'published' | 'notPublished' = 'all';
 
   public createBanStatus() {
     switch (this.banStatus) {
@@ -77,16 +79,16 @@ export class PaginationQuery extends BasicPagination {
         return [false];
     }
   }
-  // public createBanStatus() {
-  //   switch (this.banStatus) {
-  //     case 'all':
-  //       return [true, false];
-  //     case 'banned':
-  //       return [true];
-  //     case 'notBanned':
-  //       return [false];
-  //   }
-  // }
+  public createPublishedStatus() {
+    switch (this.publishedStatus) {
+      case 'all':
+        return [true, false];
+      case 'published':
+        return [true];
+      case 'notPublished':
+        return [false];
+    }
+  }
 }
 
 function containsOnlyOneNumber(value): number {
