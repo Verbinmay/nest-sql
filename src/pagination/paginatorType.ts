@@ -34,3 +34,36 @@ export type PaginatorCommentWithWithPostInfoViewModel = PaginatorEnd & {
 export type PaginatorBannedUsersViewModel = PaginatorEnd & {
   items: Array<ViewBannedUserDto>;
 };
+
+export const sortDirectionVariates = ['ASC', 'DESC'];
+export const sortingByVariates = [
+  'id',
+  'name',
+  'description',
+  'websiteUrl',
+  'isMembership',
+  'userId',
+  'userLogin',
+  'title',
+  'blogId',
+  'blogName',
+  'likesCount',
+  'dislikesCount',
+  'login',
+  'isBanned',
+  'banDate',
+  'banReason',
+  'createdAt',
+  'shortDescription',
+  'content',
+  'addedAt',
+  'ip',
+  'lastActiveDate',
+  'deviceId',
+  'email',
+  'body',
+  'correctAnswers',
+  'published',
+  'updatedAt',
+];
+export const banStatusVariates = ['all', 'banned', 'notBanned'];

@@ -13,6 +13,7 @@ import { CommandBus } from '@nestjs/cqrs';
 
 import { BasicAuthGuard } from '../../../guard/auth-passport/guard-passport/basic-auth.guard';
 import { makeAnswerInController } from '../../../helpers/errors';
+import { PaginationQuery } from '../../../pagination/base-pagination';
 import { CreateQuestionDto as CreateQuestionDto } from '../dto/create-question.dto';
 import { SA_CreateQuestionCommand } from '../use-cases/sa-create-question-case';
 
@@ -31,7 +32,7 @@ export class QuestionSAController {
 
   // @UseGuards(BasicAuthGuard)
   // @Get()
-  // async SA_GetAllBlogs(@Query() query: PaginationQuery) {
+  // async SA_GetAllQuestions(@Query() query: PaginationQuery) {
   //   const result = await this.commandBus.execute(
   //     new SA_GetAllBlogsCommand(query),
   //   );
