@@ -67,9 +67,9 @@ export class QuestionRepository {
     return await this.questionsRepository.save(question);
   }
 
-  // async update(blog: Question): Promise<Question> {
-  //   return await this.questionsRepository.save(blog);
-  // }
+  async update(question: Question): Promise<Question> {
+    return await this.questionsRepository.save(question);
+  }
 
   async delete(id: string): Promise<boolean> {
     const result = await this.questionsRepository.delete({ id: id });

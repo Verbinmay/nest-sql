@@ -4,6 +4,7 @@ export const info = {
   blogs: '/blogs/',
   posts: '/posts/',
   ban: '/ban/',
+  publish: '/publish',
   comments: '/comments/',
   testingDelete: '/testing/all-data',
   test: { user: '/testing/user/' },
@@ -74,5 +75,10 @@ export function createQuestionInput() {
   return {
     body: faker.lorem.sentences(4),
     correctAnswers: faker.datatype.array(4),
+  };
+}
+export function createPublishedQuestionInput() {
+  return {
+    published: faker.datatype.boolean(),
   };
 }

@@ -1,8 +1,7 @@
 import {
   info,
-  createUserInput,
-  createBlogInput,
   createQuestionInput,
+  createPublishedQuestionInput,
 } from '../../../../test/functionTest';
 import supertest from 'supertest';
 
@@ -10,7 +9,6 @@ import { INestApplication } from '@nestjs/common';
 import { TestingModule, Test } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 
-import { ViewBlogDto } from '../../../blogger/dto/blog/view-blog.dto';
 import { createApp } from '../../../helpers/createApp';
 import { AppModule } from '../../../app.module';
 import { ViewQuestionDto } from '../dto/view-question.dto';
@@ -169,6 +167,127 @@ describe('questions-sa-tests-pack', () => {
         .expect(200);
 
       expect(getQuestionsResponse2.body.items.length).toBe(0);
+    });
+  });
+
+  describe('updateQuestions.sa', () => {
+    const questions: Array<Question> = [];
+    const newQuestionInput = createQuestionInput();
+    beforeAll(async () => {
+      await agent.delete(info.testingDelete);
+      const questionInput = createQuestionInput();
+      const questionsResponse = await agent
+        .post(info.sa.questions)
+        .auth(info.sa.saLogin, info.sa.saPassword)
+        .send(questionInput)
+        .expect(201);
+      questions.push(questionsResponse.body);
+    });
+
+    it('update question - 401', async () => {
+      const updateQuestionsResponse = await agent
+        .put(info.sa.questions + questions[0].id)
+        .send(newQuestionInput)
+        .expect(401);
+    });
+
+    it('update question - 404', async () => {
+      const updateQuestionsResponse = await agent
+        .put(info.sa.questions + faker.random.numeric)
+        .auth(info.sa.saLogin, info.sa.saPassword)
+        .send(newQuestionInput)
+        .expect(404);
+    });
+
+    it('update question - 400 - body', async () => {
+      const updateQuestionsResponse = await agent
+        .put(info.sa.questions + questions[0].id)
+        .auth(info.sa.saLogin, info.sa.saPassword)
+        .send({ ...newQuestionInput, body: faker.datatype.number() })
+        .expect(400);
+    });
+    it('update question - 400 - correctAnswers', async () => {
+      const updateQuestionsResponse = await agent
+        .put(info.sa.questions + questions[0].id)
+        .auth(info.sa.saLogin, info.sa.saPassword)
+        .send({ ...newQuestionInput, correctAnswers: faker.datatype.number() })
+        .expect(400);
+    });
+    it('update question - 204', async () => {
+      const updateQuestionsResponse = await agent
+        .put(info.sa.questions + questions[0].id)
+        .auth(info.sa.saLogin, info.sa.saPassword)
+        .send(newQuestionInput)
+        .expect(204);
+
+      const getQuestionsResponse2 = await agent
+        .get(info.sa.questions)
+        .auth(info.sa.saLogin, info.sa.saPassword)
+        .expect(200);
+
+      console.log(getQuestionsResponse2.body);
+      expect(getQuestionsResponse2.body.items[0].body).toBe(
+        newQuestionInput.body,
+      );
+      expect(getQuestionsResponse2.body.items[0].correctAnswers).toEqual(
+        newQuestionInput.correctAnswers.map((m) => m.toString()),
+      );
+    });
+  });
+
+  describe('updatePublishedQuestions.sa', () => {
+    const questions: Array<Question> = [];
+    const newQuestionInput = createPublishedQuestionInput();
+    beforeAll(async () => {
+      await agent.delete(info.testingDelete);
+      const questionInput = createQuestionInput();
+      const questionsResponse = await agent
+        .post(info.sa.questions)
+        .auth(info.sa.saLogin, info.sa.saPassword)
+        .send(questionInput)
+        .expect(201);
+      questions.push(questionsResponse.body);
+    });
+
+    it('update published question - 401', async () => {
+      const updatePublishedQuestionsResponse = await agent
+        .put(info.sa.questions + questions[0].id + info.publish)
+        .send(newQuestionInput)
+        .expect(401);
+    });
+
+    it('update published question - 404', async () => {
+      const updatePublishedQuestionsResponse = await agent
+        .put(info.sa.questions + faker.random.numeric + info.publish)
+        .auth(info.sa.saLogin, info.sa.saPassword)
+        .send(newQuestionInput)
+        .expect(404);
+    });
+
+    it('update published question - 400 - published', async () => {
+      const updateQuestionsResponse = await agent
+        .put(info.sa.questions + questions[0].id + info.publish)
+        .auth(info.sa.saLogin, info.sa.saPassword)
+        .send({ ...newQuestionInput, published: faker.datatype.number() })
+        .expect(400);
+    });
+
+    it('update published question - 204', async () => {
+      const updatePublishedQuestionsResponse = await agent
+        .put(info.sa.questions + questions[0].id + info.publish)
+        .auth(info.sa.saLogin, info.sa.saPassword)
+        .send(newQuestionInput)
+        .expect(204);
+
+      const getQuestionsResponse2 = await agent
+        .get(info.sa.questions)
+        .auth(info.sa.saLogin, info.sa.saPassword)
+        .expect(200);
+
+      console.log(getQuestionsResponse2.body);
+      expect(getQuestionsResponse2.body.items[0].published).toBe(
+        newQuestionInput.published,
+      );
     });
   });
 });

@@ -100,7 +100,9 @@ import { SA_GetQuestionCase } from './quiz/sa/use-cases/sa-get-question-case';
 import { QuestionSAController } from './quiz/sa/controllers/question.sa.controller';
 import { QuestionRepository } from './quiz/sa/repositories/question.quiz.repository';
 import { Question } from './quiz/sa/entities/question.entity';
-import { SA_DeleteQuestionCase } from './quiz/sa/use-cases/sa-delete-question-case copy';
+import { SA_DeleteQuestionCase } from './quiz/sa/use-cases/sa-delete-question-case';
+import { SA_UpdateQuestionCase } from './quiz/sa/use-cases/sa-update-question-case';
+import { SA_UpdatePublishQuestionCase } from './quiz/sa/use-cases/sa-update-published-question-case';
 
 const validations = [ValidationBlogId, ValidationLoginEmail];
 
@@ -168,6 +170,8 @@ const useCasesQuiz = [
   SA_GetQuestionCase,
   SA_CreateQuestionCase,
   SA_DeleteQuestionCase,
+  SA_UpdateQuestionCase,
+  SA_UpdatePublishQuestionCase,
 ];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
