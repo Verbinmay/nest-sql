@@ -11,8 +11,8 @@ import { faker } from '@faker-js/faker';
 
 import { createApp } from '../../../helpers/createApp';
 import { AppModule } from '../../../app.module';
+import { Question } from '../../entities/question.entity';
 import { ViewQuestionDto } from '../dto/view-question.dto';
-import { Question } from '../entities/question.entity';
 
 describe('questions-sa-tests-pack', () => {
   jest.setTimeout(1000 * 1000);

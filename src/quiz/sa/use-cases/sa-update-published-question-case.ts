@@ -1,9 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
+import { Question } from '../../entities/question.entity';
+import { QuestionRepository } from '../../repositories/question.quiz.repository';
 import { UpdatePublishedDto } from '../dto/update-published-question.dto';
-import { UpdateQuestionDto } from '../dto/update-question.dto';
-import { Question } from '../entities/question.entity';
-import { QuestionRepository } from '../repositories/question.quiz.repository';
 
 export class SA_UpdatePublishQuestionCommand {
   constructor(

@@ -3,6 +3,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -10,6 +12,7 @@ import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 
 import { SAViewUserDto } from '../../sa/dto/user/sa-view-user.dto';
+import { Pair } from '../../quiz/entities/pairs.entity';
 
 @Entity()
 export class User {
@@ -54,6 +57,13 @@ export class User {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @ManyToMany(() => Pair, {
+    cascade: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  public Pair: Array<Pair>;
 }
 
 export function SAGetViewModel(user: User): SAViewUserDto {

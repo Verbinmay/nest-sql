@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { Question } from '../entities/question.entity';
-import { QuestionRepository } from '../repositories/question.quiz.repository';
+import { Question } from '../../entities/question.entity';
+import { QuestionRepository } from '../../repositories/question.quiz.repository';
 
 export class SA_DeleteQuestionCommand {
   constructor(public questionId: string) {}

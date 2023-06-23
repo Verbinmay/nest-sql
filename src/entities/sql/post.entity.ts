@@ -26,21 +26,12 @@ export class Post {
   @Column()
   public content: string;
 
-  // @Column('uuid')
-  // public blogId: string;
-
-  // @Column()
-  // public blogName: string;
-
   @ManyToOne(() => Blog, {
     cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   blog: Blog;
-
-  // @Column('uuid')
-  // public userId: string;
 
   @ManyToOne(() => User, {
     cascade: true,

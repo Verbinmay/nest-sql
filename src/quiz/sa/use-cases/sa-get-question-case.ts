@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { PaginationQuery } from '../../../pagination/base-pagination';
 import { PaginatorQuestion } from '../../../pagination/paginatorType';
-import { QuestionRepository } from '../repositories/question.quiz.repository';
+import { QuestionRepository } from '../../repositories/question.quiz.repository';
 
 export class SA_GetQuestionCommands {
   constructor(public query: PaginationQuery) {}

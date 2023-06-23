@@ -98,11 +98,13 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { SA_CreateQuestionCase } from './quiz/sa/use-cases/sa-create-question-case';
 import { SA_GetQuestionCase } from './quiz/sa/use-cases/sa-get-question-case';
 import { QuestionSAController } from './quiz/sa/controllers/question.sa.controller';
-import { QuestionRepository } from './quiz/sa/repositories/question.quiz.repository';
-import { Question } from './quiz/sa/entities/question.entity';
+
 import { SA_DeleteQuestionCase } from './quiz/sa/use-cases/sa-delete-question-case';
 import { SA_UpdateQuestionCase } from './quiz/sa/use-cases/sa-update-question-case';
 import { SA_UpdatePublishQuestionCase } from './quiz/sa/use-cases/sa-update-published-question-case';
+import { Question } from './quiz/entities/question.entity';
+import { QuestionRepository } from './quiz/repositories/question.quiz.repository';
+import { CreateConnectionCase } from './quiz/public/use-cases/create-connection-case';
 
 const validations = [ValidationBlogId, ValidationLoginEmail];
 
@@ -172,6 +174,7 @@ const useCasesQuiz = [
   SA_DeleteQuestionCase,
   SA_UpdateQuestionCase,
   SA_UpdatePublishQuestionCase,
+  CreateConnectionCase,
 ];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];

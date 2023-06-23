@@ -3,9 +3,9 @@ import { ILike, In, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { PaginationQuery } from '../../../pagination/base-pagination';
-import { PaginatorQuestion } from '../../../pagination/paginatorType';
-import { ViewQuestionDto } from '../dto/view-question.dto';
+import { PaginationQuery } from '../../pagination/base-pagination';
+import { PaginatorQuestion } from '../../pagination/paginatorType';
+import { ViewQuestionDto } from '../sa/dto/view-question.dto';
 import { Question, SA_GetQuestionViewModel } from '../entities/question.entity';
 
 @Injectable()
@@ -79,5 +79,15 @@ export class QuestionRepository {
 
   async deleteAll() {
     return await this.questionsRepository.delete({});
+  }
+
+  async findRandomQuestions() {
+    const questionsFromDB: Array<Question> = await this.questionsRepository
+      .createQueryBuilder('question')
+      .where('question.published = true')
+      .addOrderBy('RANDOM()')
+      .take(5)
+      .getMany();
+    return questionsFromDB;
   }
 }

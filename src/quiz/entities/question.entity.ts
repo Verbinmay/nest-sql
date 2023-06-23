@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ViewQuestionDto } from '../dto/view-question.dto';
+import { ViewQuestionDto } from '../sa/dto/view-question.dto';
 
 @Entity()
 export class Question {
@@ -21,8 +21,8 @@ export class Question {
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
-  @UpdateDateColumn()
-  public updatedAt: Date;
+  @UpdateDateColumn({ nullable: true })
+  public updatedAt: Date | null = null;
 
   @Column({ type: 'boolean', default: false })
   public published = false;
@@ -35,7 +35,7 @@ export function SA_GetQuestionViewModel(question: Question): ViewQuestionDto {
     correctAnswers: question.answers,
     published: question.published,
     createdAt: question.createdAt.toISOString(),
-    updatedAt: question.updatedAt.toISOString(),
+    updatedAt: question.updatedAt ? question.updatedAt.toISOString() : null,
   };
   return result;
 }
