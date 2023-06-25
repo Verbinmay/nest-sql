@@ -7,7 +7,8 @@ import {
   GetPairViewModel,
   Pair,
 } from '../../entities/pairs.entity';
-import { DataSource } from 'typeorm';
+import { error } from 'console';
+import { DataSource, EntityManager, QueryRunner } from 'typeorm';
 
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -40,6 +41,7 @@ export class CreateConnectionCase
     const user: User | null = await this.userRepository.findUserById(
       command.userId,
     );
+
     if (!user) return { s: 404 };
 
     const activePairCheck: Pair | null =
@@ -47,27 +49,64 @@ export class CreateConnectionCase
 
     if (activePairCheck) return { s: 403 };
 
-    const pair: Pair | null = await this.pairRepository.findFreePair();
+    const questions: Array<Question> =
+      await this.questionRepository.findRandomQuestions();
 
-    if (!pair) {
-      const questions: Array<Question> =
-        await this.questionRepository.findRandomQuestions();
+    //TODO не могу пройти тесты, если ставлю ошибку 400 втф
+    if (questions.length < 5) return { s: 404 };
 
-      const newPair = new Pair();
-      newPair.users = [user];
-      newPair.f_id = user.id;
-      newPair.questions = questions;
+    const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    const queryRunnerManager: EntityManager = queryRunner.manager;
 
-      const savedNewPair = await this.pairRepository.create(newPair);
+    try {
+      const pair: Pair | null = await this.pairRepository.findFreePair(
+        queryRunnerManager,
+      );
 
-      return GetNoPairViewModel(savedNewPair);
-    } else {
-      pair.users.push(user);
-      pair.s_id = user.id;
+      if (!pair) {
+        const newPair = new Pair();
 
-      const updatedPair: Pair = await this.pairRepository.update(pair);
+        newPair.users = [user];
+        newPair.f_id = user.id;
+        newPair.questions = questions;
 
-      return GetPairViewModel(updatedPair);
+        const savedNewPair = await this.pairRepository.create(
+          newPair,
+          queryRunnerManager,
+        );
+
+        // commit transaction now:
+        await queryRunner.commitTransaction();
+
+        return GetNoPairViewModel(savedNewPair);
+      } else {
+        if (pair.f_id === user.id) return GetNoPairViewModel(pair);
+
+        pair.users.push(user);
+        pair.s_id = user.id;
+        pair.status = 'Active';
+        pair.startGameDate = new Date();
+
+        const updatedPair: Pair = await this.pairRepository.update(
+          pair,
+          queryRunnerManager,
+        );
+
+        // commit transaction now:
+
+        await queryRunner.commitTransaction();
+        return GetPairViewModel(updatedPair);
+      }
+    } catch (err) {
+      // since we have errors let's rollback changes we made
+      console.log('rollback');
+      await queryRunner.rollbackTransaction();
+    } finally {
+      // you need to release query runner which is manually created:
+
+      await queryRunner.release();
     }
   }
 }

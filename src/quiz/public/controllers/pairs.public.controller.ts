@@ -16,13 +16,16 @@ import { JwtAuthGuard } from '../../../guard/auth-passport/guard-passport/jwt-au
 import { CurrentPayload } from '../../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../../helpers/errors';
 import { CreateConnectionCommand } from '../use-cases/create-connection-case';
+import { GetGameByIdCommand } from '../use-cases/get-game-by-id-case';
+import { GetUnfinishedGameCommand } from '../use-cases/get-unfineshed-game-case';
 
 @Controller('pair-game-quiz/pairs')
-export class QuestionSAController {
+export class PairController {
   constructor(private commandBus: CommandBus) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Post('connection')
+  @HttpCode(200)
   async createConnection(@CurrentPayload() payload) {
     const userId = payload ? payload.sub : '';
     const result = await this.commandBus.execute(
@@ -31,23 +34,24 @@ export class QuestionSAController {
     return makeAnswerInController(result);
   }
 
-  // @UseGuards(BasicAuthGuard)
-  // @Post()
-  // async SA_CreateQuestion(@Body() inputModel: CreateQuestionDto) {
-  //   const result = await this.commandBus.execute(
-  //     new SA_CreateQuestionCommand(inputModel),
-  //   );
-  //   return makeAnswerInController(result);
-  // }
-
-  // @UseGuards(BasicAuthGuard)
-  // @Get()
-  // async SA_GetQuestion(@Query() query: PaginationQuery) {
-  //   const result = await this.commandBus.execute(
-  //     new SA_GetQuestionCommands(query),
-  //   );
-  //   return makeAnswerInController(result);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Get('my-current')
+  async findUnfinishedGame(@CurrentPayload() payload) {
+    const userId = payload ? payload.sub : '';
+    const result = await this.commandBus.execute(
+      new GetUnfinishedGameCommand(userId),
+    );
+    return makeAnswerInController(result);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findGameById(@Param('id') gameId: string, @CurrentPayload() payload) {
+    const userId = payload ? payload.sub : '';
+    const result = await this.commandBus.execute(
+      new GetGameByIdCommand(gameId, userId),
+    );
+    return makeAnswerInController(result);
+  }
 
   // @UseGuards(BasicAuthGuard)
   // @Delete(':id')

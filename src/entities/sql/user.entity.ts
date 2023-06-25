@@ -61,7 +61,8 @@ export class User {
   @ManyToMany(() => Pair, {
     cascade: true,
     onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
+    onUpdate: 'SET NULL',
+    nullable: true,
   })
   public Pair: Array<Pair>;
 }

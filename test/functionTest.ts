@@ -8,6 +8,11 @@ export const info = {
   comments: '/comments/',
   testingDelete: '/testing/all-data',
   test: { user: '/testing/user/' },
+  pairs: {
+    connection: '/pair-game-quiz/pairs/connection',
+    myCurrent: '/pair-game-quiz/pairs/my-current',
+    pairs: '/pair-game-quiz/pairs/',
+  },
   like: '/like-status/',
   auth: {
     resendingConfirmation: '/auth/registration-email-resending',

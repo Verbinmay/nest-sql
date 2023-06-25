@@ -21,8 +21,9 @@ export class Pair {
 
   @ManyToMany(() => User, {
     cascade: true,
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    nullable: true,
   })
   @JoinTable()
   public users: Array<User>;
@@ -32,18 +33,19 @@ export class Pair {
 
   @Column('uuid')
   public f_id: string;
-  @Column('number', { default: 0 })
+  @Column('integer', { default: 0 })
   public f_score = 0;
 
   @Column('uuid', { nullable: true, default: null })
   public s_id: string = null;
-  @Column('number')
+  @Column('integer')
   public s_score = 0;
 
   @ManyToMany(() => Question, {
     cascade: true,
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    nullable: true,
   })
   @JoinTable()
   public questions: Array<Question>;
@@ -116,7 +118,9 @@ export function GetPairViewModel(pair: Pair): ViewPairDto {
     status: pair.status,
     pairCreatedDate: pair.pairCreatedDate.toISOString(),
     startGameDate: pair.startGameDate.toISOString(),
-    finishGameDate: pair.finishGameDate.toISOString(),
+    finishGameDate: pair.finishGameDate
+      ? pair.finishGameDate.toISOString()
+      : null,
   };
   return result;
 }

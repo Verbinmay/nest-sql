@@ -1,6 +1,7 @@
 import { Controller, Delete, Get, HttpCode, Param } from '@nestjs/common';
 
-import { QuestionRepository } from '../../quiz/sa/repositories/question.quiz.repository';
+import { PairRepository } from '../../quiz/repositories/pair.quiz.repository';
+import { QuestionRepository } from '../../quiz/repositories/question.quiz.repository';
 import { BanedUsersBlogsRepository } from '../../sql/blog.banUsers.repository';
 import { BlogRepository } from '../../sql/blog.repository';
 import { LikeCommentRepository } from '../../sql/comment.like.repository';
@@ -22,6 +23,7 @@ export class TestController {
     private readonly sessionRepository: SessionRepository,
     private readonly userRepository: UserRepository,
     private readonly questionRepository: QuestionRepository,
+    private readonly pairRepository: PairRepository,
   ) {}
 
   @HttpCode(204)
@@ -36,6 +38,7 @@ export class TestController {
     await this.blogRepository.deleteAll();
     await this.userRepository.deleteAll();
     await this.questionRepository.deleteAll();
+    await this.pairRepository.deleteAll();
 
     return;
   }

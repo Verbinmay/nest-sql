@@ -105,6 +105,12 @@ import { SA_UpdatePublishQuestionCase } from './quiz/sa/use-cases/sa-update-publ
 import { Question } from './quiz/entities/question.entity';
 import { QuestionRepository } from './quiz/repositories/question.quiz.repository';
 import { CreateConnectionCase } from './quiz/public/use-cases/create-connection-case';
+import { GetUnfinishedGameCase } from './quiz/public/use-cases/get-unfineshed-game-case';
+import { PairRepository } from './quiz/repositories/pair.quiz.repository';
+import { Pair } from './quiz/entities/pairs.entity';
+import { Answer } from './quiz/entities/answer.entity';
+import { PairController } from './quiz/public/controllers/pairs.public.controller';
+import { GetGameByIdCase } from './quiz/public/use-cases/get-game-by-id-case';
 
 const validations = [ValidationBlogId, ValidationLoginEmail];
 
@@ -175,6 +181,8 @@ const useCasesQuiz = [
   SA_UpdateQuestionCase,
   SA_UpdatePublishQuestionCase,
   CreateConnectionCase,
+  GetUnfinishedGameCase,
+  GetGameByIdCase,
 ];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
@@ -216,6 +224,8 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
           CommentLike,
           Comment,
           Question,
+          Pair,
+          Answer,
         ],
         autoLoadEntities: true,
         synchronize: true,
@@ -232,6 +242,8 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
       CommentLike,
       Comment,
       Question,
+      Pair,
+      Answer,
     ]),
 
     // ThrottlerModule.forRoot({
@@ -254,6 +266,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     UserBloggersController,
     UserSAController,
     QuestionSAController,
+    PairController,
   ],
   providers: [
     // {
@@ -287,6 +300,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     SessionService,
     UserRepository,
     UserQueryRepository,
+    PairRepository,
   ],
 })
 export class AppModule {}

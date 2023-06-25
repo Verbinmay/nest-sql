@@ -88,6 +88,7 @@ export class QuestionRepository {
       .addOrderBy('RANDOM()')
       .take(5)
       .getMany();
+
     return questionsFromDB;
   }
 }

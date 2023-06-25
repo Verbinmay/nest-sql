@@ -27,7 +27,7 @@ export class Answer {
 
   @ManyToOne(() => Pair, {
     cascade: true,
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   public pair: Pair;

@@ -1,10 +1,8 @@
-import { ILike, In, Repository } from 'typeorm';
+import { EntityManager, ILike, In, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { PaginationQuery } from '../../pagination/base-pagination';
-import { PaginatorQuestion } from '../../pagination/paginatorType';
 import { Pair } from '../entities/pairs.entity';
 
 @Injectable()
@@ -14,9 +12,11 @@ export class PairRepository {
     private readonly pairRepository: Repository<Pair>,
   ) {}
 
-  async findFreePair() {
+  async findFreePair(queryRunnerManager: EntityManager) {
     try {
-      return await this.pairRepository.findOne({
+      return await queryRunnerManager.findOne(Pair, {
+        transaction: true,
+        // lock: { mode: '' },
         relations: { users: true, answers: true, questions: true },
         where: { status: 'PendingSecondPlayer' },
       });
@@ -34,13 +34,33 @@ export class PairRepository {
       return null;
     }
   }
+  async findMyCurrentGame(userId: string) {
+    try {
+      return await this.pairRepository.findOne({
+        relations: { users: true, answers: true, questions: true },
+        where: [
+          { status: In(['Active', 'PendingSecondPlayer']), s_id: userId },
+          { status: In(['Active', 'PendingSecondPlayer']), f_id: userId },
+        ],
+      });
+    } catch (error) {
+      return null;
+    }
+  }
 
-  async create(pair: Pair) {
+  async create(pair: Pair, queryRunnerManager?: EntityManager) {
+    if (queryRunnerManager) {
+      await queryRunnerManager.create(Pair, pair);
+      return await queryRunnerManager.save(Pair, pair);
+    }
     await this.pairRepository.create(pair);
     return await this.pairRepository.save(pair);
   }
 
-  async update(pair: Pair): Promise<Pair> {
+  async update(pair: Pair, queryRunnerManager?: EntityManager): Promise<Pair> {
+    if (queryRunnerManager) {
+      return await queryRunnerManager.save(Pair, pair);
+    }
     return await this.pairRepository.save(pair);
   }
 
@@ -81,15 +101,16 @@ export class PairRepository {
   //   return result;
   // }
 
-  // async findQuestionById(id: string) {
-  //   try {
-  //     return await this.questionsRepository.findOne({
-  //       where: { id: id },
-  //     });
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // }
+  async findGameById(id: string) {
+    try {
+      return await this.pairRepository.findOne({
+        relations: { users: true, answers: true, questions: true },
+        where: { id: id },
+      });
+    } catch (error) {
+      return null;
+    }
+  }
 
   // async delete(id: string): Promise<boolean> {
   //   const result = await this.questionsRepository.delete({ id: id });
@@ -97,7 +118,7 @@ export class PairRepository {
   //   return result.affected > 0;
   // }
 
-  // async deleteAll() {
-  //   return await this.questionsRepository.delete({});
-  // }
+  async deleteAll() {
+    return await this.pairRepository.delete({});
+  }
 }
