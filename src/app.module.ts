@@ -111,6 +111,8 @@ import { Pair } from './quiz/entities/pairs.entity';
 import { Answer } from './quiz/entities/answer.entity';
 import { PairController } from './quiz/public/controllers/pairs.public.controller';
 import { GetGameByIdCase } from './quiz/public/use-cases/get-game-by-id-case';
+import { CreateAnswerCase } from './quiz/public/use-cases/create-answer-case';
+import { AnswerRepository } from './quiz/repositories/answer.quiz.repository';
 
 const validations = [ValidationBlogId, ValidationLoginEmail];
 
@@ -183,6 +185,7 @@ const useCasesQuiz = [
   CreateConnectionCase,
   GetUnfinishedGameCase,
   GetGameByIdCase,
+  CreateAnswerCase,
 ];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
@@ -301,6 +304,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     UserRepository,
     UserQueryRepository,
     PairRepository,
+    AnswerRepository,
   ],
 })
 export class AppModule {}

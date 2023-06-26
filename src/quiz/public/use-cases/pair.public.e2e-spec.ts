@@ -15,6 +15,7 @@ import { createApp } from '../../../helpers/createApp';
 import { ViewQuestionDto } from '../../sa/dto/view-question.dto';
 import { AppModule } from '../../../app.module';
 import { Question } from '../../entities/question.entity';
+import { ViewAnswerDto } from '../dto/view-answer.dto';
 import { ViewPairDto } from '../dto/view-pair.dto';
 
 describe('pair-public-tests-pack', () => {
@@ -353,6 +354,7 @@ describe('pair-public-tests-pack', () => {
 
       connections.push(connectionResponse.body);
     });
+
     it('get game by id - 401', async () => {
       const getGameResponse = await agent
         .get(info.pairs.pairs + connections[0].id)
@@ -426,6 +428,170 @@ describe('pair-public-tests-pack', () => {
       expect(MyCurrentGame2.finishGameDate).toBe(null);
       expect(MyCurrentGame2.pairCreatedDate).toEqual(expect.any(String));
       expect(MyCurrentGame2.status).toBe('Active');
+    });
+  });
+
+  describe('create.answer.public', () => {
+    const users: Array<SAViewUserDto> = [];
+    const accessTokens: Array<string> = [];
+    const questions: Array<ViewQuestionDto> = [];
+    const connections: Array<ViewPairDto> = [];
+    beforeAll(async () => {
+      await agent.delete(info.testingDelete);
+
+      for (let i = 0; i < 2; i++) {
+        const userInput = createUserInput();
+        const userResponse = await agent
+          .post(info.sa.users)
+          .auth(info.sa.saLogin, info.sa.saPassword)
+          .send(userInput)
+          .expect(201);
+
+        users.push(userResponse.body);
+
+        const loginInput = {
+          loginOrEmail: userInput.login,
+          password: userInput.password,
+        };
+        const loginResponse = await agent
+          .post(info.auth.login)
+          .send(loginInput)
+          .expect(200);
+
+        accessTokens.push(loginResponse.body.accessToken);
+      }
+      for (let i = 0; i < 7; i++) {
+        const questionInput = createQuestionInput();
+        const questionsResponse = await agent
+          .post(info.sa.questions)
+          .auth(info.sa.saLogin, info.sa.saPassword)
+          .send(questionInput)
+          .expect(201);
+
+        questions.push(questionsResponse.body);
+      }
+      for (let i = 0; i < 5; i++) {
+        const updatePublishedQuestionsResponse = await agent
+          .put(info.sa.questions + questions[i].id + info.publish)
+          .auth(info.sa.saLogin, info.sa.saPassword)
+          .send({
+            published: true,
+          })
+          .expect(204);
+      }
+      const connectionResponse = await agent
+        .post(info.pairs.connection)
+        .auth(accessTokens[0], { type: 'bearer' })
+        .send()
+        .expect(200);
+
+      connections.push(connectionResponse.body);
+    });
+    it(' create answer - 401', async () => {
+      const createAnswerResponse = await agent
+        .post(info.pairs.answer)
+        .send()
+        .expect(401);
+    });
+    it(' create answer - 403 -  not inside active pair', async () => {
+      const createAnswerResponse = await agent
+        .post(info.pairs.answer)
+        .auth(accessTokens[0], { type: 'bearer' })
+        .send({ answer: 'ggg' })
+        .expect(403);
+    });
+
+    it(' create answer - 200', async () => {
+      const connectionResponse = await agent
+        .post(info.pairs.connection)
+        .auth(accessTokens[1], { type: 'bearer' })
+        .send()
+        .expect(200);
+
+      const getGameResponse1 = await agent
+        .get(info.pairs.pairs + connections[0].id)
+        .auth(accessTokens[0], { type: 'bearer' })
+        .expect(200);
+
+      const game: ViewPairDto = getGameResponse1.body;
+
+      const answer = questions.find((q) => q.id === game.questions[0].id);
+
+      const createAnswerResponse = await agent
+        .post(info.pairs.answer)
+        .auth(accessTokens[0], { type: 'bearer' })
+        .send({ answer: answer.correctAnswers[0] })
+        .expect(200);
+
+      expect(createAnswerResponse.body).toMatchObject<ViewAnswerDto>;
+      expect(createAnswerResponse.body.questionId).toBe(game.questions[0].id);
+      expect(createAnswerResponse.body.answerStatus).toBe('Correct');
+
+      const getGameResponse2 = await agent
+        .get(info.pairs.pairs + connections[0].id)
+        .auth(accessTokens[0], { type: 'bearer' })
+        .expect(200);
+
+      const updatedGame: ViewPairDto = getGameResponse2.body;
+      expect(updatedGame.firstPlayerProgress.score).toBe(1);
+      expect(updatedGame.secondPlayerProgress.score).toBe(0);
+
+      const createWRONGAnswerResponse2 = await agent
+        .post(info.pairs.answer)
+        .auth(accessTokens[0], { type: 'bearer' })
+        .send({ answer: 'wrong' })
+        .expect(200);
+
+      expect(createWRONGAnswerResponse2.body).toMatchObject<ViewAnswerDto>;
+      expect(createWRONGAnswerResponse2.body.questionId).toBe(
+        game.questions[1].id,
+      );
+      expect(createWRONGAnswerResponse2.body.answerStatus).toBe('Incorrect');
+
+      const getGameResponse3 = await agent
+        .get(info.pairs.pairs + connections[0].id)
+        .auth(accessTokens[0], { type: 'bearer' })
+        .expect(200);
+
+      const updatedGame3: ViewPairDto = getGameResponse3.body;
+      expect(updatedGame3.firstPlayerProgress.score).toBe(1);
+      expect(updatedGame3.secondPlayerProgress.score).toBe(0);
+
+      for (let i = 0; i < 5; i++) {
+        const question = questions.find((q) => q.id === game.questions[i].id);
+
+        const createAnswerResponse = await agent
+          .post(info.pairs.answer)
+          .auth(accessTokens[1], { type: 'bearer' })
+          .send({ answer: question.correctAnswers[0] })
+          .expect(200);
+      }
+
+      const createAnswerSIXTHResponse = await agent
+        .post(info.pairs.answer)
+        .auth(accessTokens[1], { type: 'bearer' })
+        .send({ answer: answer.correctAnswers[0] })
+        .expect(403);
+
+      for (let i = 2; i < 5; i++) {
+        const question = questions.find((q) => q.id === game.questions[i].id);
+
+        const createAnswerResponse = await agent
+          .post(info.pairs.answer)
+          .auth(accessTokens[0], { type: 'bearer' })
+          .send({ answer: question.correctAnswers[0] })
+          .expect(200);
+
+        console.log(createAnswerResponse.body);
+      }
+      const getGameResponse4 = await agent
+        .get(info.pairs.pairs + connections[0].id)
+        .auth(accessTokens[0], { type: 'bearer' })
+        .expect(200);
+      console.log(getGameResponse4.body);
+      const finishedGame: ViewPairDto = getGameResponse4.body;
+      expect(finishedGame.firstPlayerProgress.score).toBe(4);
+      expect(finishedGame.secondPlayerProgress.score).toBe(6);
     });
   });
 });

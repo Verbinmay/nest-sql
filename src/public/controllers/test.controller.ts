@@ -1,5 +1,6 @@
 import { Controller, Delete, Get, HttpCode, Param } from '@nestjs/common';
 
+import { AnswerRepository } from '../../quiz/repositories/answer.quiz.repository';
 import { PairRepository } from '../../quiz/repositories/pair.quiz.repository';
 import { QuestionRepository } from '../../quiz/repositories/question.quiz.repository';
 import { BanedUsersBlogsRepository } from '../../sql/blog.banUsers.repository';
@@ -24,6 +25,7 @@ export class TestController {
     private readonly userRepository: UserRepository,
     private readonly questionRepository: QuestionRepository,
     private readonly pairRepository: PairRepository,
+    private readonly answerRepository: AnswerRepository,
   ) {}
 
   @HttpCode(204)
@@ -39,6 +41,7 @@ export class TestController {
     await this.userRepository.deleteAll();
     await this.questionRepository.deleteAll();
     await this.pairRepository.deleteAll();
+    await this.answerRepository.deleteAll();
 
     return;
   }

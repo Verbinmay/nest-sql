@@ -5,16 +5,18 @@ import {
   Query,
   HttpCode,
   UseGuards,
-  Body,
   Post,
   Delete,
   Put,
+  Body,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 
 import { JwtAuthGuard } from '../../../guard/auth-passport/guard-passport/jwt-auth.guard';
 import { CurrentPayload } from '../../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../../helpers/errors';
+import { CreateAnswerDto } from '../dto/create-answer.dto';
+import { CreateAnswerCommand } from '../use-cases/create-answer-case';
 import { CreateConnectionCommand } from '../use-cases/create-connection-case';
 import { GetGameByIdCommand } from '../use-cases/get-game-by-id-case';
 import { GetUnfinishedGameCommand } from '../use-cases/get-unfineshed-game-case';
@@ -30,6 +32,19 @@ export class PairController {
     const userId = payload ? payload.sub : '';
     const result = await this.commandBus.execute(
       new CreateConnectionCommand(userId),
+    );
+    return makeAnswerInController(result);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Post('my-current/answers')
+  @HttpCode(200)
+  async createAnswer(
+    @CurrentPayload() payload,
+    @Body() inputModel: CreateAnswerDto,
+  ): Promise<any> {
+    const userId = payload ? payload.sub : '';
+    const result = await this.commandBus.execute(
+      new CreateAnswerCommand(userId, inputModel),
     );
     return makeAnswerInController(result);
   }
@@ -52,40 +67,4 @@ export class PairController {
     );
     return makeAnswerInController(result);
   }
-
-  // @UseGuards(BasicAuthGuard)
-  // @Delete(':id')
-  // @HttpCode(204)
-  // async SA_DeleteQuestion(@Param('id') questionId: string) {
-  //   const result = await this.commandBus.execute(
-  //     new SA_DeleteQuestionCommand(questionId),
-  //   );
-  //   return makeAnswerInController(result);
-  // }
-
-  // @UseGuards(BasicAuthGuard)
-  // @Put(':id')
-  // @HttpCode(204)
-  // async SA_UpdateQuestion(
-  //   @Param('id') questionId: string,
-  //   @Body() inputModel: UpdateQuestionDto,
-  // ) {
-  //   const result = await this.commandBus.execute(
-  //     new SA_UpdateQuestionCommand(questionId, inputModel),
-  //   );
-  //   return makeAnswerInController(result);
-  // }
-
-  // @UseGuards(BasicAuthGuard)
-  // @Put(':id/publish')
-  // @HttpCode(204)
-  // async SA_UpdatePublishQuestion(
-  //   @Param('id') questionId: string,
-  //   @Body() inputModel: UpdatePublishedDto,
-  // ) {
-  //   const result = await this.commandBus.execute(
-  //     new SA_UpdatePublishQuestionCommand(questionId, inputModel),
-  //   );
-  //   return makeAnswerInController(result);
-  // }
 }

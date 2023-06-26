@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ViewAnswerDto } from '../public/dto/view-answer.dto';
 import { Pair } from './pairs.entity';
 
 export type answerStatus = 'Correct' | 'Incorrect';
@@ -31,4 +32,13 @@ export class Answer {
     onUpdate: 'CASCADE',
   })
   public pair: Pair;
+}
+
+export function GetAnswerViewModel(answer: Answer): ViewAnswerDto {
+  const result = {
+    questionId: answer.questionId,
+    answerStatus: answer.answerStatus,
+    addedAt: answer.addedAt.toISOString(),
+  };
+  return result;
 }

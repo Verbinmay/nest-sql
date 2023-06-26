@@ -33,7 +33,6 @@ export class GetGameByIdCase implements ICommandHandler<GetGameByIdCommand> {
     );
 
     if (activePairCheck) {
-      console.log(activePairCheck);
       if (activePairCheck.f_id !== user.id && activePairCheck.s_id !== user.id)
         return { s: 403 };
 

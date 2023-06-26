@@ -11,6 +11,7 @@ export const info = {
   pairs: {
     connection: '/pair-game-quiz/pairs/connection',
     myCurrent: '/pair-game-quiz/pairs/my-current',
+    answer: '/pair-game-quiz/pairs/my-current/answers',
     pairs: '/pair-game-quiz/pairs/',
   },
   like: '/like-status/',
