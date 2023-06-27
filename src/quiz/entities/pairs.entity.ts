@@ -77,7 +77,7 @@ export function GetPairViewModel(pair: Pair): ViewPairDto {
               .filter((a) => a.userId === pair.f_id)
               .map((a) => {
                 return {
-                  questionId: a.id,
+                  questionId: a.questionId,
                   answerStatus: a.answerStatus,
                   addedAt: a.addedAt.toISOString(),
                 };
@@ -97,7 +97,7 @@ export function GetPairViewModel(pair: Pair): ViewPairDto {
               .filter((a) => a.userId === pair.s_id)
               .map((a) => {
                 return {
-                  questionId: a.id,
+                  questionId: a.questionId,
                   answerStatus: a.answerStatus,
                   addedAt: a.addedAt.toISOString(),
                 };

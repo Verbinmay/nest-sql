@@ -10,6 +10,8 @@ import {
   Put,
   Body,
 } from '@nestjs/common';
+import { UUID } from 'crypto';
+
 import { CommandBus } from '@nestjs/cqrs';
 
 import { JwtAuthGuard } from '../../../guard/auth-passport/guard-passport/jwt-auth.guard';

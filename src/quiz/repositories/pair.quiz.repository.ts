@@ -28,7 +28,10 @@ export class PairRepository {
   async findActivePair(userId: string) {
     try {
       return await this.pairRepository.findOne({
-        where: { status: 'Active', f_id: userId },
+        where: [
+          { status: 'Active', f_id: userId },
+          { status: 'Active', s_id: userId },
+        ],
       });
     } catch (error) {
       return null;

@@ -38,17 +38,18 @@ export class CreateConnectionCase
   ) {}
 
   async execute(command: CreateConnectionCommand) {
+    //user check
     const user: User | null = await this.userRepository.findUserById(
       command.userId,
     );
-
     if (!user) return { s: 404 };
 
+    //active pair check
     const activePairCheck: Pair | null =
       await this.pairRepository.findActivePair(user.id);
-
     if (activePairCheck) return { s: 403 };
 
+    //create question and check
     const questions: Array<Question> =
       await this.questionRepository.findRandomQuestions();
 
@@ -82,7 +83,9 @@ export class CreateConnectionCase
 
         return GetNoPairViewModel(savedNewPair);
       } else {
-        if (pair.f_id === user.id) return GetNoPairViewModel(pair);
+        //check pair current user
+        // if (pair.f_id === user.id) return GetNoPairViewModel(pair);
+        if (pair.f_id === user.id) return { s: 403 };
 
         pair.users.push(user);
         pair.s_id = user.id;

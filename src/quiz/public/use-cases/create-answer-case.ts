@@ -69,9 +69,15 @@ export class CreateAnswerCase implements ICommandHandler<CreateAnswerCommand> {
     }
 
     if (activePairCheck.answers.length === 9) {
-      if (command.userId === activePairCheck.f_id) {
+      if (
+        command.userId === activePairCheck.f_id &&
+        activePairCheck.s_score != 0
+      ) {
         activePairCheck.s_score = activePairCheck.s_score + 1;
-      } else {
+      } else if (
+        command.userId === activePairCheck.s_id &&
+        activePairCheck.f_score != 0
+      ) {
         activePairCheck.f_score = activePairCheck.f_score + 1;
       }
 
