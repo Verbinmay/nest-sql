@@ -113,6 +113,7 @@ import { PairController } from './quiz/public/controllers/pairs.public.controlle
 import { GetGameByIdCase } from './quiz/public/use-cases/get-game-by-id-case';
 import { CreateAnswerCase } from './quiz/public/use-cases/create-answer-case';
 import { AnswerRepository } from './quiz/repositories/answer.quiz.repository';
+import { GetAllGamesCase } from './quiz/public/use-cases/get-all-games-case';
 
 const validations = [ValidationBlogId, ValidationLoginEmail];
 
@@ -186,6 +187,7 @@ const useCasesQuiz = [
   GetUnfinishedGameCase,
   GetGameByIdCase,
   CreateAnswerCase,
+  GetAllGamesCase,
 ];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];

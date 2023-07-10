@@ -1,9 +1,17 @@
+import {
+  GetAllPairViewModel,
+  GetPairViewModel,
+  Pair,
+} from '../entities/pairs.entity';
+import { log } from 'console';
 import { EntityManager, ILike, In, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Pair } from '../entities/pairs.entity';
+import { PaginationQuery } from '../../pagination/base-pagination';
+import { PaginatorPair } from '../../pagination/paginatorType';
+import { ViewPairDto } from '../public/dto/view-pair.dto';
 
 @Injectable()
 export class PairRepository {
@@ -12,6 +20,60 @@ export class PairRepository {
     private readonly pairRepository: Repository<Pair>,
   ) {}
 
+  async findPairs(userId: string, query: PaginationQuery) {
+    const totalCount: number = await this.pairRepository.count({
+      where: [{ f_id: userId }, { s_id: userId }],
+    });
+
+    const pagesCount = query.countPages(totalCount);
+
+    let orderInfo: any = {
+      [query.sortBy]: query.sortDirection,
+      // pairCreatedDate: 'DESC',
+    };
+
+    if (query.sortBy === 'createdAt') {
+      orderInfo = { pairCreatedDate: query.sortDirection };
+    }
+
+    const pairsFromDB: Array<Pair> = await this.pairRepository.find({
+      relations: { users: true, answers: true, questions: true },
+      where: [{ f_id: userId }, { s_id: userId }],
+      order:
+        // orderInfo,
+        {
+          [query.sortBy]: query.sortDirection,
+          pairCreatedDate: 'DESC',
+          // questions: { createdAt: 'ASC' },
+          // answers: { addedAt: 'ASC' },
+        },
+      skip: query.skip(),
+      take: query.pageSize,
+    });
+    // console.log(pairsFromDB[3], 'pairsFromDB');
+    // console.log(pairsFromDB[3].answers, 'answers');
+    // console.log(pairsFromDB[3].questions, 'questions');
+    // console.log(
+    //   GetAllPairViewModel(pairsFromDB[3]).firstPlayerProgress.answers,
+    // );
+    // console.log(
+    //   GetAllPairViewModel(pairsFromDB[3]).secondPlayerProgress.answers,
+    // );
+
+    const questions: ViewPairDto[] = pairsFromDB.map((m) =>
+      GetAllPairViewModel(m),
+    );
+
+    const result: PaginatorPair = {
+      pagesCount: pagesCount,
+      page: query.pageNumber,
+      pageSize: query.pageSize,
+      totalCount: totalCount,
+      items: questions,
+    };
+    return result;
+  }
+
   async findFreePair(queryRunnerManager: EntityManager) {
     try {
       return await queryRunnerManager.findOne(Pair, {
@@ -19,6 +81,9 @@ export class PairRepository {
         // lock: { mode: '' },
         relations: { users: true, answers: true, questions: true },
         where: { status: 'PendingSecondPlayer' },
+        order: {
+          questions: { createdAt: 'ASC' },
+        },
       });
     } catch (error) {
       return null;
@@ -37,10 +102,12 @@ export class PairRepository {
       return null;
     }
   }
+  //TODO lock
   async findFullActivePair(userId: string) {
     try {
       return await this.pairRepository.findOne({
         relations: { users: true, answers: true, questions: true },
+        // lock
         where: [
           { status: 'Active', f_id: userId },
           { status: 'Active', s_id: userId },

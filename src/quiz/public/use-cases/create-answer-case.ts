@@ -48,12 +48,17 @@ export class CreateAnswerCase implements ICommandHandler<CreateAnswerCommand> {
       return a.userId === command.userId;
     }).length;
 
+    const question: Question = activePairCheck.questions.sort(
+      (a, b) => +a.createdAt - +b.createdAt,
+    )[checkAnswer];
+    console.log(question, 'question');
+
     const newAnswer = new Answer();
     newAnswer.userId = command.userId;
-    newAnswer.questionId = activePairCheck.questions[checkAnswer].id;
-    newAnswer.answerStatus = activePairCheck.questions[
-      checkAnswer
-    ].answers.includes(command.inputModel.answer)
+    newAnswer.questionId = question.id;
+    newAnswer.answerStatus = question.answers.includes(
+      command.inputModel.answer,
+    )
       ? 'Correct'
       : 'Incorrect';
     newAnswer.pair = activePairCheck;

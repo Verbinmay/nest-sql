@@ -3,6 +3,7 @@ import { ViewCommentWithPostInfoDto } from '../blogger/dto/comment/view-comment-
 import { ViewBannedUserDto } from '../blogger/dto/user/view-banned-user';
 import { ViewCommentDto } from '../public/dto/comment/view-comment.dto';
 import { ViewPostDto } from '../public/dto/post/view-post.dto';
+import { ViewPairDto } from '../quiz/public/dto/view-pair.dto';
 import { ViewQuestionDto } from '../quiz/sa/dto/view-question.dto';
 import { SAViewBlogDto } from '../sa/dto/blog/sa-view-blog.dto';
 import { SAViewUserDto } from '../sa/dto/user/sa-view-user.dto';
@@ -28,6 +29,9 @@ export type PaginatorUser = PaginatorEnd & {
 
 export type PaginatorQuestion = PaginatorEnd & {
   items: Array<ViewQuestionDto>;
+};
+export type PaginatorPair = PaginatorEnd & {
+  items: Array<ViewPairDto>;
 };
 
 export type PaginatorCommentWithLikeViewModel = PaginatorEnd & {
@@ -70,6 +74,10 @@ export const sortingByVariates = [
   'correctAnswers',
   'published',
   'updatedAt',
+  'status',
+  'pairCreatedDate',
+  'startGameDate',
+  'finishGameDate',
 ];
 export const banStatusVariates = ['all', 'banned', 'notBanned'];
 export const publishedStatusVariates = ['all', 'published', 'notPublished'];

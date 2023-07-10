@@ -68,6 +68,26 @@ export class Pair {
 }
 
 export function GetPairViewModel(pair: Pair): ViewPairDto {
+  // if (pair.s_id === null) {
+  //   const result = {
+  //     id: pair.id,
+  //     firstPlayerProgress: {
+  //       answers: [],
+  //       player: {
+  //         id: pair.f_id,
+  //         login: pair.users.find((u) => u.id === pair.f_id).login,
+  //       },
+  //       score: 0,
+  //     },
+  //     secondPlayerProgress: null,
+  //     questions: null,
+  //     status: pair.status,
+  //     pairCreatedDate: pair.pairCreatedDate.toISOString(),
+  //     startGameDate: null,
+  //     finishGameDate: null,
+  //   };
+  //   return result;
+  // } else {
   const result = {
     id: pair.id,
     firstPlayerProgress: {
@@ -124,7 +144,9 @@ export function GetPairViewModel(pair: Pair): ViewPairDto {
   };
   return result;
 }
+
 // Если игра в статусе ожидания второго игрока (status: "PendingSecondPlayer") - поля secondPlayerProgress: null, questions: null, startGameDate: null, finishGameDate: null
+/**УЖЕ БЕСПОЛЕЗНА, НО НЕ ВЫВЕДЕНА ИЗ ПРОЕКТА*/
 export function GetNoPairViewModel(pair: Pair): ViewPairDto {
   const result = {
     id: pair.id,
@@ -144,4 +166,86 @@ export function GetNoPairViewModel(pair: Pair): ViewPairDto {
     finishGameDate: null,
   };
   return result;
+}
+
+export function GetAllPairViewModel(pair: Pair): ViewPairDto {
+  if (pair.status === 'PendingSecondPlayer') {
+    const result = {
+      id: pair.id,
+      firstPlayerProgress: {
+        answers: [],
+        player: {
+          id: pair.f_id,
+          login: pair.users.find((u) => u.id === pair.f_id).login,
+        },
+        score: 0,
+      },
+      secondPlayerProgress: null,
+      questions: null,
+      status: pair.status,
+      pairCreatedDate: pair.pairCreatedDate.toISOString(),
+      startGameDate: null,
+      finishGameDate: null,
+    };
+    return result;
+  } else {
+    const result = {
+      id: pair.id,
+      firstPlayerProgress: {
+        answers:
+          pair.answers.length > 0
+            ? pair.answers
+                .filter((a) => a.userId === pair.f_id)
+                .map((a) => {
+                  return {
+                    questionId: a.questionId,
+                    answerStatus: a.answerStatus,
+                    addedAt: a.addedAt.toISOString(),
+                  };
+                })
+                .sort((a, b) => a.addedAt.localeCompare(b.addedAt))
+            : [],
+        player: {
+          id: pair.f_id,
+          login: pair.users.find((u) => u.id === pair.f_id).login,
+        },
+        score: pair.f_score,
+      },
+      secondPlayerProgress: {
+        answers:
+          pair.answers.length > 0
+            ? pair.answers
+                .filter((a) => a.userId === pair.s_id)
+                .map((a) => {
+                  return {
+                    questionId: a.questionId,
+                    answerStatus: a.answerStatus,
+                    addedAt: a.addedAt.toISOString(),
+                  };
+                })
+                .sort((a, b) => a.addedAt.localeCompare(b.addedAt))
+            : [],
+        player: {
+          id: pair.s_id,
+          login: pair.users.find((u) => u.id === pair.s_id).login,
+        },
+        score: pair.s_score,
+      },
+      questions: pair.questions
+        .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+        .map((q) => {
+          return {
+            id: q.id,
+            body: q.body,
+          };
+        }),
+      status: pair.status,
+      pairCreatedDate: pair.pairCreatedDate.toISOString(),
+      startGameDate: pair.startGameDate.toISOString(),
+      finishGameDate: pair.finishGameDate
+        ? pair.finishGameDate.toISOString()
+        : null,
+    };
+    return result;
+  }
 }

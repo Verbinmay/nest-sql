@@ -17,9 +17,11 @@ import { CommandBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../../guard/auth-passport/guard-passport/jwt-auth.guard';
 import { CurrentPayload } from '../../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../../helpers/errors';
+import { PaginationQuery } from '../../../pagination/base-pagination';
 import { CreateAnswerDto } from '../dto/create-answer.dto';
 import { CreateAnswerCommand } from '../use-cases/create-answer-case';
 import { CreateConnectionCommand } from '../use-cases/create-connection-case';
+import { GetAllGamesCommand } from '../use-cases/get-all-games-case';
 import { GetGameByIdCommand } from '../use-cases/get-game-by-id-case';
 import { GetUnfinishedGameCommand } from '../use-cases/get-unfineshed-game-case';
 
@@ -58,6 +60,21 @@ export class PairController {
     const result = await this.commandBus.execute(
       new GetUnfinishedGameCommand(userId),
     );
+    return makeAnswerInController(result);
+  }
+
+  ////
+  @UseGuards(JwtAuthGuard)
+  @Get('my')
+  async findAllGames(
+    @Query() query: PaginationQuery,
+    @CurrentPayload() payload,
+  ) {
+    const userId = payload ? payload.sub : '';
+    const result = await this.commandBus.execute(
+      new GetAllGamesCommand(userId, query),
+    );
+
     return makeAnswerInController(result);
   }
   @UseGuards(JwtAuthGuard)

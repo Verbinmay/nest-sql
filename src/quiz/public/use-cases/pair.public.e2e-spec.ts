@@ -406,6 +406,7 @@ describe('pair-public-tests-pack', () => {
         .get(info.pairs.pairs + connections[0].id)
         .auth(accessTokens[0], { type: 'bearer' })
         .expect(200);
+      console.log(getGameResponse2.body);
 
       expect(getGameResponse2.body).toMatchObject<ViewPairDto>;
       const MyCurrentGame2: ViewPairDto = getGameResponse2.body;
@@ -514,6 +515,8 @@ describe('pair-public-tests-pack', () => {
         .expect(200);
 
       const game: ViewPairDto = getGameResponse1.body;
+      console.log(game, 'game');
+      console.log(game.questions, 'questions');
 
       const answer = questions.find((q) => q.id === game.questions[0].id);
 
@@ -554,6 +557,7 @@ describe('pair-public-tests-pack', () => {
         .expect(200);
 
       const updatedGame3: ViewPairDto = getGameResponse3.body;
+      console.log(updatedGame3, 'updatedGame3');
       expect(updatedGame3.firstPlayerProgress.score).toBe(1);
       expect(updatedGame3.secondPlayerProgress.score).toBe(0);
 
@@ -588,7 +592,10 @@ describe('pair-public-tests-pack', () => {
         .get(info.pairs.pairs + connections[0].id)
         .auth(accessTokens[0], { type: 'bearer' })
         .expect(200);
-      console.log(getGameResponse4.body);
+      console.log(getGameResponse4.body, 'getGameResponse4');
+      console.log(getGameResponse4.body.firstPlayerProgress.answers, 'f');
+      console.log(getGameResponse4.body.secondPlayerProgress.answers, 's');
+
       const finishedGame: ViewPairDto = getGameResponse4.body;
       expect(finishedGame.firstPlayerProgress.score).toBe(4);
       expect(finishedGame.secondPlayerProgress.score).toBe(6);
