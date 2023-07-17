@@ -50,15 +50,6 @@ export class PairRepository {
       skip: query.skip(),
       take: query.pageSize,
     });
-    // console.log(pairsFromDB[3], 'pairsFromDB');
-    // console.log(pairsFromDB[3].answers, 'answers');
-    // console.log(pairsFromDB[3].questions, 'questions');
-    // console.log(
-    //   GetAllPairViewModel(pairsFromDB[3]).firstPlayerProgress.answers,
-    // );
-    // console.log(
-    //   GetAllPairViewModel(pairsFromDB[3]).secondPlayerProgress.answers,
-    // );
 
     const questions: ViewPairDto[] = pairsFromDB.map((m) =>
       GetAllPairViewModel(m),
@@ -78,7 +69,11 @@ export class PairRepository {
     try {
       return await queryRunnerManager.findOne(Pair, {
         transaction: true,
-        // lock: { mode: '' },
+        lock: {
+          mode: 'pessimistic_write',
+          tables: ['pair'],
+          onLocked: 'nowait',
+        },
         relations: { users: true, answers: true, questions: true },
         where: { status: 'PendingSecondPlayer' },
         order: {

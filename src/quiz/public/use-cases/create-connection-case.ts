@@ -1,22 +1,21 @@
 import {
-  Question,
-  SA_GetQuestionViewModel,
-} from '../../entities/question.entity';
-import {
   GetNoPairViewModel,
   GetPairViewModel,
   Pair,
 } from '../../entities/pairs.entity';
-import { error } from 'console';
-import { DataSource, EntityManager, QueryRunner } from 'typeorm';
+import { setTimeout } from 'timers/promises';
+import { DataSource, EntityManager } from 'typeorm';
 
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler } from '@nestjs/cqrs';
 import { InjectDataSource } from '@nestjs/typeorm';
+import { BadRequestException } from '@nestjs/common';
 
 import { User } from '../../../entities/sql/user.entity';
 import { UserRepository } from '../../../sql/user.repository';
+import { Question } from '../../entities/question.entity';
 import { PairRepository } from '../../repositories/pair.quiz.repository';
 import { QuestionRepository } from '../../repositories/question.quiz.repository';
+import { TransactionBaseUseCase } from '../../transaction/transaction.case';
 
 export class CreateConnectionCommand {
   constructor(public userId: string) {}
@@ -26,18 +25,20 @@ export class CreateConnectionCommand {
 //TODO TRANSACTION
 
 @CommandHandler(CreateConnectionCommand)
-export class CreateConnectionCase
-  implements ICommandHandler<CreateConnectionCommand>
-{
+export class CreateConnectionCase extends TransactionBaseUseCase<
+  CreateConnectionCommand,
+  any
+> {
   constructor(
     private readonly pairRepository: PairRepository,
     private readonly userRepository: UserRepository,
     private readonly questionRepository: QuestionRepository,
     @InjectDataSource()
-    private readonly dataSource: DataSource,
-  ) {}
-
-  async execute(command: CreateConnectionCommand) {
+    protected readonly dataSource: DataSource,
+  ) {
+    super(dataSource);
+  }
+  async doLogic(command: CreateConnectionCommand, manager: EntityManager) {
     //user check
     const user: User | null = await this.userRepository.findUserById(
       command.userId,
@@ -56,60 +57,33 @@ export class CreateConnectionCase
     //TODO не могу пройти тесты, если ставлю ошибку 400 втф
     if (questions.length < 5) return { s: 404 };
 
-    const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    const queryRunnerManager: EntityManager = queryRunner.manager;
+    const pair: Pair | null = await this.pairRepository.findFreePair(manager);
+    await setTimeout(60000);
+    if (!pair) {
+      const newPair = new Pair();
 
-    try {
-      const pair: Pair | null = await this.pairRepository.findFreePair(
-        queryRunnerManager,
-      );
+      newPair.users = [user];
+      newPair.f_id = user.id;
+      newPair.questions = questions;
+      const savedNewPair = await this.pairRepository.create(newPair, manager);
 
-      if (!pair) {
-        const newPair = new Pair();
+      return GetNoPairViewModel(savedNewPair);
+    } else {
+      //check pair current user
+      // if (pair.f_id === user.id) return GetNoPairViewModel(pair);
+      if (pair.f_id === user.id) return { s: 403 };
 
-        newPair.users = [user];
-        newPair.f_id = user.id;
-        newPair.questions = questions;
+      pair.users.push(user);
+      pair.s_id = user.id;
+      pair.status = 'Active';
+      pair.startGameDate = new Date();
 
-        const savedNewPair = await this.pairRepository.create(
-          newPair,
-          queryRunnerManager,
-        );
+      const updatedPair: Pair = await this.pairRepository.update(pair, manager);
 
-        // commit transaction now:
-        await queryRunner.commitTransaction();
-
-        return GetNoPairViewModel(savedNewPair);
-      } else {
-        //check pair current user
-        // if (pair.f_id === user.id) return GetNoPairViewModel(pair);
-        if (pair.f_id === user.id) return { s: 403 };
-
-        pair.users.push(user);
-        pair.s_id = user.id;
-        pair.status = 'Active';
-        pair.startGameDate = new Date();
-
-        const updatedPair: Pair = await this.pairRepository.update(
-          pair,
-          queryRunnerManager,
-        );
-
-        // commit transaction now:
-
-        await queryRunner.commitTransaction();
-        return GetPairViewModel(updatedPair);
-      }
-    } catch (err) {
-      // since we have errors let's rollback changes we made
-      console.log('rollback');
-      await queryRunner.rollbackTransaction();
-    } finally {
-      // you need to release query runner which is manually created:
-
-      await queryRunner.release();
+      return GetPairViewModel(updatedPair);
     }
+  }
+  public async execute(command: CreateConnectionCommand) {
+    return super.execute(command);
   }
 }
