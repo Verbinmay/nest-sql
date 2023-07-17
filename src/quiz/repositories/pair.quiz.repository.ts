@@ -156,4 +156,9 @@ export class PairRepository {
   async deleteAll() {
     return await this.pairRepository.delete({});
   }
+  async findAllRawPairsById(userId: string) {
+    return await this.pairRepository.find({
+      where: [{ f_id: userId }, { s_id: userId }],
+    });
+  }
 }

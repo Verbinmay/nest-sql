@@ -58,7 +58,7 @@ export class CreateConnectionCase extends TransactionBaseUseCase<
     if (questions.length < 5) return { s: 404 };
 
     const pair: Pair | null = await this.pairRepository.findFreePair(manager);
-    await setTimeout(60000);
+
     if (!pair) {
       const newPair = new Pair();
 

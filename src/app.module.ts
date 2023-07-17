@@ -114,6 +114,8 @@ import { GetGameByIdCase } from './quiz/public/use-cases/get-game-by-id-case';
 import { CreateAnswerCase } from './quiz/public/use-cases/create-answer-case';
 import { AnswerRepository } from './quiz/repositories/answer.quiz.repository';
 import { GetAllGamesCase } from './quiz/public/use-cases/get-all-games-case';
+import { UserPairController } from './quiz/public/controllers/users.public.controller';
+import { GetMyStatisticCase } from './quiz/public/use-cases/get-my-statistic-case';
 
 const validations = [ValidationBlogId, ValidationLoginEmail];
 
@@ -188,6 +190,7 @@ const useCasesQuiz = [
   GetGameByIdCase,
   CreateAnswerCase,
   GetAllGamesCase,
+  GetMyStatisticCase,
 ];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
@@ -272,6 +275,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     UserSAController,
     QuestionSAController,
     PairController,
+    UserPairController,
   ],
   providers: [
     // {
