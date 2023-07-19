@@ -116,8 +116,9 @@ import { AnswerRepository } from './quiz/repositories/answer.quiz.repository';
 import { GetAllGamesCase } from './quiz/public/use-cases/get-all-games-case';
 import { UserPairController } from './quiz/public/controllers/users.public.controller';
 import { GetMyStatisticCase } from './quiz/public/use-cases/get-my-statistic-case';
+import { ValidationSortBy } from './validation/validationSortBy';
 
-const validations = [ValidationBlogId, ValidationLoginEmail];
+const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 
 const useCasesBlog = [
   CreateBlogCase,

@@ -5,22 +5,28 @@ import {
   sortingByVariates,
 } from './paginatorType';
 import { Transform } from 'class-transformer';
-import { IsIn, IsOptional, IsString } from 'class-validator';
+import { IsIn, IsOptional, IsString, Validate } from 'class-validator';
+
+import { ValidationSortBy } from '../validation/validationSortBy';
 
 export class BasicPagination {
   @IsOptional()
   @Transform(({ value }) => containsOnlyOneNumber(value))
   pageNumber = 1;
+
   @IsOptional()
   @Transform(({ value }) => containsOnlyOneNumber(value))
   pageSize = 10;
+
   @IsOptional()
-  @IsString()
-  @Transform(({ value }) => value.toLowerCase())
-  @IsIn(sortingByVariates, {
-    message: ' sort filter not exist',
-  })
+  // @IsString()
+  // @Transform(({ value }) => value.toLowerCase())
+  // @IsIn(sortingByVariates, {
+  //   message: ' sort filter not exist',
+  // })
+  @Validate(ValidationSortBy)
   sortBy = 'createdAt';
+
   @IsOptional()
   @IsString()
   @Transform(({ value }) => value.toUpperCase())
