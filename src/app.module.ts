@@ -117,6 +117,7 @@ import { GetAllGamesCase } from './quiz/public/use-cases/get-all-games-case';
 import { UserPairController } from './quiz/public/controllers/users.public.controller';
 import { GetMyStatisticCase } from './quiz/public/use-cases/get-my-statistic-case';
 import { ValidationSortBy } from './validation/validationSortBy';
+import { GetTopUsersCase } from './quiz/public/use-cases/get-top-statistic-case';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 
@@ -192,6 +193,7 @@ const useCasesQuiz = [
   CreateAnswerCase,
   GetAllGamesCase,
   GetMyStatisticCase,
+  GetTopUsersCase,
 ];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];

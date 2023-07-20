@@ -1,10 +1,5 @@
-import {
-  GetAllPairViewModel,
-  GetPairViewModel,
-  Pair,
-} from '../entities/pairs.entity';
-import { log } from 'console';
-import { EntityManager, ILike, In, Repository } from 'typeorm';
+import { GetAllPairViewModel, Pair } from '../entities/pairs.entity';
+import { EntityManager, In, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';

@@ -24,7 +24,7 @@ export class ValidationSortBy implements ValidatorConstraintInterface {
 
         if (
           array.length !== 2 ||
-          sortingByVariates.includes(array[0].toLocaleLowerCase()) === false ||
+          sortingByVariates.includes(array[0]) === false ||
           sortDirectionVariates.includes(array[1].toLocaleUpperCase()) === false
         ) {
           return false;
