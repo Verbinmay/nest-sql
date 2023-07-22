@@ -4,6 +4,7 @@ import { ViewBannedUserDto } from '../blogger/dto/user/view-banned-user';
 import { ViewCommentDto } from '../public/dto/comment/view-comment.dto';
 import { ViewPostDto } from '../public/dto/post/view-post.dto';
 import { ViewPairDto } from '../quiz/public/dto/view-pair.dto';
+import { UserStatisticDTO } from '../quiz/public/dto/view-user-statistic.dto';
 import { ViewQuestionDto } from '../quiz/sa/dto/view-question.dto';
 import { SAViewBlogDto } from '../sa/dto/blog/sa-view-blog.dto';
 import { SAViewUserDto } from '../sa/dto/user/sa-view-user.dto';
@@ -32,6 +33,9 @@ export type PaginatorQuestion = PaginatorEnd & {
 };
 export type PaginatorPair = PaginatorEnd & {
   items: Array<ViewPairDto>;
+};
+export type PaginatorUserStatistic = PaginatorEnd & {
+  items: Array<UserStatisticDTO>;
 };
 
 export type PaginatorCommentWithLikeViewModel = PaginatorEnd & {

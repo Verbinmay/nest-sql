@@ -1,11 +1,15 @@
+import {
+  PaginatorPair,
+  PaginatorUserStatistic,
+} from '../../pagination/paginatorType';
 import { log } from 'console';
 import { DataSource, EntityManager, In, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { User } from '../../entities/sql/user.entity';
 import { PaginationQuery } from '../../pagination/base-pagination';
-import { PaginatorPair } from '../../pagination/paginatorType';
 import { ViewPairDto } from '../public/dto/view-pair.dto';
 import { UserStatisticDTO } from '../public/dto/view-user-statistic.dto';
 import { GetAllPairViewModel, Pair } from '../entities/pairs.entity';
@@ -15,6 +19,8 @@ export class PairRepository {
   constructor(
     @InjectRepository(Pair)
     private readonly pairRepository: Repository<Pair>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -150,7 +156,7 @@ export class PairRepository {
     const orderBy = query.sort.join(', ');
     const limit = query.pageSize;
     const offset = query.skip();
-    console.log(orderBy, limit, offset);
+
     const customSQLQuery = `SELECT  u.id,
     u.login,
     SUM(case WHEN u.id = pair.f_id THEN pair.f_score WHEN u.id = pair.s_id THEN pair.s_score end) AS sumscore,
@@ -172,7 +178,6 @@ export class PairRepository {
       limit,
       offset,
     ]);
-    log(statisticFromDB);
 
     const statisticView: Array<UserStatisticDTO> = statisticFromDB.map((s) => {
       return {
@@ -188,6 +193,16 @@ export class PairRepository {
         drawsCount: Number(s.drawscount),
       };
     });
-    return statisticView;
+    const totalCount: number = await this.userRepository.count({});
+    const pagesCount = query.countPages(totalCount);
+    const result: PaginatorUserStatistic = {
+      pagesCount: pagesCount,
+      page: query.pageNumber,
+      pageSize: query.pageSize,
+      totalCount: totalCount,
+      items: statisticView,
+    };
+
+    return result;
   }
 }

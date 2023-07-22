@@ -22,24 +22,6 @@ export class UserRepository {
   async deleteAll() {
     return await this.usersRepository.delete({});
   }
-  // async truncate(): Promise<void> {
-  //   return await this.usersRepository.query(
-  //     `TRUNCATE TABLE user RESTART IDENTITY CASCADE`,
-  //   );
-  // }
-
-  // async findCountUsers(filter: object) {
-  //   return await this.UserModel.countDocuments(filter);
-  // }
-
-  // async findUsers(a: { find: object; sort: any; skip: number; limit: number }) {
-  //   const result: Array<User> = await this.UserModel.find(a.find)
-  //     .sort(a.sort)
-  //     .skip(a.skip)
-  //     .limit(a.limit);
-
-  //   return result;
-  // }
 
   async findUserById(id: string): Promise<User> {
     try {
