@@ -1,5 +1,5 @@
-import { GetAllPairViewModel, Pair } from '../entities/pairs.entity';
-import { EntityManager, In, Repository } from 'typeorm';
+import { log } from 'console';
+import { DataSource, EntityManager, In, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,41 +7,29 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationQuery } from '../../pagination/base-pagination';
 import { PaginatorPair } from '../../pagination/paginatorType';
 import { ViewPairDto } from '../public/dto/view-pair.dto';
+import { UserStatisticDTO } from '../public/dto/view-user-statistic.dto';
+import { GetAllPairViewModel, Pair } from '../entities/pairs.entity';
 
 @Injectable()
 export class PairRepository {
   constructor(
     @InjectRepository(Pair)
     private readonly pairRepository: Repository<Pair>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async findPairs(userId: string, query: PaginationQuery) {
-    const totalCount: number = await this.pairRepository.count({
-      where: [{ f_id: userId }, { s_id: userId }],
-    });
+    // const totalCount: number = await this.pairRepository.count({
+    //   where: [{ f_id: userId }, { s_id: userId }],
+    // });
 
-    const pagesCount = query.countPages(totalCount);
-
-    let orderInfo: any = {
-      [query.sortBy]: query.sortDirection,
-      // pairCreatedDate: 'DESC',
-    };
-
-    if (query.sortBy === 'createdAt') {
-      orderInfo = { pairCreatedDate: query.sortDirection };
-    }
-
-    const pairsFromDB: Array<Pair> = await this.pairRepository.find({
+    const [pairsFromDB, totalCount] = await this.pairRepository.findAndCount({
       relations: { users: true, answers: true, questions: true },
       where: [{ f_id: userId }, { s_id: userId }],
-      order:
-        // orderInfo,
-        {
-          [query.sortBy]: query.sortDirection,
-          pairCreatedDate: 'DESC',
-          // questions: { createdAt: 'ASC' },
-          // answers: { addedAt: 'ASC' },
-        },
+      order: {
+        [query.sortBy]: query.sortDirection,
+        pairCreatedDate: 'DESC',
+      },
       skip: query.skip(),
       take: query.pageSize,
     });
@@ -49,6 +37,8 @@ export class PairRepository {
     const questions: ViewPairDto[] = pairsFromDB.map((m) =>
       GetAllPairViewModel(m),
     );
+
+    const pagesCount = query.countPages(totalCount);
 
     const result: PaginatorPair = {
       pagesCount: pagesCount,
@@ -155,5 +145,49 @@ export class PairRepository {
     return await this.pairRepository.find({
       where: [{ f_id: userId }, { s_id: userId }],
     });
+  }
+  async findStaticUsers(query: PaginationQuery) {
+    const orderBy = query.sort.join(', ');
+    const limit = query.pageSize;
+    const offset = query.skip();
+    console.log(orderBy, limit, offset);
+    const customSQLQuery = `SELECT  u.id,
+    u.login,
+    SUM(case WHEN u.id = pair.f_id THEN pair.f_score WHEN u.id = pair.s_id THEN pair.s_score end) AS sumscore,
+    COUNT(*) AS gamescount,
+    round(AVG(case WHEN u.id = pair.f_id THEN pair.f_score WHEN u.id = pair.s_id THEN pair.s_score end),2) AS avgscores,
+    count (case WHEN u.id = pair.f_id AND pair.f_score > pair.s_score THEN 1 WHEN u.id = pair.s_id AND pair.s_score > pair.f_score THEN 1 end) AS winscount,
+    count (case WHEN u.id = pair.f_id AND pair.f_score < pair.s_score THEN 1 WHEN u.id = pair.s_id AND pair.s_score < pair.f_score THEN 1 end) AS lossescount,
+    count (case WHEN u.id = pair.f_id AND pair.f_score = pair.s_score THEN 1 WHEN u.id = pair.s_id AND pair.s_score = pair.f_score THEN 1 end) AS drawscount
+    FROM "user" AS u
+    LEFT OUTER JOIN pair_users_user
+    ON (u.id = pair_users_user."userId")left outer
+    JOIN pair
+    ON (pair.id = pair_users_user."pairId")
+    GROUP BY u.id
+    ORDER BY ${orderBy}
+    LIMIT $1
+    OFFSET $2`;
+    const statisticFromDB = await this.dataSource.query(customSQLQuery, [
+      limit,
+      offset,
+    ]);
+    log(statisticFromDB);
+
+    const statisticView: Array<UserStatisticDTO> = statisticFromDB.map((s) => {
+      return {
+        player: {
+          id: s.id,
+          login: s.login,
+        },
+        sumScore: Number(s.sumscore),
+        avgScores: (Number(s.avgscores) * 100) / 100,
+        gamesCount: Number(s.gamescount),
+        winsCount: Number(s.winscount),
+        lossesCount: Number(s.lossescount),
+        drawsCount: Number(s.drawscount),
+      };
+    });
+    return statisticView;
   }
 }

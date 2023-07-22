@@ -19,13 +19,17 @@ export class BasicPagination {
   pageSize = 10;
 
   @IsOptional()
-  // @IsString()
-  // @Transform(({ value }) => value.toLowerCase())
-  // @IsIn(sortingByVariates, {
-  //   message: ' sort filter not exist',
-  // })
-  @Validate(ValidationSortBy)
+  @IsString()
+  @Transform(({ value }) => value.toLowerCase())
+  @IsIn(sortingByVariates, {
+    message: ' sort filter not exist',
+  })
   sortBy = 'createdAt';
+
+  @IsOptional()
+  @Validate(ValidationSortBy)
+  @Transform(({ value }) => sortTransformer(value))
+  sort = ['avgScores desc', 'sumScore desc'];
 
   @IsOptional()
   @IsString()
@@ -97,6 +101,11 @@ export class PaginationQuery extends BasicPagination {
   }
 }
 
+function sortTransformer(value): string | Array<string> {
+  if (typeof value === 'string') {
+    return [value];
+  } else return value;
+}
 function containsOnlyOneNumber(value): number {
   const pageNumber = parseInt(value);
   if (isNaN(pageNumber)) return 1;

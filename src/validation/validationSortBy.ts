@@ -7,9 +7,9 @@ import {
   sortDirectionVariates,
   sortingByVariates,
 } from '../pagination/paginatorType';
-import { Injectable } from '@nestjs/common';
+import { log } from 'console';
 
-import { BlogRepository } from '../sql/blog.repository';
+import { Injectable } from '@nestjs/common';
 
 @ValidatorConstraint({ name: 'ValidationSortBy', async: true })
 @Injectable()
@@ -17,15 +17,25 @@ export class ValidationSortBy implements ValidatorConstraintInterface {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async validate(sort: string | Array<string>, args: ValidationArguments) {
     if (typeof sort === 'string') {
-      return sortingByVariates.includes(sort);
+      const sortString = sort.split(' ');
+      if (
+        sortString.length !== 2 ||
+        sortingByVariates.includes(sortString[0]) === false ||
+        sortDirectionVariates.includes(sortString[1].toLocaleUpperCase()) ===
+          false
+      ) {
+        return false;
+      }
+      return true;
     } else if (Array.isArray(sort)) {
       for (const s of sort) {
-        const array = s.split(' ');
+        const sortString = s.split(' ');
 
         if (
-          array.length !== 2 ||
-          sortingByVariates.includes(array[0]) === false ||
-          sortDirectionVariates.includes(array[1].toLocaleUpperCase()) === false
+          sortString.length !== 2 ||
+          sortingByVariates.includes(sortString[0]) === false ||
+          sortDirectionVariates.includes(sortString[1].toLocaleUpperCase()) ===
+            false
         ) {
           return false;
         }

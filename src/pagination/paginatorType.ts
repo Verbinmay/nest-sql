@@ -78,6 +78,12 @@ export const sortingByVariates = [
   'pairCreatedDate',
   'startGameDate',
   'finishGameDate',
+  'sumScore',
+  'avgScores',
+  'gamesCount',
+  'winsCount',
+  'lossesCount',
+  'drawsCount',
 ];
 export const banStatusVariates = ['all', 'banned', 'notBanned'];
 export const publishedStatusVariates = ['all', 'published', 'notPublished'];
