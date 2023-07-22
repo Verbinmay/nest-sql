@@ -174,6 +174,7 @@ export class PairRepository {
     ORDER BY ${orderBy}
     LIMIT $1
     OFFSET $2`;
+
     const statisticFromDB = await this.dataSource.query(customSQLQuery, [
       limit,
       offset,

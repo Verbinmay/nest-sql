@@ -7,8 +7,6 @@ import {
   sortDirectionVariates,
   sortingByVariates,
 } from '../pagination/paginatorType';
-import { log } from 'console';
-
 import { Injectable } from '@nestjs/common';
 
 @ValidatorConstraint({ name: 'ValidationSortBy', async: true })
@@ -17,30 +15,11 @@ export class ValidationSortBy implements ValidatorConstraintInterface {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async validate(sort: string | Array<string>, args: ValidationArguments) {
     if (typeof sort === 'string') {
-      const sortString = sort.split(' ');
-      if (
-        sortString.length !== 2 ||
-        sortingByVariates.includes(sortString[0]) === false ||
-        sortDirectionVariates.includes(sortString[1].toLocaleUpperCase()) ===
-          false
-      ) {
-        return false;
-      }
-      return true;
+      return validateSortString(sort);
     } else if (Array.isArray(sort)) {
       for (const s of sort) {
-        const sortString = s.split(' ');
-
-        if (
-          sortString.length !== 2 ||
-          sortingByVariates.includes(sortString[0]) === false ||
-          sortDirectionVariates.includes(sortString[1].toLocaleUpperCase()) ===
-            false
-        ) {
-          return false;
-        }
+        return validateSortString(s);
       }
-      return true;
     } else return false;
   }
 
@@ -48,4 +27,17 @@ export class ValidationSortBy implements ValidatorConstraintInterface {
   defaultMessage(args: ValidationArguments) {
     return 'sort not exist!';
   }
+}
+
+function validateSortString(s: string) {
+  const sortString = s.split(' ');
+
+  if (
+    sortString.length !== 2 ||
+    sortingByVariates.includes(sortString[0]) === false ||
+    sortDirectionVariates.includes(sortString[1].toLocaleUpperCase()) === false
+  ) {
+    return false;
+  }
+  return true;
 }
