@@ -1,24 +1,13 @@
-import {
-  Question,
-  SA_GetQuestionViewModel,
-} from '../../entities/question.entity';
-import {
-  GetNoPairViewModel,
-  GetPairViewModel,
-  Pair,
-} from '../../entities/pairs.entity';
-import { error } from 'console';
-import { DataSource, EntityManager, QueryRunner } from 'typeorm';
+import { log } from 'console';
+import { CronJob } from 'cron';
 
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { InjectDataSource } from '@nestjs/typeorm';
 
-import { User } from '../../../entities/sql/user.entity';
-import { UserRepository } from '../../../sql/user.repository';
 import { Answer, GetAnswerViewModel } from '../../entities/answer.entity';
+import { Pair } from '../../entities/pairs.entity';
+import { Question } from '../../entities/question.entity';
 import { AnswerRepository } from '../../repositories/answer.quiz.repository';
 import { PairRepository } from '../../repositories/pair.quiz.repository';
-import { QuestionRepository } from '../../repositories/question.quiz.repository';
 import { CreateAnswerDto } from '../dto/create-answer.dto';
 
 export class CreateAnswerCommand {
@@ -73,24 +62,53 @@ export class CreateAnswerCase implements ICommandHandler<CreateAnswerCommand> {
       }
     }
 
-    if (activePairCheck.answers.length === 9) {
-      if (
-        command.userId === activePairCheck.f_id &&
-        activePairCheck.s_score != 0
-      ) {
-        activePairCheck.s_score = activePairCheck.s_score + 1;
-      } else if (
-        command.userId === activePairCheck.s_id &&
-        activePairCheck.f_score != 0
-      ) {
-        activePairCheck.f_score = activePairCheck.f_score + 1;
-      }
+    // if (activePairCheck.answers.length === 9) {
+    //   if (
+    //     command.userId === activePairCheck.f_id &&
+    //     activePairCheck.s_score != 0
+    //   ) {
+    //     activePairCheck.s_score = activePairCheck.s_score + 1;
+    //   } else if (
+    //     command.userId === activePairCheck.s_id &&
+    //     activePairCheck.f_score != 0
+    //   ) {
+    //     activePairCheck.f_score = activePairCheck.f_score + 1;
+    //   }
 
-      activePairCheck.finishGameDate = savedAnswer.addedAt;
-      activePairCheck.status = 'Finished';
-    }
+    //   activePairCheck.finishGameDate = savedAnswer.addedAt;
+    //   activePairCheck.status = 'Finished';
+    // }
     activePairCheck.answers.push(savedAnswer);
+    if (
+      activePairCheck.answers.filter((a) => a.userId === command.userId)
+        .length === 5 &&
+      activePairCheck.answers.filter((a) => a.userId !== command.userId)
+        .length !== 5
+    ) {
+      const date = new Date();
+      date.setSeconds(date.getSeconds() + 10);
+      const job = new CronJob(date, async () => {
+        const pair = await this.pairRepository.findGameById(activePairCheck.id);
+        if (command.userId === pair.f_id && pair.f_score != 0) {
+          pair.f_score = pair.f_score + 1;
+        } else if (command.userId === pair.s_id && pair.s_score != 0) {
+          pair.s_score = pair.s_score + 1;
+        }
+
+        pair.finishGameDate = pair.answers.reduce((maxItem, currentItem) => {
+          if (currentItem.addedAt > maxItem.addedAt) {
+            return currentItem;
+          } else {
+            return maxItem;
+          }
+        }, pair.answers[0]).addedAt;
+        pair.status = 'Finished';
+        const updatedPair = await this.pairRepository.update(pair);
+      });
+      job.start();
+    }
     const updatedPair = await this.pairRepository.update(activePairCheck);
+    console.log('updatedPair');
     return GetAnswerViewModel(savedAnswer);
   }
 }
