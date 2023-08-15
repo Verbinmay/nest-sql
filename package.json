@@ -37,6 +37,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/cron": "^2.0.1",
+    "@types/multer": "^1.4.7",
     "@vercel/postgres": "^0.4.0",
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",

@@ -118,6 +118,7 @@ import { UserPairController } from './quiz/public/controllers/users.public.contr
 import { GetMyStatisticCase } from './quiz/public/use-cases/get-my-statistic-case';
 import { ValidationSortBy } from './validation/validationSortBy';
 import { GetTopUsersCase } from './quiz/public/use-cases/get-top-statistic-case';
+import { AvatarBloggersController } from './blogger/controllers/avatar.blogger.controller';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 
@@ -279,6 +280,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     QuestionSAController,
     PairController,
     UserPairController,
+    AvatarBloggersController,
   ],
   providers: [
     // {
