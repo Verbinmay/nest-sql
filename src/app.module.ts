@@ -119,6 +119,8 @@ import { GetMyStatisticCase } from './quiz/public/use-cases/get-my-statistic-cas
 import { ValidationSortBy } from './validation/validationSortBy';
 import { GetTopUsersCase } from './quiz/public/use-cases/get-top-statistic-case';
 import { AvatarBloggersController } from './blogger/controllers/avatar.blogger.controller';
+import { PostAvatarCase } from './blogger/use-cases/avatar/post-avatar-case';
+import { FileStorageAdapter } from './adapters/fileStorage.adapter';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 
@@ -196,6 +198,8 @@ const useCasesQuiz = [
   GetMyStatisticCase,
   GetTopUsersCase,
 ];
+
+const useCasesAvatar = [PostAvatarCase];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
 
@@ -295,6 +299,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     ...useCasesUser /* кейсы */,
     ...useCasesAuth /* кейсы */,
     ...useCasesQuiz /* кейсы */,
+    ...useCasesAvatar /* кейсы */,
     ...validations /*валидаторы */,
     AppService,
     BlogRepository,
@@ -316,6 +321,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     UserQueryRepository,
     PairRepository,
     AnswerRepository,
+    FileStorageAdapter,
   ],
 })
 export class AppModule {}
