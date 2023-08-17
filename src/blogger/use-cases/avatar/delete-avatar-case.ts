@@ -7,29 +7,17 @@ import { CheckDir } from '../../../adapters/checkDir';
 import { FileStorageAdapter } from '../../../adapters/fileStorage.adapter';
 import { PostRepository } from '../../../sql/post.repository';
 
-export class PostAvatarCommand {
-  constructor(
-    public userId: string,
-    public blogId: string,
-    public avatarFile: Express.Multer.File,
-    public finalDir: string,
-  ) {}
-}
+export class DeleteAvatarCommand {}
 
-@CommandHandler(PostAvatarCommand)
-export class PostAvatarCase implements ICommandHandler<PostAvatarCommand> {
+@CommandHandler(DeleteAvatarCommand)
+export class DeleteAvatarCase implements ICommandHandler<DeleteAvatarCommand> {
   constructor(
     private readonly postRepository: PostRepository,
     private readonly fileStorageAdapter: FileStorageAdapter,
   ) {}
 
-  async execute(command: PostAvatarCommand) {
-    await CheckDir(command.finalDir);
-    const upload = await this.fileStorageAdapter.saveAvatar(
-      command.finalDir,
-      command.avatarFile.originalname,
-      command.avatarFile.buffer,
-    );
+  async execute(command: DeleteAvatarCommand) {
+    const upload = await this.fileStorageAdapter.deleteAvatar();
     console.log(upload);
     // const postsFromDb: Post[] = await this.postRepository.findPostsByUserId(
     //   command.userId,

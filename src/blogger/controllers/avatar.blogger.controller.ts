@@ -1,12 +1,15 @@
 import {
   Controller,
+  Delete,
   Get,
   Param,
   Post,
+  Put,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { log } from 'console';
 import { promises as fsPromises } from 'fs';
 import { existsSync } from 'fs';
 import * as path from 'path';
@@ -18,6 +21,7 @@ import { JwtAuthGuard } from '../../guard/auth-passport/guard-passport/jwt-auth.
 import { CheckDir } from '../../adapters/checkDir';
 import { CurrentPayload } from '../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../helpers/errors';
+import { DeleteAvatarCommand } from '../use-cases/avatar/delete-avatar-case';
 import { PostAvatarCommand } from '../use-cases/avatar/post-avatar-case';
 
 @Controller('blogger/blogs')
@@ -49,6 +53,13 @@ export class AvatarBloggersController {
     const result = await this.commandBus.execute(
       new PostAvatarCommand(userId, blogId, avatarFile, finalDir),
     );
+    return makeAnswerInController(result);
+  }
+
+  @Get('avatars')
+  async deleteAvatar() {
+    log(1);
+    const result = await this.commandBus.execute(new DeleteAvatarCommand());
     return makeAnswerInController(result);
   }
 }

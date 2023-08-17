@@ -120,7 +120,14 @@ import { ValidationSortBy } from './validation/validationSortBy';
 import { GetTopUsersCase } from './quiz/public/use-cases/get-top-statistic-case';
 import { AvatarBloggersController } from './blogger/controllers/avatar.blogger.controller';
 import { PostAvatarCase } from './blogger/use-cases/avatar/post-avatar-case';
-import { FileStorageAdapter } from './adapters/fileStorage.adapter';
+import {
+  FileStorageAdapter,
+  S3StorageAdapter,
+} from './adapters/fileStorage.adapter';
+import {
+  DeleteAvatarCase,
+  DeleteAvatarCommand,
+} from './blogger/use-cases/avatar/delete-avatar-case';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 
@@ -199,7 +206,7 @@ const useCasesQuiz = [
   GetTopUsersCase,
 ];
 
-const useCasesAvatar = [PostAvatarCase];
+const useCasesAvatar = [PostAvatarCase, DeleteAvatarCase];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
 
@@ -321,7 +328,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     UserQueryRepository,
     PairRepository,
     AnswerRepository,
-    FileStorageAdapter,
+    { provide: FileStorageAdapter, useClass: S3StorageAdapter },
   ],
 })
 export class AppModule {}
