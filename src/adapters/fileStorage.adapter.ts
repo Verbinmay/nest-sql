@@ -22,10 +22,8 @@ import { CheckDir } from './checkDir';
 export class FileStorageAdapter {
   async saveAvatar(finalDir: string, originalname: string, buffer: Buffer) {
     await CheckDir(finalDir);
-    return await fsPromises.writeFile(
-      path.join(finalDir, originalname),
-      buffer,
-    );
+    await fsPromises.writeFile(path.join(finalDir, originalname), buffer);
+    return { url: path.join(finalDir, originalname) };
   }
   async deleteAvatar() {
     return;
@@ -68,7 +66,6 @@ export class S3StorageAdapter {
 
       return {
         url: bucketParams.Key,
-        fileId: randomUUID(),
       };
     } catch (exceptions) {
       console.error(exceptions);

@@ -4,6 +4,7 @@ import {
   ArgumentsHost,
   HttpException,
 } from '@nestjs/common';
+import { log } from 'console';
 import { Request, Response } from 'express';
 
 @Catch(HttpException)
@@ -15,7 +16,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     if (status === 400) {
       const expResponse: any = exception.getResponse();
-
+      log(expResponse, 'expResponse');
       /* проверка на то, что приходит уже не готовый к отправке массив ошибок  */
       if (expResponse.errorsMessages) {
         response.status(status).json(expResponse);

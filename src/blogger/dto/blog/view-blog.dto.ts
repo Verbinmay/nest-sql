@@ -7,5 +7,5 @@ export class ViewBlogDto {
   websiteUrl: string;
   createdAt: string;
   isMembership: boolean;
-  image: imageDto;
+  images?: imageDto;
 }

@@ -4,17 +4,21 @@ import sharp from 'sharp';
 
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { Blog } from '../../../entities/sql/blog.entity';
+import { Blog, getBlogViewModel } from '../../../entities/sql/blog.entity';
+import { Images } from '../../../entities/sql/image.entity';
 import { CheckDir } from '../../../adapters/checkDir';
 import { FileStorageAdapter } from '../../../adapters/fileStorage.adapter';
+import { getImageViewModelUtil } from '../../../helpers/images.util';
+import { ExpressMulterFileWithResolution } from '../../../pipes/wallpaper.pipe';
 import { BlogRepository } from '../../../sql/blog.repository';
+import { ImagesRepository } from '../../../sql/image.repository';
 import { PostRepository } from '../../../sql/post.repository';
 
 export class BlogWallpaperCommand {
   constructor(
     public userId: string,
     public blogId: string,
-    public avatarFile: Express.Multer.File,
+    public avatarFile: ExpressMulterFileWithResolution,
     public finalDir: string,
   ) {}
 }
@@ -25,10 +29,12 @@ export class BlogWallpaperCase
 {
   constructor(
     private readonly blogRepository: BlogRepository,
+    private readonly imageRepository: ImagesRepository,
     private readonly fileStorageAdapter: FileStorageAdapter,
   ) {}
 
   async execute(command: BlogWallpaperCommand) {
+    log(command.avatarFile);
     const blog: Blog | null = await this.blogRepository.findBlogById(
       command.blogId,
     );
@@ -38,16 +44,15 @@ export class BlogWallpaperCase
       command.avatarFile.buffer,
     );
 
-    // const postsFromDb: Post[] = await this.postRepository.findPostsByUserId(
-    //   command.userId,
-    // );
-    // const result: PaginatorCommentWithWithPostInfoViewModel =
-    //   await this.commentQueryRepository.getCommentsWithPostInfoByPostsId(
-    //     command.query,
-    //     postsFromDb.map((p) => p.id),
-    //     command.userId,
-    //   );
-    // return result;
-    return 'ok';
+    const image = new Images();
+    image.url = savedAvatar.url;
+    image.width = command.avatarFile.width;
+    image.height = command.avatarFile.height;
+    image.fileSize = command.avatarFile.size;
+    image.type = 'wallpaper';
+    image.blog = blog;
+
+    const result = await this.imageRepository.create(image);
+    return getImageViewModelUtil([result], 'wallpaper')[0];
   }
 }

@@ -119,7 +119,7 @@ import { GetMyStatisticCase } from './quiz/public/use-cases/get-my-statistic-cas
 import { ValidationSortBy } from './validation/validationSortBy';
 import { GetTopUsersCase } from './quiz/public/use-cases/get-top-statistic-case';
 import { AvatarBloggersController } from './blogger/controllers/avatar.blogger.controller';
-import { BlogWallpaperCase } from './blogger/use-cases/avatar/post-avatar-case';
+import { BlogWallpaperCase } from './blogger/use-cases/images/post-avatar-case';
 import {
   FileStorageAdapter,
   S3StorageAdapter,
@@ -127,8 +127,9 @@ import {
 import {
   DeleteAvatarCase,
   DeleteAvatarCommand,
-} from './blogger/use-cases/avatar/delete-avatar-case';
+} from './blogger/use-cases/images/delete-avatar-case';
 import { Images } from './entities/sql/image.entity';
+import { ImagesRepository } from './sql/image.repository';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 
@@ -331,6 +332,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     UserQueryRepository,
     PairRepository,
     AnswerRepository,
+    ImagesRepository,
     { provide: FileStorageAdapter, useClass: S3StorageAdapter },
   ],
 })

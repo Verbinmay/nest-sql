@@ -30,6 +30,7 @@ export const info = {
     users: '/blogger/users/',
     usersBlog: '/blogger/users/blog/',
     comments: '/blogger/blogs/comments',
+    wallpaper: '/images/wallpaper',
   },
   sa: {
     saLogin: 'admin',

@@ -4,11 +4,8 @@ import { Images } from '../entities/sql/image.entity';
 export function getImageViewModelUtil(
   images: Array<Images>,
   type: 'wallpaper' | 'main',
-): imageInfo | Array<imageInfo> {
-  if (images.length === 0 && type === 'wallpaper') return null;
-  if (images.length === 0 && type === 'main') return [];
-
-  const filtered = images.filter((i) => (i.type = type));
+): Array<imageInfo> {
+  const filtered = images.filter((i) => i.type === type);
   if (filtered.length > 1) {
     filtered.sort((a, b) => {
       const dateA = a.createdAt.getTime();
@@ -26,5 +23,5 @@ export function getImageViewModelUtil(
     };
   });
 
-  return type === 'main' ? result : result[0];
+  return result;
 }

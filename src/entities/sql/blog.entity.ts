@@ -12,7 +12,7 @@ import { imageInfo } from '../../blogger/dto/avatar/view-avatar.dto';
 import { ViewBlogDto } from '../../blogger/dto/blog/view-blog.dto';
 import { SAViewBlogDto } from '../../sa/dto/blog/sa-view-blog.dto';
 import { getImageViewModelUtil } from '../../helpers/images.util';
-import { Images, getImageViewModel } from './image.entity';
+import { Images } from './image.entity';
 import { User } from './user.entity';
 
 @Entity()
@@ -67,8 +67,10 @@ export function getBlogViewModel(blog: Blog): ViewBlogDto {
     createdAt: blog.createdAt.toISOString(),
     isMembership: blog.isMembership,
     images: {
-      wallpaper: getImageViewModelUtil(blog.images, 'wallpaper'),
-      main: getImageViewModelUtil(blog.images, 'main'),
+      wallpaper: blog.images
+        ? getImageViewModelUtil(blog.images ?? [], 'wallpaper')[0]
+        : null,
+      main: blog.images ? getImageViewModelUtil(blog.images ?? [], 'main') : [],
     },
   };
   return result;

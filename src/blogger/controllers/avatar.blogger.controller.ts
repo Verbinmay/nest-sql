@@ -26,8 +26,8 @@ import { JwtAuthGuard } from '../../guard/auth-passport/guard-passport/jwt-auth.
 import { CheckDir } from '../../adapters/checkDir';
 import { CurrentPayload } from '../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../helpers/errors';
-import { DeleteAvatarCommand } from '../use-cases/avatar/delete-avatar-case';
-import { BlogWallpaperCommand } from '../use-cases/avatar/post-avatar-case';
+import { DeleteAvatarCommand } from '../use-cases/images/delete-avatar-case';
+import { BlogWallpaperCommand } from '../use-cases/images/post-avatar-case';
 
 @Controller('blogger/blogs')
 export class AvatarBloggersController {
@@ -44,11 +44,12 @@ export class AvatarBloggersController {
     return await fsPromises.readFile(finalDir, { encoding: 'utf-8' });
   }
 
-  //   @UseGuards(JwtAuthGuard)
-  @Post('avatar')
-  //   @Post(':blogId/images/wallpaper')
-  //   @UseInterceptors(FileInterceptor('file'))
-  @UseInterceptors(FileInterceptor('avatar'))
+  @UseGuards(JwtAuthGuard)
+  @Post(':blogId/images/wallpaper')
+  @UseInterceptors(FileInterceptor('file'))
+
+  // @Post('avatar')
+  // @UseInterceptors(FileInterceptor('avatar'))
   async updateAvatar(
     @Param('blogId') blogId: string,
     @UploadedFile(

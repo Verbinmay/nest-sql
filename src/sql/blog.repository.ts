@@ -16,6 +16,7 @@ export class BlogRepository {
       return await this.blogsRepository.findOne({
         relations: {
           user: true,
+          images: true,
         },
         where: { id: id },
       });
