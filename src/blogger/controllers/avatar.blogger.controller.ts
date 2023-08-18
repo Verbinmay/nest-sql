@@ -22,9 +22,9 @@ import { JwtAuthGuard } from '../../guard/auth-passport/guard-passport/jwt-auth.
 import { CheckDir } from '../../adapters/checkDir';
 import { CurrentPayload } from '../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../helpers/errors';
+import { ImageValidationPipe } from '../../pipes/wallpaper.pipe';
 import { DeleteAvatarCommand } from '../use-cases/avatar/delete-avatar-case';
 import { PostAvatarCommand } from '../use-cases/avatar/post-avatar-case';
-import { wallpaperValidationPipe } from '../../pipes/wallpaper.pipe';
 
 @Controller('blogger/blogs')
 export class AvatarBloggersController {
@@ -48,7 +48,13 @@ export class AvatarBloggersController {
   @UseInterceptors(FileInterceptor('avatar'))
   async updateAvatar(
     @Param('blogId') blogId: string,
-    @UploadedFile(new wallpaperValidationPipe())
+    @UploadedFile(
+      new ImageValidationPipe(1028, 312, 100000, [
+        'image/jpg',
+        'image/jpeg',
+        'image/png',
+      ]),
+    )
     avatarFile: Express.Multer.File,
     @CurrentPayload() payload,
   ) {
