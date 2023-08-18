@@ -16,9 +16,12 @@ import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { CheckDir } from './checkDir';
+
 @Injectable()
 export class FileStorageAdapter {
   async saveAvatar(finalDir: string, originalname: string, buffer: Buffer) {
+    await CheckDir(finalDir);
     return await fsPromises.writeFile(
       path.join(finalDir, originalname),
       buffer,

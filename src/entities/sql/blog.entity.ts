@@ -4,11 +4,15 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { imageInfo } from '../../blogger/dto/avatar/view-avatar.dto';
 import { ViewBlogDto } from '../../blogger/dto/blog/view-blog.dto';
 import { SAViewBlogDto } from '../../sa/dto/blog/sa-view-blog.dto';
+import { getImageViewModelUtil } from '../../helpers/images.util';
+import { Images, getImageViewModel } from './image.entity';
 import { User } from './user.entity';
 
 @Entity()
@@ -49,6 +53,9 @@ export class Blog {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @OneToMany(() => Images, (images) => images.blog)
+  images: Images[];
 }
 
 export function getBlogViewModel(blog: Blog): ViewBlogDto {
@@ -59,6 +66,10 @@ export function getBlogViewModel(blog: Blog): ViewBlogDto {
     websiteUrl: blog.websiteUrl,
     createdAt: blog.createdAt.toISOString(),
     isMembership: blog.isMembership,
+    images: {
+      wallpaper: getImageViewModelUtil(blog.images, 'wallpaper'),
+      main: getImageViewModelUtil(blog.images, 'main'),
+    },
   };
   return result;
 }

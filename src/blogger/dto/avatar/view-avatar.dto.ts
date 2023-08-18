@@ -5,7 +5,7 @@ export class imageInfo {
   fileSize: number;
 }
 
-export class avatarDto {
+export class imageDto {
   wallpaper: imageInfo;
-  main: [imageInfo];
+  main: Array<imageInfo>;
 }

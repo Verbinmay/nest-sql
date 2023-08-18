@@ -51,9 +51,6 @@ export class Post {
 
   @OneToMany(() => PostLike, (postLike) => postLike.post)
   likes: PostLike[];
-
-  // @OneToMany(() => Comment, (comment) => comment.post)
-  // comments: Comment[];
 }
 
 export function getPostViewModel(post: Post, userId: string): ViewPostDto {

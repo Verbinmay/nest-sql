@@ -119,7 +119,7 @@ import { GetMyStatisticCase } from './quiz/public/use-cases/get-my-statistic-cas
 import { ValidationSortBy } from './validation/validationSortBy';
 import { GetTopUsersCase } from './quiz/public/use-cases/get-top-statistic-case';
 import { AvatarBloggersController } from './blogger/controllers/avatar.blogger.controller';
-import { PostAvatarCase } from './blogger/use-cases/avatar/post-avatar-case';
+import { BlogWallpaperCase } from './blogger/use-cases/avatar/post-avatar-case';
 import {
   FileStorageAdapter,
   S3StorageAdapter,
@@ -128,6 +128,7 @@ import {
   DeleteAvatarCase,
   DeleteAvatarCommand,
 } from './blogger/use-cases/avatar/delete-avatar-case';
+import { Images } from './entities/sql/image.entity';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 
@@ -206,7 +207,7 @@ const useCasesQuiz = [
   GetTopUsersCase,
 ];
 
-const useCasesAvatar = [PostAvatarCase, DeleteAvatarCase];
+const useCasesAvatar = [BlogWallpaperCase, DeleteAvatarCase];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
 
@@ -249,6 +250,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
           Question,
           Pair,
           Answer,
+          Images,
         ],
         autoLoadEntities: true,
         synchronize: true,
@@ -267,6 +269,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
       Question,
       Pair,
       Answer,
+      Images,
     ]),
 
     // ThrottlerModule.forRoot({

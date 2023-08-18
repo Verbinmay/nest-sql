@@ -30,23 +30,6 @@ export class CommentRepository {
     return await this.commentRepository.delete({});
   }
 
-  //   async findCountComments(filter: { name: { $regex: string } } | object) {
-  //     return await this.CommentModel.countDocuments(filter);
-  //   }
-  //   async getCommentsByPostId(a: {
-  //     find: { name: { $regex: string } } | object;
-  //     sort: any;
-  //     skip: number;
-  //     limit: number;
-  //   }) {
-  //     const result: Array<Comment> = await this.CommentModel.find(a.find)
-  //       .sort(a.sort)
-  //       .skip(a.skip)
-  //       .limit(a.limit);
-
-  //     return result;
-  //   }
-
   async create(comment: Comment) {
     await this.commentRepository.create(comment);
     return await this.commentRepository.save(comment);

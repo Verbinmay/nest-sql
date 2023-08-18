@@ -23,23 +23,7 @@ export class PostRepository {
   async deleteAll() {
     return await this.postsRepository.delete({});
   }
-  // async findCountPosts(filter: object) {
-  //   return await this.PostModel.countDocuments(filter);
-  // }
 
-  // async findPostsWithPagination(a: {
-  //   find: object;
-  //   sort: any;
-  //   skip: number;
-  //   limit: number;
-  // }) {
-  //   const result: Array<Post> = await this.PostModel.find(a.find)
-  //     .sort(a.sort)
-  //     .skip(a.skip)
-  //     .limit(a.limit);
-
-  //   return result;
-  // }
   async findPostsByUserId(userId: string) {
     try {
       const result: Array<Post> = await this.postsRepository.find({

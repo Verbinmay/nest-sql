@@ -10,6 +10,10 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import {
+  ExpressMulterFileWithResolution,
+  ImageValidationPipe,
+} from '../../pipes/wallpaper.pipe';
 import { log } from 'console';
 import { promises as fsPromises } from 'fs';
 import { existsSync } from 'fs';
@@ -22,9 +26,8 @@ import { JwtAuthGuard } from '../../guard/auth-passport/guard-passport/jwt-auth.
 import { CheckDir } from '../../adapters/checkDir';
 import { CurrentPayload } from '../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../helpers/errors';
-import { ImageValidationPipe } from '../../pipes/wallpaper.pipe';
 import { DeleteAvatarCommand } from '../use-cases/avatar/delete-avatar-case';
-import { PostAvatarCommand } from '../use-cases/avatar/post-avatar-case';
+import { BlogWallpaperCommand } from '../use-cases/avatar/post-avatar-case';
 
 @Controller('blogger/blogs')
 export class AvatarBloggersController {
@@ -55,14 +58,15 @@ export class AvatarBloggersController {
         'image/png',
       ]),
     )
-    avatarFile: Express.Multer.File,
+    avatarFile: ExpressMulterFileWithResolution,
     @CurrentPayload() payload,
   ) {
-    log(avatarFile, 'avatarFile');
     const userId = payload ? payload.sub : '';
+
     const finalDir = this.makeFinalDirectory(['view', 'saved']);
+
     const result = await this.commandBus.execute(
-      new PostAvatarCommand(userId, blogId, avatarFile, finalDir),
+      new BlogWallpaperCommand(userId, blogId, avatarFile, finalDir),
     );
     return makeAnswerInController(result);
   }

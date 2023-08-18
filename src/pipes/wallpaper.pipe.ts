@@ -8,6 +8,11 @@ import sharp from 'sharp';
 
 import { errorMaker } from '../helpers/errors';
 
+export interface ExpressMulterFileWithResolution extends Express.Multer.File {
+  width: number;
+  height: number;
+}
+
 @Injectable()
 export class ImageValidationPipe implements PipeTransform {
   constructor(
@@ -36,6 +41,11 @@ export class ImageValidationPipe implements PipeTransform {
     if (errors.length !== 0) {
       throw new BadRequestException(errorMaker(errors));
     }
-    return value;
+    const newValue: ExpressMulterFileWithResolution = {
+      ...value,
+      width: data.width,
+      height: data.height,
+    };
+    return newValue;
   }
 }

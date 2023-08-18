@@ -4,11 +4,13 @@ import sharp from 'sharp';
 
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
+import { Blog } from '../../../entities/sql/blog.entity';
 import { CheckDir } from '../../../adapters/checkDir';
 import { FileStorageAdapter } from '../../../adapters/fileStorage.adapter';
+import { BlogRepository } from '../../../sql/blog.repository';
 import { PostRepository } from '../../../sql/post.repository';
 
-export class PostAvatarCommand {
+export class BlogWallpaperCommand {
   constructor(
     public userId: string,
     public blogId: string,
@@ -17,32 +19,24 @@ export class PostAvatarCommand {
   ) {}
 }
 
-@CommandHandler(PostAvatarCommand)
-export class PostAvatarCase implements ICommandHandler<PostAvatarCommand> {
+@CommandHandler(BlogWallpaperCommand)
+export class BlogWallpaperCase
+  implements ICommandHandler<BlogWallpaperCommand>
+{
   constructor(
-    private readonly postRepository: PostRepository,
+    private readonly blogRepository: BlogRepository,
     private readonly fileStorageAdapter: FileStorageAdapter,
   ) {}
 
-  async execute(command: PostAvatarCommand) {
-    await CheckDir(command.finalDir);
-
-    async function CheckImage(
-      //   width: number,
-      //   height: number,
-      //   size: number,
-      buffer: Buffer,
-    ) {
-      const metadata = await sharp(buffer).metadata();
-    }
-    await CheckImage(command.avatarFile.buffer);
+  async execute(command: BlogWallpaperCommand) {
+    const blog: Blog | null = await this.blogRepository.findBlogById(
+      command.blogId,
+    );
     const savedAvatar = await this.fileStorageAdapter.saveAvatar(
       command.finalDir,
       command.avatarFile.originalname,
       command.avatarFile.buffer,
     );
-
-    const size = command.avatarFile.size;
 
     // const postsFromDb: Post[] = await this.postRepository.findPostsByUserId(
     //   command.userId,
