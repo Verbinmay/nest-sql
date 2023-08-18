@@ -1,5 +1,6 @@
 import { log } from 'console';
 import * as path from 'path';
+import sharp from 'sharp';
 
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
@@ -25,12 +26,24 @@ export class PostAvatarCase implements ICommandHandler<PostAvatarCommand> {
 
   async execute(command: PostAvatarCommand) {
     await CheckDir(command.finalDir);
-    const upload = await this.fileStorageAdapter.saveAvatar(
+
+    async function CheckImage(
+      //   width: number,
+      //   height: number,
+      //   size: number,
+      buffer: Buffer,
+    ) {
+      const metadata = await sharp(buffer).metadata();
+    }
+    await CheckImage(command.avatarFile.buffer);
+    const savedAvatar = await this.fileStorageAdapter.saveAvatar(
       command.finalDir,
       command.avatarFile.originalname,
       command.avatarFile.buffer,
     );
-    console.log(upload);
+
+    const size = command.avatarFile.size;
+
     // const postsFromDb: Post[] = await this.postRepository.findPostsByUserId(
     //   command.userId,
     // );

@@ -14,7 +14,7 @@ export class FieldError {
   field: string;
 }
 
-export function errorMaker(strings): ErrorResult {
+export function errorMaker(strings: Array<string>): ErrorResult {
   const arrayErrors: Array<FieldError> = [];
   console.log(strings);
   for (let i = 0; i < strings.length; i += 2) {

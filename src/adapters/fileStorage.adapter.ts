@@ -7,6 +7,7 @@ import {
   DeleteObjectCommand,
   DeleteObjectCommandOutput,
 } from '@aws-sdk/client-s3';
+import { log } from 'console';
 import { randomUUID } from 'crypto';
 import { promises as fsPromises } from 'fs';
 import * as path from 'path';
@@ -44,19 +45,24 @@ export class S3StorageAdapter {
     });
   }
   async saveAvatar(finalDir: string, originalname: string, buffer: Buffer) {
+    const key: string = finalDir
+      .split(path.dirname(require.main.filename))[1]
+      .substring(1);
+
     const bucketParams = {
       Bucket: 'markmaistrenko',
-      Key: `view/saved/${originalname}`,
+      Key: `${key}/${originalname}`,
       Body: buffer,
       ContentType: 'images/jpeg',
     };
-    console.log(bucketParams.Key);
+
     const command = new PutObjectCommand(bucketParams);
 
     try {
       const uploadResult: PutObjectAclCommandOutput = await this.s3Client.send(
         command,
       );
+
       return {
         url: bucketParams.Key,
         fileId: randomUUID(),

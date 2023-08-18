@@ -3,6 +3,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseFilePipe,
   Post,
   Put,
   UploadedFile,
@@ -23,6 +24,7 @@ import { CurrentPayload } from '../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../helpers/errors';
 import { DeleteAvatarCommand } from '../use-cases/avatar/delete-avatar-case';
 import { PostAvatarCommand } from '../use-cases/avatar/post-avatar-case';
+import { wallpaperValidationPipe } from '../../pipes/wallpaper.pipe';
 
 @Controller('blogger/blogs')
 export class AvatarBloggersController {
@@ -42,12 +44,15 @@ export class AvatarBloggersController {
   //   @UseGuards(JwtAuthGuard)
   @Post('avatar')
   //   @Post(':blogId/images/wallpaper')
+  //   @UseInterceptors(FileInterceptor('file'))
   @UseInterceptors(FileInterceptor('avatar'))
   async updateAvatar(
     @Param('blogId') blogId: string,
-    @UploadedFile() avatarFile: Express.Multer.File,
+    @UploadedFile(new wallpaperValidationPipe())
+    avatarFile: Express.Multer.File,
     @CurrentPayload() payload,
   ) {
+    log(avatarFile, 'avatarFile');
     const userId = payload ? payload.sub : '';
     const finalDir = this.makeFinalDirectory(['view', 'saved']);
     const result = await this.commandBus.execute(
