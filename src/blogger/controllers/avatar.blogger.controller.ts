@@ -47,9 +47,6 @@ export class AvatarBloggersController {
   @UseGuards(JwtAuthGuard)
   @Post(':blogId/images/wallpaper')
   @UseInterceptors(FileInterceptor('file'))
-
-  // @Post('avatar')
-  // @UseInterceptors(FileInterceptor('avatar'))
   async updateAvatar(
     @Param('blogId') blogId: string,
     @UploadedFile(
@@ -63,9 +60,7 @@ export class AvatarBloggersController {
     @CurrentPayload() payload,
   ) {
     const userId = payload ? payload.sub : '';
-
     const finalDir = this.makeFinalDirectory(['view', 'saved']);
-
     const result = await this.commandBus.execute(
       new BlogWallpaperCommand(userId, blogId, avatarFile, finalDir),
     );

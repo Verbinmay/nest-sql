@@ -20,4 +20,7 @@ export class ImagesRepository {
   async update(image: Images): Promise<Images> {
     return await this.imageRepository.save(image);
   }
+  async delete(url: string) {
+    return await this.imageRepository.delete({ url: url });
+  }
 }

@@ -25,7 +25,7 @@ export class FileStorageAdapter {
     await fsPromises.writeFile(path.join(finalDir, originalname), buffer);
     return { url: path.join(finalDir, originalname) };
   }
-  async deleteAvatar() {
+  async deleteAvatar(url: string) {
     return;
     // await fsPromises.unlink(path.join(finalDir, originalname), buffer);
   }
@@ -34,6 +34,7 @@ export class FileStorageAdapter {
 @Injectable()
 export class S3StorageAdapter {
   s3Client: S3Client;
+  private Bucket: 'markmaistrenko';
   constructor(private configService: ConfigService) {
     const REGION = 'us-east-1';
     this.s3Client = new S3Client({
@@ -72,10 +73,10 @@ export class S3StorageAdapter {
       throw exceptions;
     }
   }
-  async deleteAvatar() {
+  async deleteAvatar(url: string) {
     const bucketParams = {
       Bucket: 'markmaistrenko',
-      Key: 'view/saved/728x504_1_99396eea9dacbe53e68fe7089cd20e3a@1200x831_0xac120003_19189325441604046771.jpg',
+      Key: url,
     };
 
     const command = new DeleteObjectCommand(bucketParams);

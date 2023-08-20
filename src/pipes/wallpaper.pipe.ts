@@ -4,6 +4,7 @@ import {
   Injectable,
   PipeTransform,
 } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import sharp from 'sharp';
 
 import { errorMaker } from '../helpers/errors';
@@ -45,6 +46,7 @@ export class ImageValidationPipe implements PipeTransform {
       ...value,
       width: data.width,
       height: data.height,
+      originalname: randomUUID(),
     };
     return newValue;
   }

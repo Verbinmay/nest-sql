@@ -17,8 +17,8 @@ export class DeleteAvatarCase implements ICommandHandler<DeleteAvatarCommand> {
   ) {}
 
   async execute(command: DeleteAvatarCommand) {
-    const upload = await this.fileStorageAdapter.deleteAvatar();
-    console.log(upload);
+    // const upload = await this.fileStorageAdapter.deleteAvatar();
+    // console.log(upload);
     // const postsFromDb: Post[] = await this.postRepository.findPostsByUserId(
     //   command.userId,
     // );

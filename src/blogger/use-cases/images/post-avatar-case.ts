@@ -34,10 +34,19 @@ export class BlogWallpaperCase
   ) {}
 
   async execute(command: BlogWallpaperCommand) {
-    log(command.avatarFile);
     const blog: Blog | null = await this.blogRepository.findBlogById(
       command.blogId,
     );
+    if (!blog) return { s: 404 };
+    if (blog.user.id !== command.userId) return { s: 403 };
+
+    const wallpaper = blog.images.filter((i) => i.type === 'wallpaper');
+    if (wallpaper.length > 0) {
+      const result = await this.fileStorageAdapter.deleteAvatar(
+        wallpaper[0].url,
+      );
+      await this.imageRepository.delete(wallpaper[0].url);
+    }
     const savedAvatar = await this.fileStorageAdapter.saveAvatar(
       command.finalDir,
       command.avatarFile.originalname,
@@ -53,6 +62,9 @@ export class BlogWallpaperCase
     image.blog = blog;
 
     const result = await this.imageRepository.create(image);
-    return getImageViewModelUtil([result], 'wallpaper')[0];
+    const blogUpdated: Blog | null = await this.blogRepository.findBlogById(
+      command.blogId,
+    );
+    return getBlogViewModel(blogUpdated).images;
   }
 }
