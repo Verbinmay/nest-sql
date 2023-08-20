@@ -27,7 +27,7 @@ import { CheckDir } from '../../adapters/checkDir';
 import { CurrentPayload } from '../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../helpers/errors';
 import { DeleteAvatarCommand } from '../use-cases/images/delete-avatar-case';
-import { BlogWallpaperCommand } from '../use-cases/images/post-avatar-case';
+import { BlogWallpaperCommand } from '../use-cases/images/post-walpaper-blog-case';
 
 @Controller('blogger/blogs')
 export class AvatarBloggersController {
@@ -47,7 +47,7 @@ export class AvatarBloggersController {
   @UseGuards(JwtAuthGuard)
   @Post(':blogId/images/wallpaper')
   @UseInterceptors(FileInterceptor('file'))
-  async updateAvatar(
+  async updateWallpaper(
     @Param('blogId') blogId: string,
     @UploadedFile(
       new ImageValidationPipe(1028, 312, 100000, [
@@ -60,17 +60,44 @@ export class AvatarBloggersController {
     @CurrentPayload() payload,
   ) {
     const userId = payload ? payload.sub : '';
-    const finalDir = this.makeFinalDirectory(['view', 'saved']);
+    const finalDir = this.makeFinalDirectory([
+      'view',
+      'saved',
+      userId,
+      'wallpaper',
+    ]);
     const result = await this.commandBus.execute(
       new BlogWallpaperCommand(userId, blogId, avatarFile, finalDir),
     );
     return makeAnswerInController(result);
   }
-
-  @Get('avatars')
-  async deleteAvatar() {
-    log(1);
-    const result = await this.commandBus.execute(new DeleteAvatarCommand());
+  @UseGuards(JwtAuthGuard)
+  @Post(':blogId/images/main')
+  @UseInterceptors(FileInterceptor('file'))
+  async updateMainBlog(
+    @Param('blogId') blogId: string,
+    @UploadedFile(
+      new ImageValidationPipe(156, 156, 100000, [
+        'image/jpg',
+        'image/jpeg',
+        'image/png',
+      ]),
+    )
+    avatarFile: ExpressMulterFileWithResolution,
+    @CurrentPayload() payload,
+  ) {
+    const userId = payload ? payload.sub : '';
+    const finalDir = this.makeFinalDirectory(['view', 'saved', userId, 'main']);
+    const result = await this.commandBus.execute(
+      new BlogMainCommand(userId, blogId, avatarFile, finalDir),
+    );
     return makeAnswerInController(result);
   }
+
+  // @Get('avatars')
+  // async deleteAvatar() {
+  //   log(1);
+  //   const result = await this.commandBus.execute(new DeleteAvatarCommand());
+  //   return makeAnswerInController(result);
+  // }
 }

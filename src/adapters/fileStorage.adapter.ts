@@ -20,14 +20,14 @@ import { CheckDir } from './checkDir';
 
 @Injectable()
 export class FileStorageAdapter {
-  async saveAvatar(finalDir: string, originalname: string, buffer: Buffer) {
+  async saveImage(finalDir: string, originalname: string, buffer: Buffer) {
     await CheckDir(finalDir);
     await fsPromises.writeFile(path.join(finalDir, originalname), buffer);
     return { url: path.join(finalDir, originalname) };
   }
-  async deleteAvatar(url: string) {
+  async deleteImage(url: string) {
+    await fsPromises.unlink(url);
     return;
-    // await fsPromises.unlink(path.join(finalDir, originalname), buffer);
   }
 }
 
@@ -46,7 +46,7 @@ export class S3StorageAdapter {
       },
     });
   }
-  async saveAvatar(finalDir: string, originalname: string, buffer: Buffer) {
+  async saveImage(finalDir: string, originalname: string, buffer: Buffer) {
     const key: string = finalDir
       .split(path.dirname(require.main.filename))[1]
       .substring(1);
@@ -73,7 +73,7 @@ export class S3StorageAdapter {
       throw exceptions;
     }
   }
-  async deleteAvatar(url: string) {
+  async deleteImage(url: string) {
     const bucketParams = {
       Bucket: 'markmaistrenko',
       Key: url,
