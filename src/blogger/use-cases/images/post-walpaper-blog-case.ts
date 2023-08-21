@@ -46,13 +46,14 @@ export class BlogWallpaperCase
       command.imageFile.buffer,
     );
 
-    const image = new Images();
-    image.url = savedWallpaper.url;
-    image.width = command.imageFile.width;
-    image.height = command.imageFile.height;
-    image.fileSize = command.imageFile.size;
-    image.type = 'wallpaper';
-    image.blog = blog;
+    const image = new Images(
+      savedWallpaper.url,
+      command.imageFile.width,
+      command.imageFile.height,
+      command.imageFile.size,
+      'wallpaper',
+      blog,
+    );
 
     const result = await this.imageRepository.create(image);
     const blogUpdated: Blog | null = await this.blogRepository.findBlogById(

@@ -5,12 +5,25 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { imageInfo } from '../../blogger/dto/avatar/view-avatar.dto';
 import { Blog } from './blog.entity';
-import { User } from './user.entity';
 
 @Entity()
 export class Images {
+  constructor(
+    url: string,
+    width: number,
+    height: number,
+    fileSize: number,
+    type: 'wallpaper' | 'main',
+    blog: Blog,
+  ) {
+    this.url = url;
+    this.type = type;
+    this.width = width;
+    this.height = height;
+    this.fileSize = fileSize;
+    this.blog = blog;
+  }
   @PrimaryGeneratedColumn('uuid')
   public id!: string;
 

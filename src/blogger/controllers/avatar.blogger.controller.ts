@@ -27,6 +27,7 @@ import { CheckDir } from '../../adapters/checkDir';
 import { CurrentPayload } from '../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../helpers/errors';
 import { DeleteAvatarCommand } from '../use-cases/images/delete-avatar-case';
+import { BlogMainCommand } from '../use-cases/images/post-main-blog-case';
 import { BlogWallpaperCommand } from '../use-cases/images/post-walpaper-blog-case';
 
 @Controller('blogger/blogs')

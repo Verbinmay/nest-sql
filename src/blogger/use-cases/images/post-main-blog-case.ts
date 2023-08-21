@@ -37,13 +37,14 @@ export class BlogMainCase implements ICommandHandler<BlogMainCommand> {
       command.imageFile.buffer,
     );
 
-    const image = new Images();
-    image.url = savedMain.url;
-    image.width = command.imageFile.width;
-    image.height = command.imageFile.height;
-    image.fileSize = command.imageFile.size;
-    image.type = 'main';
-    image.blog = blog;
+    const image = new Images(
+      savedMain.url,
+      command.imageFile.width,
+      command.imageFile.height,
+      command.imageFile.size,
+      'main',
+      blog,
+    );
 
     const result = await this.imageRepository.create(image);
     const blogUpdated: Blog | null = await this.blogRepository.findBlogById(
