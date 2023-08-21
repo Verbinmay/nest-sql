@@ -1,4 +1,4 @@
-import { imageDto } from '../avatar/view-avatar.dto';
+import { imageBlogDto } from '../avatar/view-blog-images.dto';
 
 export class ViewBlogDto {
   id: string;
@@ -7,5 +7,5 @@ export class ViewBlogDto {
   websiteUrl: string;
   createdAt: string;
   isMembership: boolean;
-  images?: imageDto;
+  images?: imageBlogDto;
 }

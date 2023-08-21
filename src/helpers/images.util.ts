@@ -1,4 +1,4 @@
-import { imageInfo } from '../blogger/dto/avatar/view-avatar.dto';
+import { imageInfo } from '../blogger/dto/avatar/view-blog-images.dto';
 import { Images } from '../entities/sql/image.entity';
 
 export function getImageViewModelUtil(

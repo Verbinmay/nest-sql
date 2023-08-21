@@ -119,7 +119,7 @@ import { GetMyStatisticCase } from './quiz/public/use-cases/get-my-statistic-cas
 import { ValidationSortBy } from './validation/validationSortBy';
 import { GetTopUsersCase } from './quiz/public/use-cases/get-top-statistic-case';
 import { AvatarBloggersController } from './blogger/controllers/avatar.blogger.controller';
-import { BlogWallpaperCase } from './blogger/use-cases/images/post-walpaper-blog-case';
+import { BlogWallpaperCase } from './blogger/use-cases/images/blog-walpaper-send-case';
 import {
   FileStorageAdapter,
   S3StorageAdapter,
@@ -130,7 +130,7 @@ import {
 } from './blogger/use-cases/images/delete-avatar-case';
 import { Images } from './entities/sql/image.entity';
 import { ImagesRepository } from './sql/image.repository';
-import { BlogMainCase } from './blogger/use-cases/images/post-main-blog-case';
+import { BlogMainCase } from './blogger/use-cases/images/blog-main-send-case';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 

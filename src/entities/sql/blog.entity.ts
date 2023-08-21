@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { imageInfo } from '../../blogger/dto/avatar/view-avatar.dto';
+import { imageInfo } from '../../blogger/dto/avatar/view-blog-images.dto';
 import { ViewBlogDto } from '../../blogger/dto/blog/view-blog.dto';
 import { SAViewBlogDto } from '../../sa/dto/blog/sa-view-blog.dto';
 import { getImageViewModelUtil } from '../../helpers/images.util';

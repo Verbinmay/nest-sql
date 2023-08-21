@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Blog } from './blog.entity';
+import { Post } from './post.entity';
 
 @Entity()
 export class Images {
@@ -31,7 +32,7 @@ export class Images {
   public url: string;
 
   @Column()
-  public type: 'wallpaper' | 'main';
+  public type: 'wallpaper' | 'main' | 'post';
 
   @Column()
   public width: number;
@@ -48,6 +49,13 @@ export class Images {
     onUpdate: 'CASCADE',
   })
   blog: Blog;
+
+  @ManyToOne(() => Post, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  post: Post;
 
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;

@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { ViewPostDto } from '../../public/dto/post/view-post.dto';
 import { Blog } from './blog.entity';
+import { Images } from './image.entity';
 import { PostLike } from './post.like.entity';
 import { User } from './user.entity';
 
@@ -51,6 +52,9 @@ export class Post {
 
   @OneToMany(() => PostLike, (postLike) => postLike.post)
   likes: PostLike[];
+
+  @OneToMany(() => Images, (images) => images.post)
+  images: Images[];
 }
 
 export function getPostViewModel(post: Post, userId: string): ViewPostDto {
