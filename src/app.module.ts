@@ -131,6 +131,7 @@ import {
 import { Images } from './entities/sql/image.entity';
 import { ImagesRepository } from './sql/image.repository';
 import { BlogMainCase } from './blogger/use-cases/images/blog-main-send-case';
+import { PostMainCase } from './blogger/use-cases/images/post-main-send-case copy';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 
@@ -209,7 +210,12 @@ const useCasesQuiz = [
   GetTopUsersCase,
 ];
 
-const useCasesAvatar = [BlogWallpaperCase, DeleteAvatarCase, BlogMainCase];
+const useCasesAvatar = [
+  BlogWallpaperCase,
+  DeleteAvatarCase,
+  BlogMainCase,
+  PostMainCase,
+];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
 

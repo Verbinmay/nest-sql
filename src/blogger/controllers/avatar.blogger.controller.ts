@@ -26,9 +26,10 @@ import { JwtAuthGuard } from '../../guard/auth-passport/guard-passport/jwt-auth.
 import { CheckDir } from '../../adapters/checkDir';
 import { CurrentPayload } from '../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../helpers/errors';
-import { DeleteAvatarCommand } from '../use-cases/images/delete-avatar-case';
 import { BlogMainCommand } from '../use-cases/images/blog-main-send-case';
 import { BlogWallpaperCommand } from '../use-cases/images/blog-walpaper-send-case';
+import { DeleteAvatarCommand } from '../use-cases/images/delete-avatar-case';
+import { PostMainCommand } from '../use-cases/images/post-main-send-case copy';
 
 @Controller('blogger/blogs')
 export class AvatarBloggersController {
@@ -65,6 +66,8 @@ export class AvatarBloggersController {
       'view',
       'saved',
       userId,
+      'blogs',
+      blogId,
       'wallpaper',
     ]);
     const result = await this.commandBus.execute(
@@ -88,9 +91,47 @@ export class AvatarBloggersController {
     @CurrentPayload() payload,
   ) {
     const userId = payload ? payload.sub : '';
-    const finalDir = this.makeFinalDirectory(['view', 'saved', userId, 'main']);
+    const finalDir = this.makeFinalDirectory([
+      'view',
+      'saved',
+      userId,
+      'blogs',
+      blogId,
+      'main',
+    ]);
     const result = await this.commandBus.execute(
       new BlogMainCommand(userId, blogId, avatarFile, finalDir),
+    );
+    return makeAnswerInController(result);
+  }
+  @Post(':blogId/post/:postId/images/main')
+  @UseInterceptors(FileInterceptor('file'))
+  async updateMainPost(
+    @Param('blogId') blogId: string,
+    @Param('postId') postId: string,
+    @UploadedFile(
+      new ImageValidationPipe(940, 432, 100000, [
+        'image/jpg',
+        'image/jpeg',
+        'image/png',
+      ]),
+    )
+    avatarFile: ExpressMulterFileWithResolution,
+    @CurrentPayload() payload,
+  ) {
+    const userId = payload ? payload.sub : '';
+    const finalDir = this.makeFinalDirectory([
+      'view',
+      'saved',
+      userId,
+      'blogs',
+      blogId,
+      'posts',
+      postId,
+      'main',
+    ]);
+    const result = await this.commandBus.execute(
+      new PostMainCommand(userId, postId, avatarFile, finalDir),
     );
     return makeAnswerInController(result);
   }

@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Blog } from './blog.entity';
@@ -15,15 +16,20 @@ export class Images {
     width: number,
     height: number,
     fileSize: number,
-    type: 'wallpaper' | 'main',
-    blog: Blog,
+    type: 'wallpaper' | 'main' | 'post',
+    relation?: Blog | Post,
   ) {
     this.url = url;
     this.type = type;
     this.width = width;
     this.height = height;
     this.fileSize = fileSize;
-    this.blog = blog;
+    if (relation instanceof Blog) {
+      this.blog = relation;
+    }
+    if (relation instanceof Post) {
+      this.post = relation;
+    }
   }
   @PrimaryGeneratedColumn('uuid')
   public id!: string;
@@ -56,6 +62,16 @@ export class Images {
     onUpdate: 'CASCADE',
   })
   post: Post;
+
+  @OneToMany(() => Images, (employee) => employee.bigImage)
+  anotherSizes: Images[];
+
+  @ManyToOne(() => Images, (employee) => employee.anotherSizes, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  bigImage: Images;
 
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;

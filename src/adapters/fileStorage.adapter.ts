@@ -6,6 +6,8 @@ import {
   PutObjectAclCommandOutput,
   DeleteObjectCommand,
   DeleteObjectCommandOutput,
+  GetObjectCommand,
+  GetObjectCommandOutput,
 } from '@aws-sdk/client-s3';
 import { log } from 'console';
 import { randomUUID } from 'crypto';
@@ -15,6 +17,7 @@ import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 import { CheckDir } from './checkDir';
 
@@ -28,6 +31,9 @@ export class FileStorageAdapter {
   async deleteImage(url: string) {
     await fsPromises.unlink(url);
     return;
+  }
+  async getImage(url: string) {
+    return '';
   }
 }
 
@@ -86,6 +92,24 @@ export class S3StorageAdapter {
         command,
       );
       return deleteResult;
+    } catch (exceptions) {
+      console.error(exceptions);
+      throw exceptions;
+    }
+  }
+  async getImage(url: string) {
+    const bucketParams = {
+      Bucket: 'markmaistrenko',
+      Key: url,
+    };
+
+    const command = new GetObjectCommand(bucketParams);
+
+    try {
+      const url = await getSignedUrl(this.s3Client, command, {
+        expiresIn: 3600,
+      });
+      return url;
     } catch (exceptions) {
       console.error(exceptions);
       throw exceptions;

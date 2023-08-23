@@ -1,3 +1,5 @@
+import { log } from 'console';
+
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { Blog, getBlogViewModel } from '../../../entities/sql/blog.entity';
@@ -56,9 +58,24 @@ export class BlogWallpaperCase
     );
 
     const result = await this.imageRepository.create(image);
+
     const blogUpdated: Blog | null = await this.blogRepository.findBlogById(
       command.blogId,
     );
+
+    const images = [];
+    for (let i = 0; i < blogUpdated.images.length; i++) {
+      const b = await this.fileStorageAdapter.getImage(
+        blogUpdated.images[i].url,
+      );
+      log(b);
+      images.push({
+        ...image,
+        url: b,
+      });
+    }
+
+    blogUpdated.images = images;
     return getBlogViewModel(blogUpdated).images;
   }
 }

@@ -3,7 +3,7 @@ import { Images } from '../entities/sql/image.entity';
 
 export function getImageViewModelUtil(
   images: Array<Images>,
-  type: 'wallpaper' | 'main',
+  type: 'wallpaper' | 'main' | 'post',
 ): Array<imageInfo> {
   const filtered = images.filter((i) => i.type === type);
   if (filtered.length > 1) {
