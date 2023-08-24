@@ -8,6 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { ViewPostDto } from '../../public/dto/post/view-post.dto';
+import { getImageViewModelUtil } from '../../helpers/images.util';
 import { Blog } from './blog.entity';
 import { Images } from './image.entity';
 import { PostLike } from './post.like.entity';
@@ -104,6 +105,9 @@ export function getPostViewModel(post: Post, userId: string): ViewPostDto {
       dislikesCount: dislikeCount,
       myStatus: status,
       newestLikes: newestLikes,
+    },
+    images: {
+      main: post.images ? getImageViewModelUtil(post.images ?? [], 'post') : [],
     },
   };
 }

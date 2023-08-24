@@ -68,7 +68,7 @@ export class BlogWallpaperCase
       const b = await this.fileStorageAdapter.getImage(
         blogUpdated.images[i].url,
       );
-      log(b);
+
       images.push({
         ...image,
         url: b,

@@ -1,6 +1,11 @@
+import { log } from 'console';
+import { randomUUID } from 'crypto';
 import sharp from 'sharp';
+import { setTimeout } from 'timers/promises';
+import { Repository } from 'typeorm';
 
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { Injectable } from '@nestjs/common';
 
 import { Blog, getBlogViewModel } from '../../../entities/sql/blog.entity';
 import { Images } from '../../../entities/sql/image.entity';
@@ -50,10 +55,66 @@ export class PostMainCase implements ICommandHandler<PostMainCommand> {
       post,
     );
 
-    await this.imageRepository.create(image);
+    const imageSaved = await this.imageRepository.create(image);
+
+    await this.CreateAnotherSizeImage(
+      command.imageFile.buffer,
+      command.finalDir,
+      149,
+      96,
+      post,
+      imageSaved,
+    );
+
+    await this.CreateAnotherSizeImage(
+      command.imageFile.buffer,
+      command.finalDir,
+      300,
+      180,
+      post,
+      imageSaved,
+    );
+
     const postUpdated: Post | null = await this.postRepository.findPostById(
       command.postId,
     );
+    log(postUpdated, 'postUpdated');
     return getPostViewModel(postUpdated, command.userId);
+  }
+
+  async CreateAnotherSizeImage(
+    buffer: Buffer,
+    directory: string,
+    width: number,
+    height: number,
+    post: Post,
+    image: Images,
+  ) {
+    const sizeChangedBuffer: Buffer = await sharp(buffer)
+      .resize(width, height, {
+        fit: 'cover',
+      })
+      .toBuffer();
+
+    const newImageSaved: { url: string } =
+      await this.fileStorageAdapter.saveImage(
+        directory,
+        randomUUID(),
+        sizeChangedBuffer,
+      );
+
+    const data = await sharp(sizeChangedBuffer).metadata();
+
+    const newImageClass = new Images(
+      newImageSaved.url,
+      width,
+      height,
+      data.size,
+      'post',
+      post,
+    );
+    newImageClass.bigImage = image;
+
+    await this.imageRepository.create(newImageClass);
   }
 }

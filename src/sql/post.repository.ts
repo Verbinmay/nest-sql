@@ -45,6 +45,7 @@ export class PostRepository {
           blog: true,
           user: true,
           likes: { user: true },
+          images: true,
         },
         where: { id: id },
       });

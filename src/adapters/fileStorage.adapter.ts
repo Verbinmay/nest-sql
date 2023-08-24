@@ -97,7 +97,7 @@ export class S3StorageAdapter {
       throw exceptions;
     }
   }
-  async getImage(url: string) {
+  async getURL(url: string) {
     const bucketParams = {
       Bucket: 'markmaistrenko',
       Key: url,

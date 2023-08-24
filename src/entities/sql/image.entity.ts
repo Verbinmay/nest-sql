@@ -28,7 +28,7 @@ export class Images {
       this.blog = relation;
     }
     if (relation instanceof Post) {
-      this.post = relation;
+      this.postId = relation.id;
     }
   }
   @PrimaryGeneratedColumn('uuid')
@@ -63,15 +63,18 @@ export class Images {
   })
   post: Post;
 
-  @OneToMany(() => Images, (employee) => employee.bigImage)
+  @OneToMany(() => Images, (images) => images.bigImage)
   anotherSizes: Images[];
 
-  @ManyToOne(() => Images, (employee) => employee.anotherSizes, {
+  @ManyToOne(() => Images, (images) => images.anotherSizes, {
     cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   bigImage: Images;
+
+  @Column()
+  postId: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;

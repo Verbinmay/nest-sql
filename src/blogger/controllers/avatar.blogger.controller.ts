@@ -104,7 +104,7 @@ export class AvatarBloggersController {
     );
     return makeAnswerInController(result);
   }
-  @Post(':blogId/post/:postId/images/main')
+  @Post(':blogId/posts/:postId/images/main')
   @UseInterceptors(FileInterceptor('file'))
   async updateMainPost(
     @Param('blogId') blogId: string,

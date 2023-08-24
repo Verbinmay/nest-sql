@@ -1,3 +1,5 @@
+import { imageInfo } from '../../../blogger/dto/avatar/view-blog-images.dto';
+
 export class ViewPostDto {
   id: string;
   title: string;
@@ -12,6 +14,7 @@ export class ViewPostDto {
     myStatus: string;
     newestLikes: likeInfo[];
   };
+  images: { main: Array<imageInfo> };
 }
 
 export class likeInfo {
