@@ -73,7 +73,7 @@ export class Images {
   })
   bigImage: Images;
 
-  @Column()
+  @Column({ nullable: true })
   postId: string;
 
   @CreateDateColumn({ type: 'timestamp' })

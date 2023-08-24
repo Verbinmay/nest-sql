@@ -341,6 +341,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     AnswerRepository,
     ImagesRepository,
     { provide: FileStorageAdapter, useClass: S3StorageAdapter },
+    S3StorageAdapter,
   ],
 })
 export class AppModule {}

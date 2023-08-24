@@ -2,7 +2,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { Blog, getBlogViewModel } from '../../../entities/sql/blog.entity';
 import { Images } from '../../../entities/sql/image.entity';
-import { FileStorageAdapter } from '../../../adapters/fileStorage.adapter';
+import {
+  FileStorageAdapter,
+  S3StorageAdapter,
+} from '../../../adapters/fileStorage.adapter';
 import { ExpressMulterFileWithResolution } from '../../../pipes/wallpaper.pipe';
 import { BlogRepository } from '../../../sql/blog.repository';
 import { ImagesRepository } from '../../../sql/image.repository';
@@ -21,7 +24,7 @@ export class BlogMainCase implements ICommandHandler<BlogMainCommand> {
   constructor(
     private readonly blogRepository: BlogRepository,
     private readonly imageRepository: ImagesRepository,
-    private readonly fileStorageAdapter: FileStorageAdapter,
+    private readonly fileStorageAdapter: S3StorageAdapter,
   ) {}
 
   async execute(command: BlogMainCommand) {

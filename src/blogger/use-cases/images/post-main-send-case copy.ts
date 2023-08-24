@@ -10,7 +10,10 @@ import { Injectable } from '@nestjs/common';
 import { Blog, getBlogViewModel } from '../../../entities/sql/blog.entity';
 import { Images } from '../../../entities/sql/image.entity';
 import { Post, getPostViewModel } from '../../../entities/sql/post.entity';
-import { FileStorageAdapter } from '../../../adapters/fileStorage.adapter';
+import {
+  FileStorageAdapter,
+  S3StorageAdapter,
+} from '../../../adapters/fileStorage.adapter';
 import { ExpressMulterFileWithResolution } from '../../../pipes/wallpaper.pipe';
 import { BlogRepository } from '../../../sql/blog.repository';
 import { ImagesRepository } from '../../../sql/image.repository';
@@ -30,7 +33,7 @@ export class PostMainCase implements ICommandHandler<PostMainCommand> {
   constructor(
     private readonly postRepository: PostRepository,
     private readonly imageRepository: ImagesRepository,
-    private readonly fileStorageAdapter: FileStorageAdapter,
+    private readonly fileStorageAdapter: S3StorageAdapter,
   ) {}
 
   async execute(command: PostMainCommand) {

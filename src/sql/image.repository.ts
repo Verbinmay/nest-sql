@@ -4,12 +4,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Images } from '../entities/sql/image.entity';
+import { S3StorageAdapter } from '../adapters/fileStorage.adapter';
 
 @Injectable()
 export class ImagesRepository {
   constructor(
     @InjectRepository(Images)
     private readonly imageRepository: Repository<Images>,
+    private readonly fileStorageAdapter: S3StorageAdapter,
   ) {}
 
   async create(image: Images) {
@@ -22,5 +24,9 @@ export class ImagesRepository {
   }
   async delete(url: string) {
     return await this.imageRepository.delete({ url: url });
+  }
+  async deleteAll() {
+    await this.fileStorageAdapter.deleteBucket();
+    return await this.imageRepository.delete({});
   }
 }

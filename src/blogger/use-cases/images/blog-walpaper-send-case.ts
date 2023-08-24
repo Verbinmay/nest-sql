@@ -1,10 +1,13 @@
+import {
+  FileStorageAdapter,
+  S3StorageAdapter,
+} from '../../../adapters/fileStorage.adapter';
 import { log } from 'console';
 
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { Blog, getBlogViewModel } from '../../../entities/sql/blog.entity';
 import { Images } from '../../../entities/sql/image.entity';
-import { FileStorageAdapter } from '../../../adapters/fileStorage.adapter';
 import { ExpressMulterFileWithResolution } from '../../../pipes/wallpaper.pipe';
 import { BlogRepository } from '../../../sql/blog.repository';
 import { ImagesRepository } from '../../../sql/image.repository';
@@ -25,7 +28,7 @@ export class BlogWallpaperCase
   constructor(
     private readonly blogRepository: BlogRepository,
     private readonly imageRepository: ImagesRepository,
-    private readonly fileStorageAdapter: FileStorageAdapter,
+    private readonly fileStorageAdapter: S3StorageAdapter,
   ) {}
 
   async execute(command: BlogWallpaperCommand) {
@@ -65,9 +68,7 @@ export class BlogWallpaperCase
 
     const images = [];
     for (let i = 0; i < blogUpdated.images.length; i++) {
-      const b = await this.fileStorageAdapter.getImage(
-        blogUpdated.images[i].url,
-      );
+      const b = await this.fileStorageAdapter.getURL(blogUpdated.images[i].url);
 
       images.push({
         ...image,

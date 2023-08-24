@@ -8,6 +8,9 @@ import {
   DeleteObjectCommandOutput,
   GetObjectCommand,
   GetObjectCommandOutput,
+  DeleteBucketCommand,
+  ListObjectsV2Command,
+  DeleteObjectsCommand,
 } from '@aws-sdk/client-s3';
 import { log } from 'console';
 import { randomUUID } from 'crypto';
@@ -97,6 +100,7 @@ export class S3StorageAdapter {
       throw exceptions;
     }
   }
+
   async getURL(url: string) {
     const bucketParams = {
       Bucket: 'markmaistrenko',
@@ -110,6 +114,52 @@ export class S3StorageAdapter {
         expiresIn: 3600,
       });
       return url;
+    } catch (exceptions) {
+      console.error(exceptions);
+      throw exceptions;
+    }
+  }
+  async deleteBucket() {
+    const bucketParams = {
+      Bucket: 'markmaistrenko',
+    };
+
+    const listOfFilesCommand = new ListObjectsV2Command(bucketParams);
+
+    try {
+      let isTruncated = true;
+
+      const contentsUrl: Array<string> = [];
+
+      while (isTruncated) {
+        const { Contents, IsTruncated, NextContinuationToken } =
+          await this.s3Client.send(listOfFilesCommand);
+
+        const contentsList = Contents.map((c) => c.Key);
+        while (contentsList.length > 0) {
+          contentsUrl.push(contentsList.splice(0, 1)[0]);
+        }
+
+        isTruncated = IsTruncated;
+        listOfFilesCommand.input.ContinuationToken = NextContinuationToken;
+      }
+
+      const keysByDelete = contentsUrl.map((m) => {
+        return {
+          Key: m,
+        };
+      });
+
+      const bucketDeleteAllParams = {
+        Bucket: 'markmaistrenko',
+        Delete: {
+          Objects: keysByDelete,
+        },
+      };
+
+      const deleteAllCommand = new DeleteObjectsCommand(bucketDeleteAllParams);
+      const resultOfDelete = await this.s3Client.send(deleteAllCommand);
+      console.log(resultOfDelete, 'resultOfDelete');
     } catch (exceptions) {
       console.error(exceptions);
       throw exceptions;
