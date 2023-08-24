@@ -65,18 +65,18 @@ export class BlogWallpaperCase
     const blogUpdated: Blog | null = await this.blogRepository.findBlogById(
       command.blogId,
     );
+    // это обработчик ссылок
+    // const images = [];
+    // for (let i = 0; i < blogUpdated.images.length; i++) {
+    //   const b = await this.fileStorageAdapter.getURL(blogUpdated.images[i].url);
 
-    const images = [];
-    for (let i = 0; i < blogUpdated.images.length; i++) {
-      const b = await this.fileStorageAdapter.getURL(blogUpdated.images[i].url);
+    //   images.push({
+    //     ...image,
+    //     url: b,
+    //   });
+    // }
 
-      images.push({
-        ...image,
-        url: b,
-      });
-    }
-
-    blogUpdated.images = images;
-    return getBlogViewModel(blogUpdated).images;
+    // blogUpdated.images = images;
+    return (await getBlogViewModel(blogUpdated)).images;
   }
 }

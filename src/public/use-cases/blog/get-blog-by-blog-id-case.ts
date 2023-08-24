@@ -18,6 +18,6 @@ export class GetBlogByBlogIdCase
     if (!blog || blog.isBanned === true) {
       return { s: 404 };
     }
-    return getBlogViewModel(blog);
+    return await getBlogViewModel(blog);
   }
 }

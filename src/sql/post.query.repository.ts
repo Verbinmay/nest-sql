@@ -19,7 +19,6 @@ export class PostQueryRepository {
     userId: string,
   ) {
     const totalCount: number = await this.postsRepository.count({
-      relations: { blog: true, likes: { user: true } },
       where: {
         blog: { id: blogId },
         isBanned: false,
@@ -29,7 +28,7 @@ export class PostQueryRepository {
     const pagesCount = query.countPages(totalCount);
 
     const postsFromDB: Array<Post> = await this.postsRepository.find({
-      relations: { blog: true, likes: { user: true } },
+      relations: { blog: true, images: true, likes: { user: true } },
       where: {
         blog: { id: blogId },
         isBanned: false,
@@ -40,23 +39,21 @@ export class PostQueryRepository {
       skip: query.skip(),
       take: query.pageSize,
     });
-    const post: ViewPostDto[] = postsFromDB.map((p) =>
-      getPostViewModel(p, userId),
-    );
-
+    const results = postsFromDB.map((p) => getPostViewModel(p, userId));
+    const post: ViewPostDto[] = await Promise.all(results);
+    //TODO
     const result: PaginatorPost = {
       pagesCount: pagesCount,
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalCount,
-      items: post,
+      items: post.reverse(),
     };
     return result;
   }
 
   async findAllPosts(query: PaginationQuery, userId: string) {
     const totalCount: number = await this.postsRepository.count({
-      relations: { blog: true, user: true, likes: { user: true } },
       where: {
         isBanned: false,
       },
@@ -74,7 +71,12 @@ export class PostQueryRepository {
       orderInfo = { blog: { id: query.sortDirection } };
 
     const postsFromDB: Array<Post> = await this.postsRepository.find({
-      relations: { blog: true, user: true, likes: { user: true } },
+      relations: {
+        blog: true,
+        user: true,
+        images: true,
+        likes: { user: true },
+      },
       where: {
         isBanned: false,
       },
@@ -83,7 +85,9 @@ export class PostQueryRepository {
       take: query.pageSize,
     });
 
-    const post = postsFromDB.map((p) => getPostViewModel(p, userId));
+    const postPromise = postsFromDB.map((p) => getPostViewModel(p, userId));
+    const post = await Promise.all(postPromise);
+
     const result: PaginatorPost = {
       pagesCount: pagesCount,
       page: query.pageNumber,

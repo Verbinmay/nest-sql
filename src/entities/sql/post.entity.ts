@@ -58,7 +58,10 @@ export class Post {
   images: Images[];
 }
 
-export function getPostViewModel(post: Post, userId: string): ViewPostDto {
+export async function getPostViewModel(
+  post: Post,
+  userId: string,
+): Promise<ViewPostDto> {
   let status: 'None' | 'Like' | 'Dislike' = 'None';
   let likesCount = 0;
   let dislikeCount = 0;
@@ -92,7 +95,7 @@ export function getPostViewModel(post: Post, userId: string): ViewPostDto {
       })
       .reverse();
   }
-  return {
+  const result: any = {
     id: post.id,
     title: post.title,
     shortDescription: post.shortDescription,
@@ -107,7 +110,15 @@ export function getPostViewModel(post: Post, userId: string): ViewPostDto {
       newestLikes: newestLikes,
     },
     images: {
-      main: post.images ? getImageViewModelUtil(post.images ?? [], 'post') : [],
+      main: [],
     },
   };
+
+  if (post.images) {
+    // result.images = {};
+    const main = await getImageViewModelUtil(post.images, 'post');
+
+    result.images.main = main;
+  }
+  return result;
 }

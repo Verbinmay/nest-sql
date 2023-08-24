@@ -20,7 +20,6 @@ export class BlogQueryRepository {
 
   async findBlogsByUserId(query: PaginationQuery, userId: string) {
     const totalCount: number = await this.blogsRepository.count({
-      relations: { user: true },
       where: {
         user: { id: userId },
         name: ILike('%' + query.searchNameTerm + '%'),
@@ -42,7 +41,8 @@ export class BlogQueryRepository {
       take: query.pageSize,
     });
 
-    const blogs: ViewBlogDto[] = blogsFromDB.map((m) => getBlogViewModel(m));
+    const blogsPromise = blogsFromDB.map((m) => getBlogViewModel(m));
+    const blogs: ViewBlogDto[] = await Promise.all(blogsPromise);
 
     const result: PaginatorBlog = {
       pagesCount: pagesCount,
@@ -65,6 +65,7 @@ export class BlogQueryRepository {
     const pagesCount = query.countPages(totalCount);
 
     const blogsFromDB: Array<Blog> = await this.blogsRepository.find({
+      relations: { user: true, images: true },
       where: {
         name: ILike('%' + query.searchNameTerm + '%'),
         isBanned: false,
@@ -76,14 +77,15 @@ export class BlogQueryRepository {
       take: query.pageSize,
     });
 
-    const blogs: ViewBlogDto[] = blogsFromDB.map((m) => getBlogViewModel(m));
+    const blogsPromise = blogsFromDB.map((m) => getBlogViewModel(m));
+    const blogs: ViewBlogDto[] = await Promise.all(blogsPromise);
 
     const result: PaginatorBlog = {
       pagesCount: pagesCount,
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalCount,
-      items: blogs,
+      items: blogs.reverse(),
     };
     return result;
   }

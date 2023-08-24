@@ -1,11 +1,11 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-
-import { Blog, getBlogViewModel } from '../../../entities/sql/blog.entity';
-import { Images } from '../../../entities/sql/image.entity';
 import {
   FileStorageAdapter,
   S3StorageAdapter,
 } from '../../../adapters/fileStorage.adapter';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+
+import { Blog, getBlogViewModel } from '../../../entities/sql/blog.entity';
+import { Images } from '../../../entities/sql/image.entity';
 import { ExpressMulterFileWithResolution } from '../../../pipes/wallpaper.pipe';
 import { BlogRepository } from '../../../sql/blog.repository';
 import { ImagesRepository } from '../../../sql/image.repository';
@@ -53,6 +53,6 @@ export class BlogMainCase implements ICommandHandler<BlogMainCommand> {
     const blogUpdated: Blog | null = await this.blogRepository.findBlogById(
       command.blogId,
     );
-    return getBlogViewModel(blogUpdated).images;
+    return (await getBlogViewModel(blogUpdated)).images;
   }
 }

@@ -27,7 +27,7 @@ export class PostRepository {
   async findPostsByUserId(userId: string) {
     try {
       const result: Array<Post> = await this.postsRepository.find({
-        relations: { user: true, blog: true },
+        relations: { user: true, blog: true, images: true },
         where: {
           user: { id: userId },
         },

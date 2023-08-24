@@ -131,7 +131,7 @@ export class AvatarBloggersController {
       'main',
     ]);
     const result = await this.commandBus.execute(
-      new PostMainCommand(userId, postId, avatarFile, finalDir),
+      new PostMainCommand(userId, postId, blogId, avatarFile, finalDir),
     );
     return makeAnswerInController(result);
   }

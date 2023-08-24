@@ -48,6 +48,6 @@ export class CreatePostByBlogIdCase
     const postSaved = await this.postRepository.create(post);
     const postFined = await this.postRepository.findPostById(postSaved.id);
 
-    return getPostViewModel(postFined, command.userId);
+    return await getPostViewModel(postFined, command.userId);
   }
 }

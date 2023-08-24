@@ -8,9 +8,14 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { log } from 'console';
+
+import { ConfigService } from '@nestjs/config';
+
 import { imageInfo } from '../../blogger/dto/avatar/view-blog-images.dto';
 import { ViewBlogDto } from '../../blogger/dto/blog/view-blog.dto';
 import { SAViewBlogDto } from '../../sa/dto/blog/sa-view-blog.dto';
+import { S3StorageAdapter } from '../../adapters/fileStorage.adapter';
 import { getImageViewModelUtil } from '../../helpers/images.util';
 import { Images } from './image.entity';
 import { User } from './user.entity';
@@ -58,8 +63,8 @@ export class Blog {
   images: Images[];
 }
 
-export function getBlogViewModel(blog: Blog): ViewBlogDto {
-  const result = {
+export async function getBlogViewModel(blog: Blog): Promise<ViewBlogDto> {
+  const result: any = {
     id: blog.id,
     name: blog.name,
     description: blog.description,
@@ -67,12 +72,19 @@ export function getBlogViewModel(blog: Blog): ViewBlogDto {
     createdAt: blog.createdAt.toISOString(),
     isMembership: blog.isMembership,
     images: {
-      wallpaper: blog.images
-        ? getImageViewModelUtil(blog.images ?? [], 'wallpaper')[0]
-        : null,
-      main: blog.images ? getImageViewModelUtil(blog.images ?? [], 'main') : [],
+      main: [],
+      wallpaper: null,
     },
   };
+
+  if (blog.images) {
+    // result.images = {};
+    const wallpaper = await getImageViewModelUtil(blog.images, 'wallpaper');
+    if (wallpaper.length > 0) result.images.wallpaper = wallpaper[0];
+
+    const main = await getImageViewModelUtil(blog.images, 'main');
+    if (main.length > 0) result.images.main = main;
+  }
   return result;
 }
 export function SAgetViewModel(blog: Blog): SAViewBlogDto {

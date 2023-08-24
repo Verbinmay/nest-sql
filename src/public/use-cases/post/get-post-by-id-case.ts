@@ -21,6 +21,6 @@ export class GetPostByIdCase implements ICommandHandler<GetPostByIdCommand> {
       return { s: 404 };
     }
 
-    return getPostViewModel(post, command.userId);
+    return await getPostViewModel(post, command.userId);
   }
 }

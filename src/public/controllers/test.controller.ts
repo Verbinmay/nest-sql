@@ -33,6 +33,7 @@ export class TestController {
   @HttpCode(204)
   @Delete('all-data')
   async deleteAll() {
+    console.log('test-delete');
     await this.banedUsersBlogsRepository.deleteAll();
     await this.likeCommentRepository.deleteAll();
     await this.likePostRepository.deleteAll();

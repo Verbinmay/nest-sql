@@ -43,22 +43,4 @@ export class BlogRepository {
   async deleteAll() {
     return await this.blogsRepository.delete({});
   }
-
-  //   async findCountBlogs(filter: any) {
-  //     return await this.BlogModel.countDocuments(filter);
-  //   }
-
-  //   async findBlogs(a: {
-  //     find: { name: { $regex: string } } | object;
-  //     sort: any;
-  //     skip: number;
-  //     limit: number;
-  //   }) {
-  //     const result: Array<Blog> = await this.BlogModel.find(a.find)
-  //       .sort(a.sort)
-  //       .skip(a.skip)
-  //       .limit(a.limit);
-
-  //     return result;
-  //   }
 }

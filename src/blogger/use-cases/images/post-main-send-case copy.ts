@@ -1,3 +1,7 @@
+import {
+  FileStorageAdapter,
+  S3StorageAdapter,
+} from '../../../adapters/fileStorage.adapter';
 import { log } from 'console';
 import { randomUUID } from 'crypto';
 import sharp from 'sharp';
@@ -10,10 +14,6 @@ import { Injectable } from '@nestjs/common';
 import { Blog, getBlogViewModel } from '../../../entities/sql/blog.entity';
 import { Images } from '../../../entities/sql/image.entity';
 import { Post, getPostViewModel } from '../../../entities/sql/post.entity';
-import {
-  FileStorageAdapter,
-  S3StorageAdapter,
-} from '../../../adapters/fileStorage.adapter';
 import { ExpressMulterFileWithResolution } from '../../../pipes/wallpaper.pipe';
 import { BlogRepository } from '../../../sql/blog.repository';
 import { ImagesRepository } from '../../../sql/image.repository';
@@ -23,6 +23,7 @@ export class PostMainCommand {
   constructor(
     public userId: string,
     public postId: string,
+    public blogId: string,
     public imageFile: ExpressMulterFileWithResolution,
     public finalDir: string,
   ) {}
@@ -32,11 +33,16 @@ export class PostMainCommand {
 export class PostMainCase implements ICommandHandler<PostMainCommand> {
   constructor(
     private readonly postRepository: PostRepository,
+    private readonly blogRepository: BlogRepository,
     private readonly imageRepository: ImagesRepository,
     private readonly fileStorageAdapter: S3StorageAdapter,
   ) {}
 
   async execute(command: PostMainCommand) {
+    const blog: Blog | null = await this.blogRepository.findBlogById(
+      command.blogId,
+    );
+    if (!blog) return { s: 404 };
     const post: Post | null = await this.postRepository.findPostById(
       command.postId,
     );
@@ -81,8 +87,8 @@ export class PostMainCase implements ICommandHandler<PostMainCommand> {
     const postUpdated: Post | null = await this.postRepository.findPostById(
       command.postId,
     );
-    log(postUpdated, 'postUpdated');
-    return getPostViewModel(postUpdated, command.userId);
+
+    return (await getPostViewModel(postUpdated, command.userId)).images;
   }
 
   async CreateAnotherSizeImage(

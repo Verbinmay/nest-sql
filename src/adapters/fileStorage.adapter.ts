@@ -106,18 +106,20 @@ export class S3StorageAdapter {
       Bucket: 'markmaistrenko',
       Key: url,
     };
+    return `https://${bucketParams.Bucket}.storage.yandexcloud.net/${bucketParams.Key}`;
 
-    const command = new GetObjectCommand(bucketParams);
+    /**логика временных ссылок  */
+    // const command = new GetObjectCommand(bucketParams);
 
-    try {
-      const url = await getSignedUrl(this.s3Client, command, {
-        expiresIn: 3600,
-      });
-      return url;
-    } catch (exceptions) {
-      console.error(exceptions);
-      throw exceptions;
-    }
+    // try {
+    //   const url = await getSignedUrl(this.s3Client, command, {
+    //     expiresIn: 3600,
+    //   });
+    //   return url;
+    // } catch (exceptions) {
+    //   console.error(exceptions);
+    //   throw exceptions;
+    // }
   }
   async deleteBucket() {
     const bucketParams = {
@@ -134,6 +136,7 @@ export class S3StorageAdapter {
       while (isTruncated) {
         const { Contents, IsTruncated, NextContinuationToken } =
           await this.s3Client.send(listOfFilesCommand);
+        if (!Contents || Contents.length === 0) return;
 
         const contentsList = Contents.map((c) => c.Key);
         while (contentsList.length > 0) {
