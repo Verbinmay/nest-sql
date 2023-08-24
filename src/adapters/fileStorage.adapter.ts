@@ -134,6 +134,7 @@ export class S3StorageAdapter {
       while (isTruncated) {
         const { Contents, IsTruncated, NextContinuationToken } =
           await this.s3Client.send(listOfFilesCommand);
+        if (!Contents || Contents.length === 0) return;
 
         const contentsList = Contents.map((c) => c.Key);
         while (contentsList.length > 0) {
