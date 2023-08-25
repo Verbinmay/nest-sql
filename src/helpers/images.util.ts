@@ -1,5 +1,3 @@
-import { log } from 'console';
-
 import { ConfigService } from '@nestjs/config';
 
 import { imageInfo } from '../blogger/dto/avatar/view-blog-images.dto';

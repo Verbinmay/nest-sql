@@ -3,12 +3,10 @@ import {
   GetPairViewModel,
   Pair,
 } from '../../entities/pairs.entity';
-import { setTimeout } from 'timers/promises';
 import { DataSource, EntityManager } from 'typeorm';
 
 import { CommandHandler } from '@nestjs/cqrs';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { BadRequestException } from '@nestjs/common';
 
 import { User } from '../../../entities/sql/user.entity';
 import { UserRepository } from '../../../sql/user.repository';

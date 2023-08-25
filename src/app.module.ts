@@ -93,8 +93,8 @@ import { SA_GetAllBlogsCase } from './sa/use-cases/blogs/sa-get-all-blogs-case';
 import { SA_BanUserCase } from './sa/use-cases/users/sa-ban-user-case';
 import { ValidationBlogId } from './validation/validationBlogId';
 import { GetAllCommentsByPostIdCase } from './public/use-cases/comment/get-all-comments-by-post-id-case';
-import { APP_GUARD } from '@nestjs/core';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+// import { APP_GUARD } from '@nestjs/core';
+// import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { SA_CreateQuestionCase } from './quiz/sa/use-cases/sa-create-question-case';
 import { SA_GetQuestionCase } from './quiz/sa/use-cases/sa-get-question-case';
 import { QuestionSAController } from './quiz/sa/controllers/question.sa.controller';
@@ -124,10 +124,7 @@ import {
   FileStorageAdapter,
   S3StorageAdapter,
 } from './adapters/fileStorage.adapter';
-import {
-  DeleteAvatarCase,
-  DeleteAvatarCommand,
-} from './blogger/use-cases/images/delete-avatar-case';
+import { DeleteAvatarCase } from './blogger/use-cases/images/delete-avatar-case';
 import { Images } from './entities/sql/image.entity';
 import { ImagesRepository } from './sql/image.repository';
 import { BlogMainCase } from './blogger/use-cases/images/blog-main-send-case';

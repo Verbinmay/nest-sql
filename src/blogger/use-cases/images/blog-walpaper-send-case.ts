@@ -1,9 +1,4 @@
-import {
-  FileStorageAdapter,
-  S3StorageAdapter,
-} from '../../../adapters/fileStorage.adapter';
-import { log } from 'console';
-
+import { S3StorageAdapter } from '../../../adapters/fileStorage.adapter';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { Blog, getBlogViewModel } from '../../../entities/sql/blog.entity';
@@ -40,9 +35,7 @@ export class BlogWallpaperCase
 
     const wallpaper = blog.images.filter((i) => i.type === 'wallpaper');
     if (wallpaper.length > 0) {
-      const result = await this.fileStorageAdapter.deleteImage(
-        wallpaper[0].url,
-      );
+      await this.fileStorageAdapter.deleteImage(wallpaper[0].url);
       await this.imageRepository.delete(wallpaper[0].url);
     }
     const savedWallpaper = await this.fileStorageAdapter.saveImage(
@@ -60,7 +53,7 @@ export class BlogWallpaperCase
       blog,
     );
 
-    const result = await this.imageRepository.create(image);
+    await this.imageRepository.create(image);
 
     const blogUpdated: Blog | null = await this.blogRepository.findBlogById(
       command.blogId,

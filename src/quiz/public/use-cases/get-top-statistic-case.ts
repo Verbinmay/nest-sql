@@ -2,7 +2,6 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { PaginationQuery } from '../../../pagination/base-pagination';
 import { PaginatorUserStatistic } from '../../../pagination/paginatorType';
-import { UserRepository } from '../../../sql/user.repository';
 import { PairRepository } from '../../repositories/pair.quiz.repository';
 
 export class GetTopUsersCommand {

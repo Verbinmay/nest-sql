@@ -1,26 +1,17 @@
 import {
   S3Client,
-  AbortMultipartUploadCommand,
-  PutObjectAclCommand,
   PutObjectCommand,
   PutObjectAclCommandOutput,
   DeleteObjectCommand,
   DeleteObjectCommandOutput,
-  GetObjectCommand,
-  GetObjectCommandOutput,
-  DeleteBucketCommand,
   ListObjectsV2Command,
   DeleteObjectsCommand,
 } from '@aws-sdk/client-s3';
-import { log } from 'console';
-import { randomUUID } from 'crypto';
 import { promises as fsPromises } from 'fs';
 import * as path from 'path';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 import { CheckDir } from './checkDir';
 

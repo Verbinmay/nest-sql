@@ -2,7 +2,6 @@ import {
   PaginatorPair,
   PaginatorUserStatistic,
 } from '../../pagination/paginatorType';
-import { log } from 'console';
 import { DataSource, EntityManager, In, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';

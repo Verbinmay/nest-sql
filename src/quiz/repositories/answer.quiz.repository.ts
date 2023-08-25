@@ -1,10 +1,9 @@
-import { EntityManager, ILike, In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Answer } from '../entities/answer.entity';
-import { Pair } from '../entities/pairs.entity';
 
 @Injectable()
 export class AnswerRepository {

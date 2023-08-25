@@ -1,4 +1,3 @@
-import { log } from 'console';
 import { CronJob } from 'cron';
 
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
@@ -103,11 +102,11 @@ export class CreateAnswerCase implements ICommandHandler<CreateAnswerCommand> {
           }
         }, pair.answers[0]).addedAt;
         pair.status = 'Finished';
-        const updatedPair = await this.pairRepository.update(pair);
+        await this.pairRepository.update(pair);
       });
       job.start();
     }
-    const updatedPair = await this.pairRepository.update(activePairCheck);
+    await this.pairRepository.update(activePairCheck);
     console.log('updatedPair');
     return GetAnswerViewModel(savedAnswer);
   }

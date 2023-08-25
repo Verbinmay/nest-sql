@@ -1,5 +1,3 @@
-import { query } from 'express';
-
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 

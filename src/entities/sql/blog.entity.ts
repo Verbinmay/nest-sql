@@ -8,14 +8,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { log } from 'console';
-
-import { ConfigService } from '@nestjs/config';
-
-import { imageInfo } from '../../blogger/dto/avatar/view-blog-images.dto';
 import { ViewBlogDto } from '../../blogger/dto/blog/view-blog.dto';
 import { SAViewBlogDto } from '../../sa/dto/blog/sa-view-blog.dto';
-import { S3StorageAdapter } from '../../adapters/fileStorage.adapter';
 import { getImageViewModelUtil } from '../../helpers/images.util';
 import { Images } from './image.entity';
 import { User } from './user.entity';

@@ -1,11 +1,8 @@
 import {
   Controller,
-  Delete,
   Get,
   Param,
-  ParseFilePipe,
   Post,
-  Put,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -14,21 +11,17 @@ import {
   ExpressMulterFileWithResolution,
   ImageValidationPipe,
 } from '../../pipes/wallpaper.pipe';
-import { log } from 'console';
 import { promises as fsPromises } from 'fs';
-import { existsSync } from 'fs';
 import * as path from 'path';
 
 import { CommandBus } from '@nestjs/cqrs';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { JwtAuthGuard } from '../../guard/auth-passport/guard-passport/jwt-auth.guard';
-import { CheckDir } from '../../adapters/checkDir';
 import { CurrentPayload } from '../../decorator/currentUser.decorator';
 import { makeAnswerInController } from '../../helpers/errors';
 import { BlogMainCommand } from '../use-cases/images/blog-main-send-case';
 import { BlogWallpaperCommand } from '../use-cases/images/blog-walpaper-send-case';
-import { DeleteAvatarCommand } from '../use-cases/images/delete-avatar-case';
 import { PostMainCommand } from '../use-cases/images/post-main-send-case copy';
 
 @Controller('blogger/blogs')
