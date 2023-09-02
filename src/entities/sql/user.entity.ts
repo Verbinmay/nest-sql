@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -12,6 +13,7 @@ import { add } from 'date-fns';
 
 import { SAViewUserDto } from '../../sa/dto/user/sa-view-user.dto';
 import { Pair } from '../../quiz/entities/pairs.entity';
+import { Blog } from './blog.entity';
 
 @Entity()
 export class User {
@@ -64,6 +66,15 @@ export class User {
     nullable: true,
   })
   public Pair: Array<Pair>;
+
+  @ManyToMany(() => Blog, {
+    cascade: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+    nullable: true,
+  })
+  @JoinTable()
+  public followBlog: Array<Blog>;
 }
 
 export function SAGetViewModel(user: User): SAViewUserDto {

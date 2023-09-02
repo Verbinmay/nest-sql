@@ -124,13 +124,18 @@ import {
   FileStorageAdapter,
   S3StorageAdapter,
 } from './adapters/fileStorage.adapter';
-import { DeleteAvatarCase } from './blogger/use-cases/images/delete-avatar-case';
+
 import { Images } from './entities/sql/image.entity';
 import { ImagesRepository } from './sql/image.repository';
 import { BlogMainCase } from './blogger/use-cases/images/blog-main-send-case';
 import { PostMainCase } from './blogger/use-cases/images/post-main-send-case copy';
+import { PostSubscriptionOnBlogCase } from './public/use-cases/blog/subscription-case';
+import { DeleteSubscriptionOnBlogCase } from './public/use-cases/blog/unsubscription-case';
+import { GetAuthBotLinkCase } from './integrations/use-cases/get-telegram-link-case';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
+
+const useCasesIntegration = [GetAuthBotLinkCase];
 
 const useCasesBlog = [
   CreateBlogCase,
@@ -142,6 +147,8 @@ const useCasesBlog = [
   SA_GetAllBlogsCase,
   UpdateBlogCase,
   SA_BanBlogCase,
+  PostSubscriptionOnBlogCase,
+  DeleteSubscriptionOnBlogCase,
 ];
 
 const useCasesPost = [
@@ -207,12 +214,7 @@ const useCasesQuiz = [
   GetTopUsersCase,
 ];
 
-const useCasesAvatar = [
-  BlogWallpaperCase,
-  DeleteAvatarCase,
-  BlogMainCase,
-  PostMainCase,
-];
+const useCasesAvatar = [BlogWallpaperCase, BlogMainCase, PostMainCase];
 
 const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
 
@@ -315,6 +317,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     ...useCasesAuth /* кейсы */,
     ...useCasesQuiz /* кейсы */,
     ...useCasesAvatar /* кейсы */,
+    ...useCasesIntegration /* кейсы */,
     ...validations /*валидаторы */,
     AppService,
     BlogRepository,

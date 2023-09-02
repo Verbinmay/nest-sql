@@ -3,6 +3,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -55,6 +57,15 @@ export class Blog {
 
   @OneToMany(() => Images, (images) => images.blog)
   images: Images[];
+
+  @ManyToMany(() => User, {
+    cascade: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+    nullable: true,
+  })
+  @JoinTable()
+  public followers: Array<User>;
 }
 
 export async function getBlogViewModel(blog: Blog): Promise<ViewBlogDto> {
