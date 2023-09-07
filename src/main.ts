@@ -10,13 +10,13 @@ import { AppModule } from './app.module';
 
 const settings = {
   currentAppBaseUrl: process.env.CURRENT_APP_BASE_URL,
+  token: process.env.TOKEN_TG,
 };
 
 async function SendOurHookToTelegram(url: string) {
-  await axios.post(
-    `https://api.telegram.org/bot6613887411:AAEfHvuEF4w8Fk-uXkY4D_JqGnIJ8-IRifM/setWebhook`,
-    { url: url },
-  );
+  await axios.post(`https://api.telegram.org/bot${settings.token}/setWebhook`, {
+    url: url,
+  });
   return;
 }
 async function connectToNgrok() {

@@ -33,7 +33,7 @@ export class IntegrationsController {
   @HttpCode(204)
   @Post('telegram/webhook')
   async webhook(@Body() payload: inputMessage) {
-    log(payload);
+    if (!payload.message) return;
     if (payload.message.text.includes('/start')) {
       const result = await this.commandBus.execute(
         new CheckStartMessageCommand(payload),

@@ -3,6 +3,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Blog } from '../../../entities/sql/blog.entity';
 import { Post, getPostViewModel } from '../../../entities/sql/post.entity';
 import { User } from '../../../entities/sql/user.entity';
+import { TelegramAdapter } from '../../../integrations/telegram.service';
 import { BlogRepository } from '../../../sql/blog.repository';
 import { LikePostRepository } from '../../../sql/post.like.repository';
 import { PostRepository } from '../../../sql/post.repository';
@@ -24,7 +25,7 @@ export class CreatePostByBlogIdCase
   constructor(
     private readonly blogRepository: BlogRepository,
     private readonly postRepository: PostRepository,
-    private readonly likePostRepository: LikePostRepository,
+    private readonly telegramAdapter: TelegramAdapter,
     private readonly userRepository: UserRepository,
   ) {}
 
@@ -48,6 +49,12 @@ export class CreatePostByBlogIdCase
     const postSaved = await this.postRepository.create(post);
     const postFined = await this.postRepository.findPostById(postSaved.id);
 
+    const followers = blog.followers.filter((a) => a.telegramSpam === true);
+    if (followers.length > 0) {
+      for (let i = 0; i < followers.length; i++) {
+        await this.telegramAdapter.sendSpam(followers[i].telegramId, blog.name);
+      }
+    }
     return await getPostViewModel(postFined, command.userId);
   }
 }

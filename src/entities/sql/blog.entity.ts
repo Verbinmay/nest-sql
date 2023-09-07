@@ -60,8 +60,8 @@ export class Blog {
 
   @ManyToMany(() => User, {
     cascade: true,
-    onDelete: 'SET NULL',
-    onUpdate: 'SET NULL',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
     nullable: true,
   })
   @JoinTable()

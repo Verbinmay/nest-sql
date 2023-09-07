@@ -134,6 +134,7 @@ import { DeleteSubscriptionOnBlogCase } from './public/use-cases/blog/unsubscrip
 import { GetAuthBotLinkCase } from './integrations/use-cases/get-telegram-link-case';
 import { IntegrationsController } from './integrations/controllers/integration.controller';
 import { CheckStartMessageCase } from './integrations/use-cases/check-start-telegram-case';
+import { TelegramAdapter } from './integrations/telegram.service';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 
@@ -345,6 +346,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     ImagesRepository,
     { provide: FileStorageAdapter, useClass: S3StorageAdapter },
     S3StorageAdapter,
+    TelegramAdapter,
   ],
 })
 export class AppModule {}

@@ -34,7 +34,7 @@ export class UserRepository {
       return null;
     }
   }
-  async findUserByTelegramId(telegramId: string): Promise<User> {
+  async findUserByTelegramId(telegramId: number): Promise<User> {
     try {
       const result: User | null = await this.usersRepository.findOne({
         relations: { followBlog: true },

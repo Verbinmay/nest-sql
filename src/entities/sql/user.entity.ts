@@ -69,14 +69,13 @@ export class User {
 
   @ManyToMany(() => Blog, {
     cascade: true,
-    onDelete: 'SET NULL',
-    onUpdate: 'SET NULL',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
     nullable: true,
   })
-  @JoinTable()
   public followBlog: Array<Blog>;
-  @Column({ type: 'text', nullable: true, default: null })
-  telegramId: string | null;
+  @Column({ nullable: true, default: null })
+  telegramId: number | null;
   @Column({ type: 'boolean', nullable: true, default: false })
   telegramSpam: boolean;
 }

@@ -22,8 +22,8 @@ export class CheckStartMessageCase
     if (isUUID(id)) {
       const user: User = await this.userRepository.findUserById(id);
       if (user) {
-        user.telegramId = command.payload.message.from.username;
-        log(user.telegramId);
+        user.telegramId = command.payload.message.chat.id;
+
         user.telegramSpam = true;
         await this.userRepository.update(user);
         return;
@@ -32,7 +32,7 @@ export class CheckStartMessageCase
     }
     if (command.payload.message.text === '/start') {
       const user: User = await this.userRepository.findUserByTelegramId(
-        command.payload.message.from.username,
+        command.payload.message.chat.id,
       );
       if (user && user.telegramSpam === false) {
         user.telegramSpam = true;
