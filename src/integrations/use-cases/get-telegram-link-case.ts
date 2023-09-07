@@ -9,14 +9,9 @@ export class GetAuthBotLinkCommand {
 export class GetAuthBotLinkCase
   implements ICommandHandler<GetAuthBotLinkCommand>
 {
-  constructor(private httpServer: HttpServer) {}
-
   async execute(command: GetAuthBotLinkCommand) {
-    const baseUrl = this.httpServer.axiosRef.defaults.baseURL;
-    const result: PaginatorBlog = await this.blogQueryRepository.findBlogs(
-      command.query,
-    );
-
-    return result;
+    return {
+      link: `https://t.me/socialBotDot_bot?start=${command.userId}`,
+    };
   }
 }

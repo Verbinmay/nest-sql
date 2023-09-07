@@ -92,6 +92,7 @@ export async function getBlogViewModel(blog: Blog): Promise<ViewBlogDto> {
   }
   return result;
 }
+
 export function SAgetViewModel(blog: Blog): SAViewBlogDto {
   const result = {
     id: blog.id,

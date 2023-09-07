@@ -132,10 +132,12 @@ import { PostMainCase } from './blogger/use-cases/images/post-main-send-case cop
 import { PostSubscriptionOnBlogCase } from './public/use-cases/blog/subscription-case';
 import { DeleteSubscriptionOnBlogCase } from './public/use-cases/blog/unsubscription-case';
 import { GetAuthBotLinkCase } from './integrations/use-cases/get-telegram-link-case';
+import { IntegrationsController } from './integrations/controllers/integration.controller';
+import { CheckStartMessageCase } from './integrations/use-cases/check-start-telegram-case';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 
-const useCasesIntegration = [GetAuthBotLinkCase];
+const useCasesIntegration = [GetAuthBotLinkCase, CheckStartMessageCase];
 
 const useCasesBlog = [
   CreateBlogCase,
@@ -302,6 +304,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     PairController,
     UserPairController,
     AvatarBloggersController,
+    IntegrationsController,
   ],
   providers: [
     // {

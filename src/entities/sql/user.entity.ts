@@ -75,6 +75,10 @@ export class User {
   })
   @JoinTable()
   public followBlog: Array<Blog>;
+  @Column({ type: 'text', nullable: true, default: null })
+  telegramId: string | null;
+  @Column({ type: 'boolean', nullable: true, default: false })
+  telegramSpam: boolean;
 }
 
 export function SAGetViewModel(user: User): SAViewUserDto {
