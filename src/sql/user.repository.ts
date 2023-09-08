@@ -26,7 +26,7 @@ export class UserRepository {
   async findUserById(id: string): Promise<User> {
     try {
       const result: User | null = await this.usersRepository.findOne({
-        relations: { followBlog: true },
+        // relations: { followBlog: true },
         where: { id: id },
       });
       return result;
@@ -37,7 +37,7 @@ export class UserRepository {
   async findUserByTelegramId(telegramId: number): Promise<User> {
     try {
       const result: User | null = await this.usersRepository.findOne({
-        relations: { followBlog: true },
+        // relations: { followBlog: true },
         where: { telegramId: telegramId },
       });
       return result;

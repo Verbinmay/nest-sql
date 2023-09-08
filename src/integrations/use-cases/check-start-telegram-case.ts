@@ -18,27 +18,30 @@ export class CheckStartMessageCase
 {
   constructor(private readonly userRepository: UserRepository) {}
   async execute(command: CheckStartMessageCommand) {
-    const id = command.payload.message.text.split(' ')[1];
-    if (isUUID(id)) {
-      const user: User = await this.userRepository.findUserById(id);
-      if (user) {
-        user.telegramId = command.payload.message.chat.id;
+    const login = command.payload.message.text.split('code=')[1];
 
-        user.telegramSpam = true;
-        await this.userRepository.update(user);
-        return;
-      }
+    const user: User = await this.userRepository.findUserByLoginOrEmail(login);
+
+    if (user) {
+      user.telegramId = command.payload.message.chat.id;
+
+      user.telegramSpam = true;
+      await this.userRepository.update(user);
+      console.log(user, 'user');
       return;
     }
+
     if (command.payload.message.text === '/start') {
       const user: User = await this.userRepository.findUserByTelegramId(
         command.payload.message.chat.id,
       );
+      log(user, 'user2');
       if (user && user.telegramSpam === false) {
         user.telegramSpam = true;
         await this.userRepository.update(user);
         return;
       }
+
       return;
     }
 

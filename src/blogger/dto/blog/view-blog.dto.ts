@@ -8,4 +8,6 @@ export class ViewBlogDto {
   createdAt: string;
   isMembership: boolean;
   images?: imageBlogDto;
+  currentUserSubscriptionStatus?: ['Subscribed' | 'Unsubscribed' | 'None'];
+  subscribersCount?: number;
 }

@@ -7,6 +7,7 @@ import { BanedUser } from '../../../entities/sql/blogsBannedUsers.entity';
 import { User } from '../../../entities/sql/user.entity';
 import { BanedUsersBlogsRepository } from '../../../sql/blog.banUsers.repository';
 import { BlogRepository } from '../../../sql/blog.repository';
+import { FollowerRepository } from '../../../sql/followers.repository';
 import { UserRepository } from '../../../sql/user.repository';
 
 export class DeleteSubscriptionOnBlogCommand {
@@ -21,6 +22,7 @@ export class DeleteSubscriptionOnBlogCase
     private readonly blogRepository: BlogRepository,
     private readonly userRepository: UserRepository,
     private readonly banedUsersBlogsRepository: BanedUsersBlogsRepository,
+    private readonly followerRepository: FollowerRepository,
   ) {}
 
   async execute(command: DeleteSubscriptionOnBlogCommand) {
@@ -47,18 +49,12 @@ export class DeleteSubscriptionOnBlogCase
     if (blogsBan) {
       return { s: 403 };
     }
-
-    if (blog.followers) {
-      const index = blog.followers.indexOf(user);
-      log(2);
-      if (index != -1) {
-        log(1);
-        blog.followers = blog.followers.splice(index, 1);
-        await this.blogRepository.update(blog);
-      }
-    }
-    await this.blogRepository.update(blog);
-
+    const followForm = await this.followerRepository.findByUserIdAndBlogId(
+      user.id,
+      blog.id,
+    );
+    followForm.status = 'Unsubscribed';
+    await this.followerRepository.update(followForm);
     return;
   }
 }

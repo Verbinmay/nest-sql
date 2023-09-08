@@ -17,7 +17,7 @@ export class BlogRepository {
         relations: {
           user: true,
           images: true,
-          followers: true,
+          followers: { user: true },
         },
         where: { id: id },
       });

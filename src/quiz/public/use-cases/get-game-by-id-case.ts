@@ -46,7 +46,7 @@ export class GetGameByIdCase implements ICommandHandler<GetGameByIdCommand> {
         return GetNoPairViewModel(activePairCheck);
       }
     }
-    //TODO game id check
+
     if (!isUUID(command.id) && !activePairCheck)
       return { s: 400, mf: errorMaker(['Is incorrect id', 'id']) };
     return { s: 404 };

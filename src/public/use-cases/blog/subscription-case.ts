@@ -5,8 +5,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Blog } from '../../../entities/sql/blog.entity';
 import { BanedUser } from '../../../entities/sql/blogsBannedUsers.entity';
 import { User } from '../../../entities/sql/user.entity';
+import { UserFollowBlog } from '../../../entities/sql/userFollowBlog.entity';
 import { BanedUsersBlogsRepository } from '../../../sql/blog.banUsers.repository';
 import { BlogRepository } from '../../../sql/blog.repository';
+import { FollowerRepository } from '../../../sql/followers.repository';
 import { UserRepository } from '../../../sql/user.repository';
 
 export class PostSubscriptionOnBlogCommand {
@@ -21,6 +23,7 @@ export class PostSubscriptionOnBlogCase
     private readonly blogRepository: BlogRepository,
     private readonly userRepository: UserRepository,
     private readonly banedUsersBlogsRepository: BanedUsersBlogsRepository,
+    private readonly followerRepository: FollowerRepository,
   ) {}
 
   async execute(command: PostSubscriptionOnBlogCommand) {
@@ -47,8 +50,11 @@ export class PostSubscriptionOnBlogCase
     if (blogsBan) {
       return { s: 403 };
     }
-    blog.followers = blog.followers ? [...blog.followers, user] : [user];
-    const result: Blog = await this.blogRepository.update(blog);
+    const follower = new UserFollowBlog();
+    follower.blogId = blog.id;
+    follower.userId = user.id;
+    follower.status = 'Subscribed';
+    const follow = await this.followerRepository.create(follower);
 
     return;
   }

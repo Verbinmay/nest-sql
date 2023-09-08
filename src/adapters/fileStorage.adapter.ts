@@ -153,7 +153,6 @@ export class S3StorageAdapter {
 
       const deleteAllCommand = new DeleteObjectsCommand(bucketDeleteAllParams);
       const resultOfDelete = await this.s3Client.send(deleteAllCommand);
-      console.log(resultOfDelete, 'resultOfDelete');
     } catch (exceptions) {
       console.error(exceptions);
       throw exceptions;

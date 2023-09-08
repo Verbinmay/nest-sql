@@ -39,7 +39,6 @@ export class BanedUser {
   })
   blog: Blog;
 
-  //TODO
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 }

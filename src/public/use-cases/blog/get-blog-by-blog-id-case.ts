@@ -4,7 +4,7 @@ import { getBlogViewModel } from '../../../entities/sql/blog.entity';
 import { BlogRepository } from '../../../sql/blog.repository';
 
 export class GetBlogByBlogIdCommand {
-  constructor(public id: string) {}
+  constructor(public id: string, public userId: string) {}
 }
 
 @CommandHandler(GetBlogByBlogIdCommand)
@@ -18,6 +18,6 @@ export class GetBlogByBlogIdCase
     if (!blog || blog.isBanned === true) {
       return { s: 404 };
     }
-    return await getBlogViewModel(blog);
+    return await getBlogViewModel(blog, command.userId);
   }
 }

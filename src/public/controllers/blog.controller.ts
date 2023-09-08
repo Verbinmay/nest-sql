@@ -27,15 +27,19 @@ export class BlogController {
   constructor(private commandBus: CommandBus) {}
 
   @Get(':id')
-  async getBlogByBlogId(@Param('id') id: string) {
+  async getBlogByBlogId(@CurrentPayload() user, @Param('id') id: string) {
+    const userId = user ? user.sub : '';
     const result = await this.commandBus.execute(
-      new GetBlogByBlogIdCommand(id),
+      new GetBlogByBlogIdCommand(id, userId),
     );
     return makeAnswerInController(result);
   }
   @Get()
-  async getAllBlogs(@Query() query: PaginationQuery) {
-    const result = await this.commandBus.execute(new GetAllBlogsCommand(query));
+  async getAllBlogs(@Query() query: PaginationQuery, @CurrentPayload() user) {
+    const userId = user ? user.sub : '';
+    const result = await this.commandBus.execute(
+      new GetAllBlogsCommand(query, userId),
+    );
     return makeAnswerInController(result);
   }
 

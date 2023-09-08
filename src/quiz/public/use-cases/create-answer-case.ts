@@ -39,7 +39,6 @@ export class CreateAnswerCase implements ICommandHandler<CreateAnswerCommand> {
     const question: Question = activePairCheck.questions.sort(
       (a, b) => +a.createdAt - +b.createdAt,
     )[checkAnswer];
-    console.log(question, 'question');
 
     const newAnswer = new Answer();
     newAnswer.userId = command.userId;
@@ -107,7 +106,7 @@ export class CreateAnswerCase implements ICommandHandler<CreateAnswerCommand> {
       job.start();
     }
     await this.pairRepository.update(activePairCheck);
-    console.log('updatedPair');
+
     return GetAnswerViewModel(savedAnswer);
   }
 }

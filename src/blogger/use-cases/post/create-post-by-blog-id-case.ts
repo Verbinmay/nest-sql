@@ -1,3 +1,5 @@
+import { log } from 'console';
+
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { Blog } from '../../../entities/sql/blog.entity';
@@ -48,11 +50,20 @@ export class CreatePostByBlogIdCase
 
     const postSaved = await this.postRepository.create(post);
     const postFined = await this.postRepository.findPostById(postSaved.id);
-
-    const followers = blog.followers.filter((a) => a.telegramSpam === true);
-    if (followers.length > 0) {
-      for (let i = 0; i < followers.length; i++) {
-        await this.telegramAdapter.sendSpam(followers[i].telegramId, blog.name);
+    // TODO
+    if (blog.followers) {
+      const followersForm = blog.followers.filter(
+        (a) => a.status === 'Subscribed',
+      );
+      log(followersForm);
+      if (followersForm.length > 0) {
+        const followers = followersForm.map((uf) => uf.user);
+        for (let i = 0; i < followers.length; i++) {
+          await this.telegramAdapter.sendSpam(
+            followers[i].telegramId,
+            blog.name,
+          );
+        }
       }
     }
     return await getPostViewModel(postFined, command.userId);

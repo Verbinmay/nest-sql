@@ -15,6 +15,7 @@ import { SAViewBlogDto } from '../../sa/dto/blog/sa-view-blog.dto';
 import { getImageViewModelUtil } from '../../helpers/images.util';
 import { Images } from './image.entity';
 import { User } from './user.entity';
+import { UserFollowBlog } from './userFollowBlog.entity';
 
 @Entity()
 export class Blog {
@@ -58,17 +59,14 @@ export class Blog {
   @OneToMany(() => Images, (images) => images.blog)
   images: Images[];
 
-  @ManyToMany(() => User, {
-    cascade: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    nullable: true,
-  })
-  @JoinTable()
-  public followers: Array<User>;
+  @OneToMany(() => UserFollowBlog, (userFollowBlog) => userFollowBlog.blog)
+  public followers: Array<UserFollowBlog>;
 }
 
-export async function getBlogViewModel(blog: Blog): Promise<ViewBlogDto> {
+export async function getBlogViewModel(
+  blog: Blog,
+  userId = '',
+): Promise<ViewBlogDto> {
   const result: any = {
     id: blog.id,
     name: blog.name,
@@ -80,16 +78,27 @@ export async function getBlogViewModel(blog: Blog): Promise<ViewBlogDto> {
       main: [],
       wallpaper: null,
     },
+    currentUserSubscriptionStatus: 'None',
+    subscribersCount: 0,
   };
 
   if (blog.images) {
-    // result.images = {};
     const wallpaper = await getImageViewModelUtil(blog.images, 'wallpaper');
     if (wallpaper.length > 0) result.images.wallpaper = wallpaper[0];
 
     const main = await getImageViewModelUtil(blog.images, 'main');
     if (main.length > 0) result.images.main = main;
   }
+  if (blog.followers) {
+    const currentUserForm = blog.followers.find((uf) => uf.userId === userId);
+    if (currentUserForm) {
+      result.currentUserSubscriptionStatus = currentUserForm.status;
+    }
+    result.subscribersCount = blog.followers.filter(
+      (a) => a.status === 'Subscribed',
+    ).length;
+  }
+
   return result;
 }
 

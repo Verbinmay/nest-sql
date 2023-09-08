@@ -7,6 +7,7 @@ import { BanedUsersBlogsRepository } from '../../sql/blog.banUsers.repository';
 import { BlogRepository } from '../../sql/blog.repository';
 import { LikeCommentRepository } from '../../sql/comment.like.repository';
 import { CommentRepository } from '../../sql/comment.repository';
+import { FollowerRepository } from '../../sql/followers.repository';
 import { ImagesRepository } from '../../sql/image.repository';
 import { LikePostRepository } from '../../sql/post.like.repository';
 import { PostRepository } from '../../sql/post.repository';
@@ -28,6 +29,7 @@ export class TestController {
     private readonly pairRepository: PairRepository,
     private readonly answerRepository: AnswerRepository,
     private readonly imagesRepository: ImagesRepository,
+    private readonly followerRepository: FollowerRepository,
   ) {}
 
   @HttpCode(204)
@@ -46,6 +48,7 @@ export class TestController {
     await this.pairRepository.deleteAll();
     await this.answerRepository.deleteAll();
     await this.imagesRepository.deleteAll();
+    await this.followerRepository.deleteAll();
 
     return;
   }

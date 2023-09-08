@@ -5,15 +5,18 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
+import { join } from 'node:path/win32';
 
 import { SAViewUserDto } from '../../sa/dto/user/sa-view-user.dto';
 import { Pair } from '../../quiz/entities/pairs.entity';
 import { Blog } from './blog.entity';
+import { UserFollowBlog } from './userFollowBlog.entity';
 
 @Entity()
 export class User {
@@ -38,7 +41,6 @@ export class User {
   @Column('uuid')
   confirmationCode: string = randomUUID();
 
-  //TODO разобраться, как оно хранится
   @Column('date')
   expirationDate: Date = add(new Date(), {
     hours: 1,
@@ -67,15 +69,12 @@ export class User {
   })
   public Pair: Array<Pair>;
 
-  @ManyToMany(() => Blog, {
-    cascade: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    nullable: true,
-  })
-  public followBlog: Array<Blog>;
-  @Column({ nullable: true, default: null })
+  @OneToMany(() => UserFollowBlog, (userFollowBlog) => userFollowBlog.user)
+  public followBlog: Array<UserFollowBlog>;
+
+  @Column({ type: 'bigint', nullable: true, default: null })
   telegramId: number | null;
+
   @Column({ type: 'boolean', nullable: true, default: false })
   telegramSpam: boolean;
 }

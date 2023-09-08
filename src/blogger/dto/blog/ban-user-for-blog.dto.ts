@@ -8,7 +8,6 @@ export class BanUserForBlogDto extends BanDto {
   @IsNotEmpty()
   @IsString()
   @Transform(({ value }): string => value.trim())
-  // TODO не работает почему то
   @Validate(ValidationBlogId)
   public blogId: string;
 }

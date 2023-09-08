@@ -31,7 +31,7 @@ export class BanedUsersBlogsQueryRepository {
     let orderInfo: any = {
       [query.sortBy]: query.sortDirection,
     };
-    console.log(query);
+
     if (query.sortBy === 'login')
       orderInfo = { user: { login: query.sortDirection } };
     //TODO ошибка связанная с тем, что login теперь в юзере и как сортировать хз

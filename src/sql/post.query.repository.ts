@@ -41,7 +41,7 @@ export class PostQueryRepository {
     });
     const results = postsFromDB.map((p) => getPostViewModel(p, userId));
     const post: ViewPostDto[] = await Promise.all(results);
-    //TODO
+
     const result: PaginatorPost = {
       pagesCount: pagesCount,
       page: query.pageNumber,

@@ -201,17 +201,6 @@ describe('auth-public-tests-pack', () => {
         accessToken: expect.any(String),
       });
     });
-    // TODO не получилось написать тест
-    // it('login - 400 - error', async () => {
-    //   const loginInput = {
-    //     loginOrEmail: userInput.login,
-    //     password: +faker.random.numeric(6),
-    //   };
-    //   const loginResponse = await agent
-    //     .post(info.auth.login)
-    //     .send(loginInput)
-    //     .expect(400);
-    // });
 
     it('login - 401 - error', async () => {
       const loginInput = {

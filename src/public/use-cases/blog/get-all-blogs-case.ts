@@ -5,7 +5,7 @@ import { PaginatorBlog } from '../../../pagination/paginatorType';
 import { BlogQueryRepository } from '../../../sql/blog.query.repository';
 
 export class GetAllBlogsCommand {
-  constructor(public query: PaginationQuery) {}
+  constructor(public query: PaginationQuery, public userId: string) {}
 }
 
 @CommandHandler(GetAllBlogsCommand)
@@ -15,6 +15,7 @@ export class GetAllBlogsCase implements ICommandHandler<GetAllBlogsCommand> {
   async execute(command: GetAllBlogsCommand) {
     const result: PaginatorBlog = await this.blogQueryRepository.findBlogs(
       command.query,
+      command.userId,
     );
 
     return result;

@@ -15,7 +15,6 @@ export class GetCurrentUserBlogsCase
   constructor(private readonly blogRepository: BlogQueryRepository) {}
 
   async execute(command: GetCurrentUserBlogsCommand) {
-    console.log(command.query);
     const result: PaginatorBlog = await this.blogRepository.findBlogsByUserId(
       command.query,
       command.userId,

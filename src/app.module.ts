@@ -135,6 +135,8 @@ import { GetAuthBotLinkCase } from './integrations/use-cases/get-telegram-link-c
 import { IntegrationsController } from './integrations/controllers/integration.controller';
 import { CheckStartMessageCase } from './integrations/use-cases/check-start-telegram-case';
 import { TelegramAdapter } from './integrations/telegram.service';
+import { UserFollowBlog } from './entities/sql/userFollowBlog.entity';
+import { FollowerRepository } from './sql/followers.repository';
 
 const validations = [ValidationBlogId, ValidationLoginEmail, ValidationSortBy];
 
@@ -261,6 +263,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
           Pair,
           Answer,
           Images,
+          UserFollowBlog,
         ],
         autoLoadEntities: true,
         synchronize: true,
@@ -280,6 +283,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
       Pair,
       Answer,
       Images,
+      UserFollowBlog,
     ]),
 
     // ThrottlerModule.forRoot({
@@ -347,6 +351,7 @@ const strategies = [BasicStrategy, JwtStrategy, LocalStrategy];
     { provide: FileStorageAdapter, useClass: S3StorageAdapter },
     S3StorageAdapter,
     TelegramAdapter,
+    FollowerRepository,
   ],
 })
 export class AppModule {}

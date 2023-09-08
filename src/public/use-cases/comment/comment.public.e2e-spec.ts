@@ -442,7 +442,6 @@ describe('post-public-tests-pack', () => {
       comments.push(commentResponse.body);
     });
 
-    //TODO тест спешит
     it('update comment - 204 ', async () => {
       const commentInput = createCommentInput();
       const updateCommentResponse = await agent
@@ -461,15 +460,6 @@ describe('post-public-tests-pack', () => {
 
       expect(commentResponse.body.content).toBe(commentInput.content);
     });
-    //TODO not working
-    // it('update comment - 400 - error ', async () => {
-    //   const commentInput = { content: 22 };
-    //   const updateCommentResponse = await agent
-    //     .put(info.comments + comments[0].id)
-    //     .auth(accessTokens[0], { type: 'bearer' })
-    //     .send(commentInput)
-    //     .expect(400);
-    // });
 
     it('update comment - 401 - error ', async () => {
       const commentInput = createCommentInput();
@@ -556,16 +546,6 @@ describe('post-public-tests-pack', () => {
       comments.push(commentResponse.body);
     });
 
-    //TODO not working
-    // it('update comment - 400 - error ', async () => {
-    //   const commentInput = { content: 22 };
-    //   const updateCommentResponse = await agent
-    //     .put(info.comments + comments[0].id)
-    //     .auth(accessTokens[0], { type: 'bearer' })
-    //     .send(commentInput)
-    //     .expect(400);
-    // });
-
     it('delete comment - 401 - error ', async () => {
       const deleteCommentResponse = await agent
         .delete(info.comments + comments[0].id)
@@ -586,7 +566,6 @@ describe('post-public-tests-pack', () => {
         .expect(404);
     });
 
-    //TODO тест спешит
     it('update comment - 204 ', async () => {
       const deleteCommentResponse = await agent
         .delete(info.comments + comments[0].id)
